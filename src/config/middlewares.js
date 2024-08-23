@@ -57,6 +57,6 @@ export const globalMiddlewares = [
   bodyParser.urlencoded({ extended: true, limit: "50mb" }), // Handle URL-encoded data with size limit
   bodyParser.json({ limit: "50mb" }), // Handle JSON data with size limit
   cookieParser(), // Parse cookies
-  // checkCache,
-  // clearCacheMiddleware,
+  checkCache,
+  clearCacheMiddleware,
 ];

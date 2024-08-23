@@ -10,6 +10,7 @@ import {
   checkCache,
   clearCacheMiddleware,
 } from "../middleware/cache/cache.js";
+import { decodeToken } from "../middleware/auth/decodeToken.js";
 
 // Load environment variables
 dotenv.config();
@@ -57,6 +58,7 @@ export const globalMiddlewares = [
   bodyParser.urlencoded({ extended: true, limit: "50mb" }), // Handle URL-encoded data with size limit
   bodyParser.json({ limit: "50mb" }), // Handle JSON data with size limit
   cookieParser(), // Parse cookies
+  decodeToken,
   checkCache,
   clearCacheMiddleware,
 ];

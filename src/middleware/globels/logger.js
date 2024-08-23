@@ -32,8 +32,8 @@ export const logger = () => {
       ? chalk.red(`${tokens.status(req, res)}`)
       : chalk.green(`${tokens.status(req, res)}`);
     const isCahced = req?.cached
-      ? chalk.cyan(` cahced`)
-      : chalk.bold(` not-cached`);
+      ? chalk.cyan(`cahced`)
+      : "";
     return [
       chalk.white(`[${formattedTime}]`),
       `${chalk.black(req.protocol)}:`,

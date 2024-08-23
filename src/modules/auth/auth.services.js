@@ -104,14 +104,11 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
   if (!decoded) return false;
   return decoded;
 };
-export const getUserAndVerify = async (token) => {
+export const getUserAndVerify = async (decodeReq) => {
   try {
-    // Verify token
-    const decoded = decodeJwt(token, process.env.SECRETKEY);
-    // Check if token is expired
-    if (!decoded) return false;
+    if (!decodeReq) return false;
     // Check if user exists
-    const user = await UserModel.findById(decoded._id)
+    const user = await UserModel.findById(decodeReq._id)
       .populate([{ path: "cart" }, { path: "influencer" }])
       .exec();
     // Check if user exists, is not blocked, and has a valid token

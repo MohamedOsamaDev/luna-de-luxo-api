@@ -1,0 +1,31 @@
+import express from "express";
+import {
+  createOrder,
+  getAllOrders,
+  getSpecificOrder,
+  updateOrder
+} from "./order.controller.js";
+
+import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
+import { makeOrder } from "../../middleware/orders/makeOrder.js";
+import { validation } from "../../middleware/globels/validation.js";
+import { createOrderVal, updateOrderVal } from "./order.validation.js";
+import { authorized } from "../../middleware/globels/authorized.js";
+import { enumRoles } from "../../assets/enums/Roles_permissions.js";
+import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
+
+const orderRouter = express.Router();
+orderRouter.route("/").get(protectedRoutes, getAllOrders);
+orderRouter.post("/cash",validation(createOrderVal), protectedRoutes, makeOrder, createOrder);
+orderRouter.post("/getway", protectedRoutes, makeOrder, createOrder);
+orderRouter.route("/:id")
+.get(protectedRoutes, getSpecificOrder)
+.put(
+  validation(updateOrderVal),
+  protectedRoutes,
+  authorized(enumRoles.admin),
+  AttributedTo,
+  updateOrder
+);
+
+export default orderRouter;

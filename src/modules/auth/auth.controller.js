@@ -25,7 +25,7 @@ const signUp = AsyncHandler(async (req, res, next) => {
 
   confirmEmail(req.body.email);
 
-  res.status(200).json({
+  return res.status(200).json({
     message: `welcome ${user?.fullName}`,
     profile: {
       _id: user?._id,
@@ -60,7 +60,7 @@ const signIn = AsyncHandler(async (req, res, next) => {
     );
 
     const cart = await handleConnectCart(user, req, res);
-    res.status(200).json({
+    return res.status(200).json({
       message: `welcome ${user.fullName}`,
       profile: {
         _id: user?._id,
@@ -168,13 +168,17 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
   const hashedPassword = bcrypt.hashSync(password, 8);
 
   // Update the user's password and passwordChangedAt, and clear OTP
-  await UserModel.findByIdAndUpdate(user._id, {
-    password: hashedPassword,
-    passwordChangedAt: Date.now(),
-  }, { 
-    new: true, 
-    useFindAndModify: false 
-  });
+  await UserModel.findByIdAndUpdate(
+    user._id,
+    {
+      password: hashedPassword,
+      passwordChangedAt: Date.now(),
+    },
+    {
+      new: true,
+      useFindAndModify: false,
+    }
+  );
 
   // Clear OTP and reset password session
   await UserModel.updateOne(
@@ -183,7 +187,9 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
   );
 
   // Generate a new token for the user
-  const newToken = jwt.sign({ id: user._id },  process.env.SECRETKEY, { expiresIn: "30d" });
+  const newToken = jwt.sign({ id: user._id }, process.env.SECRETKEY, {
+    expiresIn: "30d",
+  });
 
   // Set the new token in a cookie
   res.cookie("token", newToken, SetCookie());
@@ -240,7 +246,7 @@ const softdelete = AsyncHandler(async (req, res, next) => {
 });
 const verfiySession = AsyncHandler(async (req, res, next) => {
   const user = req.user;
- return res.status(200).json({
+  return res.status(200).json({
     profile: {
       _id: user?._id,
       fullName: user?.fullName,

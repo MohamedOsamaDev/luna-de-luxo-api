@@ -29,12 +29,4 @@ export const revaildatePath = (key) => {
   return null;
 };
 
-export const customCachPath = async (key, value, mode = "public") => {
-  try {
-    let Pathkey = `${mode}/${key}`;
-    return cachePath(Pathkey, value);
-  } catch (error) {
-    console.error(`Error caching data: ${error.message}`);
-  }
-  return true;
-};
+

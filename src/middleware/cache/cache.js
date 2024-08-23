@@ -3,7 +3,11 @@ import cache from "../../config/cache.js";
 
 // Import a utility function to detect and decode JWTs from the incoming request
 import { detectJwtAndDecodeJwtFromRequest } from "../../modules/auth/auth.services.js";
-import { cachePath, getCachedPath } from "../../utils/cachHandlers.js";
+import {
+  cachePath,
+  getCachedPath,
+  revaildatePath,
+} from "../../utils/cachHandlers.js";
 import { timeToSeconds } from "../../utils/formateTime.js";
 // Middleware to cache the JSON response after all other middlewares have finished
 export const cacheResponse = ({ stdTTL } = {}) => {
@@ -53,7 +57,30 @@ export const checkCache = (req, res, next) => {
   // Continue to the next middleware or route handler
   return next();
 };
-
+const filterMatchingPaths = (target, paths) => {
+  const filteredUrls = new Set();
+  try {
+    // Define regex to extract core segment from the target
+    const coreSegment = target?.match(/^\/api\/([^\/\?\s]+)/)?.[1] || "";
+    // Create a Set to store unique URLs that match the criteria
+    // Iterate through the array of URLs
+    paths?.forEach((url) => {
+      const urlIncludesCoreSegment = url.includes(`/${coreSegment}`);
+      const isMatchingCoreSegment =
+        urlIncludesCoreSegment &&
+        (url.includes(`/${coreSegment}/`) || url.includes(`/${coreSegment}?`));
+      const isSpecialCondition = [`admin${target}`, `public${target}`].includes(
+        url
+      );
+      if (isMatchingCoreSegment || isSpecialCondition) {
+        filteredUrls.add(url);
+      }
+    });
+  } catch (error) {}
+  // Convert the Set back to an array and return it
+  return [...filteredUrls];
+};
+// Middleware to invalidate the cache for a specific URL when a DELETE, PUT, or PATCH request is made
 export const clearCacheMiddleware = (req, res, next) => {
   let key = req?.originalUrl;
   const originalJson = res.json;
@@ -61,13 +88,9 @@ export const clearCacheMiddleware = (req, res, next) => {
     ["DELETE", "PUT", "PATCH"].includes(req.method.toUpperCase()) &&
     res?.statusCode === 200
   ) {
-    if (req?.decodeReq?.role === "admin") {
-      key = `admin${key}`;
-    } else {
-      key = `public${key}`;
-    }
-    // Invalidate cache for the generated key
-    revaildatePath(key);
+    let keys = cache.keys();
+    keys = filterMatchingPaths(req.originalUrl, keys);
+    revaildatePath(keys);
     req.cached = true;
     res.json = function (body) {
       // Call the original res.json method to send the response
@@ -75,5 +98,5 @@ export const clearCacheMiddleware = (req, res, next) => {
     };
   }
 
- return next();
+  return next();
 };

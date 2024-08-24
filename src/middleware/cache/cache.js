@@ -13,7 +13,7 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
   let ttlInSeconds = stdTTL ? timeToSeconds(stdTTL) : undefined;
   return (req, res, next) => {
     // Decode the JWT from the request (if any) and extract user information
-    
+
     if (req?.decodeReq?.role !== "admin") {
       let key = req?.originalUrl;
       // Save the original res.json method
@@ -71,7 +71,6 @@ export const clearCacheMiddleware = (req, res, next) => {
           `/api/${getCoresegment(req.originalUrl)}/${body?.data?.slug}`
         );
       revaildatePath(keys);
-     
 
       // Call the original res.json method to send the response
     }

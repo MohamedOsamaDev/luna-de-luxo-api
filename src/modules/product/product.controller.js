@@ -101,17 +101,17 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     ...data?._doc,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },
   };
-  
- return res.status(200).json({
+
+  return res.status(200).json({
     message: "Updated Sucessfully",
     data,
   });
 });
 const getFilters = AsyncHandler(async (req, res, next) => {
-  // let query = {
-  //   publish: true,
-  //   limit: 20,
-  // };
+  let query = {
+    publish: true,
+    limit: 20,
+  };
   const colors = await colorModel.find().lean();
   const categories = await categoryModel.find().lean();
   const sizes = await sizeModel.find().lean();

@@ -72,7 +72,6 @@ export const revaildatePath = (key) => {
   } catch (error) {}
   return null;
 };
-
 export const updatetTTL = (key, sttl = "1h") => {
   try {
     let value = cache.get(key, timeToSeconds(sttl));

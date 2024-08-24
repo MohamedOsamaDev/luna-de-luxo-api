@@ -33,7 +33,7 @@ productRouter
     addproduct
   )
   .get(
-    cacheResponse({ stdTTL: "1h", group: true }),
+    cacheResponse({ stdTTL: "4h", group: true }),
     tokenDetector,
     getallproduct
   );

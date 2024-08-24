@@ -151,7 +151,7 @@ export const FindOne = ({ model, name = "" }) => {
       ];
       query = {
         ...query,
-        isDeleted: false,
+        // isDeleted: false,
       };
     }
     let data = await model.findOne(query).populate(populateQuery).lean();

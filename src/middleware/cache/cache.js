@@ -42,6 +42,8 @@ export const checkCache = (req, res, next) => {
   if (req?.decodeReq?.role !== "admin") {
     const cachedResponse = getCachedPath(req?.originalUrl);
     // If the JWT is present, the user is an admin, and a cached response exists
+    console.log(cache.keys());
+    
     if (cachedResponse) {
       req.cached = true;
       return res.json(cachedResponse);

@@ -1,4 +1,5 @@
 import couponRouter from "./coupon/coupon.routes.js";
+import contactRouter from "./contactUs/contact.routes.js";
 import cartRouter from "./cart/cart.routes.js";
 import orderRouter from "./order/order.routes.js";
 import colorsRouter from "./colors/colors.routes.js";
@@ -36,6 +37,7 @@ export const bootstrap = (app, express) => {
   app.use(`${mainroute}/influencers`, influncerRouter);
   app.use(`${mainroute}/single-type`, singleTypeRouter);
   app.use(`${mainroute}/custom-product`, customProductRouter);
+  app.use(`${mainroute}/contact-us`, contactRouter);
   // End  Endpoints ------------------------------------------- |
   scheduleTasksHandler(scheduleTasks); // cron jobs
   databaseConnection(); // database connection

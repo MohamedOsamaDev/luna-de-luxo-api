@@ -15,6 +15,7 @@ const schema = new mongoose.Schema(
     count: { type: Number, default: 0, required: true, min: 0 },
     createdBy: { type: ObjectId, ref: "user" },
     updatedBy: { type: ObjectId, ref: "user" },
+    isDeleted:{ type: Boolean,default: false },
   },
   { timestamps: true }
 );

@@ -71,11 +71,6 @@ const UpdateproductSchemaVal = Joi.object({
   category: Joi.alternatives().try(ObjectIdVal, UpdateCategorySchemaVal),
   subcategory: Joi.alternatives().try(ObjectIdVal, UpdateCategorySchemaVal),
   type: Joi.string().valid("clothes", "decor"),
-  colors: Joi.when("type", {
-    is: "clothes",
-    then: clothesVal,
-    otherwise: decorVal,
-  }),
   colors: Joi.alternatives().try(clothesVal, decorVal),
 });
 const paramsIdVal = Joi.object({

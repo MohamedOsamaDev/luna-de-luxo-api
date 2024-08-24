@@ -14,7 +14,7 @@ import { fileRouter } from "./file/file.routes.js";
 import { subCategoryRouter } from "./subcategory/subCategory.routes.js";
 import { customProductRouter } from "./customProduct/customProduct.routes.js";
 import { scheduleTasksHandler } from "../utils/scheduleTasksHandler.js";
-import { globalMiddlewares, notfound, welcome } from "../config/middlewares.js";
+import {  globalMiddlewares, notfound, welcome } from "../config/middlewares.js";
 import { scheduleTasks } from "../config/cronjob.js";
 import { databaseConnection } from "../config/database.js";
 export const bootstrap = (app, express) => {

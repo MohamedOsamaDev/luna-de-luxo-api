@@ -49,6 +49,7 @@ const schema = new Schema(
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     discount: { type: Number, min: 0, max: 100, default: 0 },
+    isDeleted:{ type: Boolean,default: false },
     coupon: couponSchema,
     notes: {
       type: String,

@@ -21,6 +21,7 @@ const customProductSchema = new mongoose.Schema(
     },
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
+    isDeleted:{ type: Boolean,default: false },
   },
   {
     timestamps: true,

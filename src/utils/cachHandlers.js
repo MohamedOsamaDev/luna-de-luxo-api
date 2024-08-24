@@ -1,4 +1,5 @@
 import cache from "../config/cache.js";
+import { timeToSeconds } from "./formateTime.js";
 
 export const cachePath = (key, value, stdTTL) => {
   try {
@@ -25,4 +26,16 @@ export const revaildatePath = (key) => {
     return true;
   } catch (error) {}
   return null;
+};
+
+export const updatetTTL = (key, sttl = "1h") => {
+  try {
+    let value = cache.get(key, timeToSeconds(sttl));
+    if (value) {
+      cache.ttl(key);
+    }
+  } catch (error) {
+    console.error(`Error updating TTL for data: ${error.message}`);
+  }
+  return true;
 };

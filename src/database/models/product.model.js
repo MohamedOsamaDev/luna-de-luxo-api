@@ -42,6 +42,7 @@ const schema = new mongoose.Schema(
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
     subcategory: { type: ObjectId, ref: "subcategory" },
     category: { type: ObjectId, ref: "category" },
+    isDeleted: { type: Boolean, default: false },
     poster: {
       type: ObjectId,
       ref: "file",
@@ -64,7 +65,6 @@ const DecorSchema = new mongoose.Schema({
       color: { type: ObjectId, ref: "color" },
       images: [{ type: ObjectId, ref: "file" }],
       stock: { type: Number, min: 0, default: 0 },
-      hold: { type: Number, default: 0 },
     },
   ],
 });
@@ -78,7 +78,6 @@ const clothesSchema = new mongoose.Schema({
         {
           size: { type: ObjectId, ref: "size" },
           stock: { type: Number, default: 0, min: 0 },
-          hold: { type: Number, default: 0 },
         },
       ],
     },

@@ -17,10 +17,10 @@ const updateColorSchemaVal = Joi.object({
   _id: Joi.string().hex().length(24),
   name: Joi.string().min(1).max(30).trim(),
   code: Joi.string()
-    .regex(new RegExp("^#[a-fA-F0-9]{6}$"))
-    .default("#ffff")
+    .regex(/^#[a-fA-F0-9]{6}$/)
+    .default("#ffffff") // Default should be a valid hex code
     .messages({
-      "string.pattern.base": "Color must be a valid hex code (e.g. #FFFFFF)",
+      "string.pattern.base": "Color must be a valid hex code (e.g., #FFFFFF)",
     })
     .trim(),
 });

@@ -25,6 +25,7 @@ const schema = new mongoose.Schema(
     },
     createdBy: { type: ObjectId, ref: "user" },
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
+    isDeleted:{ type: Boolean,default: false },
   },
 
   {

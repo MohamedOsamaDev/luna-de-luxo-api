@@ -71,6 +71,7 @@ export const FindAll = ({
   pushToPipeLine = [],
   customFiltersFN = null,
   publish = true,
+  isDeletedConditon = true,
 }) => {
   return AsyncHandler(async (req, res, next) => {
     // Handle filter with lookup and apply custom query logic
@@ -82,7 +83,17 @@ export const FindAll = ({
         $match: { publish: true },
       });
     }
-
+    // Conditionally add $match for deleted documents
+    if (isDeletedConditon) {
+      pipeline.push({
+        $match: {
+          $and: [
+            { isDeleted: { $exists: true } }, // Check if the field exists
+            { isDeleted: false }, // Apply the filter only if the field exists
+          ],
+        },
+      });
+    }
     // Add custom query to pipeline
     pipeline = pipeline.concat(pushToPipeLine);
     let sort = req?.query?.sort || defaultSort;
@@ -125,16 +136,25 @@ export const FindAll = ({
 export const FindOne = ({ model, name = "" }) => {
   return AsyncHandler(async (req, res, next) => {
     let user = req?.user;
-    const query = handleQuerySlugOrid(req.params?.id);
-    let data = null;
+    let populateQuery = [];
+    let query = handleQuerySlugOrid(req.params?.id);
     if (user?.role == "admin") {
-      data = await model
-        .findById(query).lean()
-        .populate("createdBy", "fullName")
-        .populate("updatedBy", "fullName");
-    } else {
-      data = await model.findOne(query).lean();
+      populateQuery = [
+        {
+          path: "updatedBy",
+          select: "fullName",
+        },
+        {
+          path: "createdBy",
+          select: "fullName",
+        },
+      ];
+      query = {
+        ...query,
+        isDeleted: false,
+      };
     }
+    let data = await model.findOne(query).populate(populateQuery).lean();
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
     res.status(200).json(data);
   });
@@ -207,16 +227,22 @@ export const updateOne = ({
     });
   });
 };
-export const deleteOne = ({ model, name = "" }) => {
+export const deleteOne = ({ model, name = "", mode = "hard" }) => {
   return AsyncHandler(async (req, res, next) => {
-    const document = await model.findByIdAndDelete({ _id: req.params.id });
+    let document;
+    if (mode === "soft") {
+      document = await model.findByIdAndUpdate(req.params.id, {
+        isDeleted: true,
+      });
+    } else {
+      document = await model.findByIdAndDelete(req.params.id);
+    }
     if (!document) return next(new AppError(httpStatus.NotFound));
     res.status(200).json({
       message: `${name} Deleted Sucessfully`,
     });
   });
 };
-
 export const makeMultibulkWrite = async (bulkOperation) => {
   Object?.keys(bulkOperation)?.forEach(async (type) => {
     try {
@@ -227,39 +253,3 @@ export const makeMultibulkWrite = async (bulkOperation) => {
     }
   });
 };
-
-[
-  // Match documents based on specific criteria if needed
-  // { $match: { type: 'decor' } }, // Example to filter for 'decor' type
-
-  // Unwind the `colors` array
-  { $unwind: "$colors" },
-
-  // Unwind the `images` array inside `colors`
-  { $unwind: "$colors.images" },
-
-  // Optionally, you can look up or join related collections here
-  // Example: Lookup for image details
-  {
-    $lookup: {
-      from: "files", // The collection name for images
-      localField: "colors.images",
-      foreignField: "_id",
-      as: "imageDetails",
-    },
-  },
-
-  // Optionally, unwind the image details array if needed
-  { $unwind: "$imageDetails" },
-
-  // Group by the required field or process the data as needed
-  {
-    $group: {
-      _id: "$colors.color", // Group by color ID
-      images: { $push: "$imageDetails" }, // Collect images details
-    },
-  },
-
-  // Sort or project the data if needed
-  { $sort: { _id: 1 } },
-];

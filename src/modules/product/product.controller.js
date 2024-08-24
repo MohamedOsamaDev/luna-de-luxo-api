@@ -101,7 +101,8 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     ...data?._doc,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },
   };
-  res.status(200).json({
+  
+ return res.status(200).json({
     message: "Updated Sucessfully",
     data,
   });

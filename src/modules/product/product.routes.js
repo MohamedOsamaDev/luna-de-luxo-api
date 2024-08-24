@@ -32,7 +32,11 @@ productRouter
     AttributedTo,
     addproduct
   )
-  .get(cacheResponse({ stdTTL: "1h" }), tokenDetector, getallproduct);
+  .get(
+    cacheResponse({ stdTTL: "1h", group: true }),
+    tokenDetector,
+    getallproduct
+  );
 
 productRouter.get("/filters", cacheResponse({ stdTTL: "4h" }), getFilters);
 

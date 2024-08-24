@@ -6,11 +6,11 @@ import { logger } from "../middleware/globels/logger.js";
 import cookieParser from "cookie-parser";
 import { AppError } from "../utils/AppError.js";
 import {
-  cacheResponse,
   checkCache,
   clearCacheMiddleware,
 } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
+import cache from "./cache.js";
 
 // Load environment variables
 dotenv.config();
@@ -44,9 +44,23 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = (req, res) => {
+  cache.set(`api/products?filters[price]=50&filters[category]=jackets`, {
+    data: "Product 1",
+  });
+  cache.set(`api/products?filters[price]=100&filters[category]=shoes`, {
+    data: "Product 2",
+  });
+  cache.set(`api/products?filters[price]=200&filters[category]=electronics`, {
+    data: "Product 3",
+  });
+  let afterSet = [...cache.keys()];
+  // Simulate a delay for demonstration purposes
+  cache.del("^/api/products(\\?|$)");
   res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",
+    afterSet,
+    cacheKeys: [...cache.keys()], // Get all cache keys
   });
 };
 

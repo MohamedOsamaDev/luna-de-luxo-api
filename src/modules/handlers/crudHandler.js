@@ -221,7 +221,7 @@ export const updateOne = ({
       updatedBy: { fullName: req.user.fullName, _id: req.user._id },
     };
     if (!data) return next(new AppError({ massage, code: 404 }));
-    res.status(200).json({
+    return res.status(200).json({
       message: `${name} Updated Sucessfully`,
       data,
     });

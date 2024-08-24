@@ -1,4 +1,5 @@
 // Import the cache instance from the configuration file
+import cache from "../../config/cache.js";
 import {
   cachePath,
   cachPathes,
@@ -57,13 +58,14 @@ export const clearCacheMiddleware = (req, res, next) => {
       ["DELETE", "PUT", "PATCH"].includes(req.method.toUpperCase()) &&
       res?.statusCode === 200
     ) {
-      req.cached = true;
+      req.revaildatecache = true;
       let keys = [req.originalUrl];
       if (body?.data?.slug)
         keys.push(
           `/api/${getCoresegment(req.originalUrl)}/${body?.data?.slug}`
         );
       revaildatePath(keys);
+      console.log(cache.keys());
 
       // Call the original res.json method to send the response
     }

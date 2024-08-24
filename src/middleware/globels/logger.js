@@ -31,9 +31,8 @@ export const logger = () => {
     const customMessage = isError
       ? chalk.red(`${tokens.status(req, res)}`)
       : chalk.green(`${tokens.status(req, res)}`);
-    const isCahced = req?.cached
-      ? chalk.cyan(`cahced`)
-      : "";
+    const isCahced = req?.cached ? chalk.cyan(`cahced`) : "";
+    const isrevaildatedcache = req?.revaildatecache ? chalk.bold(`cleared cache`) : "";
     return [
       chalk.white(`[${formattedTime}]`),
       `${chalk.black(req.protocol)}:`,
@@ -42,6 +41,7 @@ export const logger = () => {
       `(${Math.ceil(tokens["response-time"](req, res))} ms)`,
       customMessage,
       isCahced,
+      isrevaildatedcache,
     ].join(" ");
   });
 };

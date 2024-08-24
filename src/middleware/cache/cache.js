@@ -20,13 +20,18 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
       // Override the res.json method
       res.json = function (body) {
         // Check if caching should occur based on conditions
-        if (req?.method?.toUpperCase() === "GET" && res?.statusCode === 200) {
+        if (
+          req?.method?.toUpperCase() === "GET" &&
+          res?.statusCode < 309 &&
+          res?.statusCode > 99
+        ) {
           // Cache the JSON response body
           if (group) {
             cachPathes(key, body, ttlInSeconds);
           } else {
             cachePath(key, body, ttlInSeconds);
           }
+          console.log();
         }
 
         // Call the original res.json method to send the response
@@ -43,10 +48,10 @@ export const checkCache = (req, res, next) => {
     const cachedResponse = getCachedPath(req?.originalUrl);
     // If the JWT is present, the user is an admin, and a cached response exists
     console.log(cache.keys());
-    
+
     if (cachedResponse) {
       req.cached = true;
-      return res.json(cachedResponse);
+      return res.status(200).json(cachedResponse);
     }
   }
   // Continue to the next middleware or route handler

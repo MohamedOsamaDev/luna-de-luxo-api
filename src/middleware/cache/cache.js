@@ -47,8 +47,6 @@ export const checkCache = (req, res, next) => {
   if (req?.decodeReq?.role !== "admin") {
     const cachedResponse = getCachedPath(req?.originalUrl);
     // If the JWT is present, the user is an admin, and a cached response exists
-    console.log(cache.keys());
-
     if (cachedResponse) {
       req.cached = true;
       return res.status(200).json(cachedResponse);
@@ -63,7 +61,8 @@ export const clearCacheMiddleware = (req, res, next) => {
   res.json = function (body) {
     if (
       ["DELETE", "PUT", "PATCH"].includes(req.method.toUpperCase()) &&
-      res?.statusCode === 200
+      res?.statusCode < 309 &&
+      res?.statusCode > 99
     ) {
       req.revaildatecache = true;
       let keys = [req.originalUrl];

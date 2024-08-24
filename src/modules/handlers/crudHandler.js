@@ -85,14 +85,14 @@ export const FindAll = ({
     }
     // Conditionally add $match for deleted documents
     if (isDeletedConditon) {
-      pipeline.push({
-        $match: {
-          $and: [
-            { isDeleted: { $exists: true } }, // Check if the field exists
-            { isDeleted: false }, // Apply the filter only if the field exists
-          ],
-        },
-      });
+      // pipeline.push({
+      //   $match: {
+      //     $and: [
+      //       { isDeleted: { $exists: true } }, // Check if the field exists
+      //       { isDeleted: false }, // Apply the filter only if the field exists
+      //     ],
+      //   },
+      // });
     }
     // Add custom query to pipeline
     pipeline = pipeline.concat(pushToPipeLine);

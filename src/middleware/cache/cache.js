@@ -13,7 +13,7 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
   let ttlInSeconds = stdTTL ? timeToSeconds(stdTTL) : undefined;
   return (req, res, next) => {
     // Decode the JWT from the request (if any) and extract user information
-    console.log("🚀 ~ return ~ req?.decodeReq?.role !== ", req?.decodeReq?.role !== "admin")
+    console.log("🚀 ~ return ~ req?.decodeReq?.role !== ", req?.decodeReq?.role)
     console.log("🚀 ~ return ~  req?.method?.toUpperCase() === ",  req?.method?.toUpperCase() === "GET")
     console.log("🚀 ~ return ~   res?.statusCode < 309:",   res?.statusCode < 309)
     console.log("🚀 ~ return ~ res?.statusCode > 99:", res?.statusCode > 99)

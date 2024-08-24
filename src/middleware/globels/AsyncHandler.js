@@ -3,13 +3,11 @@ import { AppError } from "../../utils/AppError.js";
 export function AsyncHandler(fun) {
   return (req, res, next) => {
     fun(req, res, next).catch((error) => {
-      process.env.NODE_ENV !== "production";
+      const message =
+        process.env.NODE_ENV === "production" ? "something went wrong" : error;
       next(
         new AppError({
-          message:
-            process.env.NODE_ENV === "production"
-              ? "something went wrong"
-              : error,
+          message,
           code: 500,
         })
       );

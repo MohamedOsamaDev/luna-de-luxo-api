@@ -1,4 +1,4 @@
-export const productTypes  = {
-    clothes:"clothes",
-    decor:"decor",
-}
+export const productTypes = {
+  clothes: "clothes",
+  decor: "decor",
+};

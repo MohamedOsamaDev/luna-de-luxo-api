@@ -6,5 +6,5 @@ export const AttributedTo = (req, res, next) => {
     req.body.updatedBy = req.user._id || null;
   }
 
-  next(); 
+  next();
 };

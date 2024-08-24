@@ -6,9 +6,7 @@ export const validation = (schema) => {
     if (req.files || req.file) {
       files = req.files ? req.files : { [req.file.fieldname]: req.file };
       req.files = files;
-    }
-    // console.log(req.body.colors[0]);
-    
+    }  
     if (req?.files && Object.values(req?.files).length === 0)
       req.files = undefined;
     const { error } = schema.validate(

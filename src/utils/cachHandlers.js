@@ -60,17 +60,13 @@ export const getCachedPath = (key) => {
   return null;
 };
 export const revaildatePath = (key) => {
-  console.log("🚀 ~ revaildatePath ~ key:", key);
   try {
-    let groupKey = key;
     let keys = [];
     if (Array.isArray(key)) {
       keys = [getCoresegment(key?.[0]), ...key];
     } else {
       keys = [getCoresegment(key), key];
     }
-    console.log(keys);
-
     cache.del(keys);
     return true;
   } catch (error) {}

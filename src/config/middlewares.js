@@ -5,10 +5,7 @@ import dotenv from "dotenv";
 import { logger } from "../middleware/globels/logger.js";
 import cookieParser from "cookie-parser";
 import { AppError } from "../utils/AppError.js";
-import {
-  checkCache,
-  clearCacheMiddleware,
-} from "../middleware/cache/cache.js";
+import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
 import cache from "./cache.js";
 

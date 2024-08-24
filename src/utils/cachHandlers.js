@@ -21,20 +21,8 @@ export const getCachedPath = (key) => {
 
 export const revaildatePath = (key) => {
   try {
-    const cacheValue = getCachedPath(key);
-    if (!cacheValue) return false;
     cache.del(key);
     return true;
   } catch (error) {}
   return null;
-};
-
-export const customCachPath = async (key, value, mode = "public") => {
-  try {
-    let Pathkey = `${mode}/${key}`;
-    return cachePath(Pathkey, value);
-  } catch (error) {
-    console.error(`Error caching data: ${error.message}`);
-  }
-  return true;
 };

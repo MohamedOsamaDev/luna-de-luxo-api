@@ -7,10 +7,10 @@ import { getUserAndVerify } from "../../modules/auth/auth.services.js";
 
 export const tokenDetector = AsyncHandler(async (req, res, next) => {
   // 1-token is exist or not
-  let token = req.headers.token || req.cookies.token;
-  // 2-verfiy token
-  if (token) {
-    const user = await getUserAndVerify(token);
+  let decodeReq = req.decodeReq;
+  // 2-verfiy decodeReq
+  if (decodeReq) {
+    const user = await getUserAndVerify(decodeReq);
     if (!user) return next(new AppError(httpStatus.Forbidden));
     req.user = user;
     return next();

@@ -135,7 +135,7 @@ singleTypeRouter.put(
 
 singleTypeRouter.get(
   "/:key",
-  cacheResponse({ stdTTL: "30d" }),
+  cacheResponse({ stdTTL: "1y" }),
   tokenDetector,
   getPage
 );

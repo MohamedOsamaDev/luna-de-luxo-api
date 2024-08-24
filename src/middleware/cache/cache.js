@@ -6,7 +6,7 @@ import {
   getCachedPath,
   getCoresegment,
   revaildatePath,
-} from "../../utils/cachHandlers.js";
+} from "../../utils/cacheHandlers.js";
 import { timeToSeconds } from "../../utils/formateTime.js";
 // Middleware to cache the JSON response after all other middlewares have finished
 export const cacheResponse = ({ stdTTL, group = false } = {}) => {

@@ -44,30 +44,7 @@ export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
         delete searchQuery[field];
       }
     });
-  } catch (e) {
-  }
+  } catch (e) {}
   return pipeline;
 };
-export const handleArrayInQuery = (obj = {}, remove = []) => {
-  // Create a new object to store the converted values
-  const convertedObj = {};
 
-  // Loop through each key-value pair in the object
-  for (const key in obj) {
-    // Check if the key should be removed
-    if (!remove.includes(key)) {
-      const value = obj[key];
-
-      // Check if the value is a string and contains commas
-      if (typeof value === "string" && value.includes(",")) {
-        // Split the string into an array using commas as delimiters
-        convertedObj[key] = value.split(",");
-      } else {
-        // If not a string with commas, keep the original value
-        convertedObj[key] = value;
-      }
-    }
-  }
-
-  return convertedObj;
-};

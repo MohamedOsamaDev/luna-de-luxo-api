@@ -7,7 +7,7 @@ const SetCookie = (options = {}) => {
     secure: process.env.MODE === "pro", // send only over HTTPS
     path: "/",
     ...(process.env.MODE === "pro"
-      ? { domain: process.env.domain, sameSite: "Strict" }
+      ? { domain: process.env.DOMAIN, sameSite: "Strict" }
       : {}),
     ...options,
   };

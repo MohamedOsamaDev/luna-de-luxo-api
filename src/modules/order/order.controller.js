@@ -15,7 +15,7 @@ import {
 } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
 const createOrder = AsyncHandler(async (req, res, next) => {
-  const { order, bulkOperations } = req.order;
+  const { order, bulkOperations } =  req.makeOrder;
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
   // Handle order creation
@@ -91,7 +91,8 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
 });
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
-  const { order, bulkOperations } = req.order;
+  const { order, bulkOperations } =  req.makeOrder;
+  // 1 
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
   // Handle order creation

@@ -31,7 +31,6 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
       discount: findCoupon?.discount,
     };
   }
-
   let totalOrderPrice = 0;
   const items = [];
   const bulkOperations = {};
@@ -47,15 +46,11 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     );
   };
   cart?.items?.forEach((item) => {
-    const { product, quantity, color, size } = item;
-    let orderHelper = orderServices?.[product?.type];
+    const { product, quantity } = item;
+    let orderHelper = orderServices?.[item?.product?.type];
     if (!orderHelper) return onError();
     const isValid = orderHelper({
-      product,
-      color,
-      size,
-      quantity,
-      cart,
+      ...item,
       bulkOperations,
       items,
     });
@@ -66,7 +61,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   });
 
   let order = {
-    user: user._id,
+    user: user?._id,
     items,
     totalOrderPrice,
     ...req?.body,
@@ -78,7 +73,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   }
   order.shippingPrice = 50;
   order.totalOrderPrice += 50;
-  req.order = {
+  req.makeOrder = {
     order,
     bulkOperations,
   };

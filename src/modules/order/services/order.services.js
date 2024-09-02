@@ -1,4 +1,3 @@
-
 import { orderModel } from "../../../database/models/order.model.js";
 import {
   clothesPrepareForMakeOrder,
@@ -9,33 +8,26 @@ import {
 
 export const prepareForRestock = (order, bulkOp = {}) => {
   const bulkOperations = { ...bulkOp };
+  const reStcockTypes = {
+    decor: decorPrepareReStock,
+    clothes: clothesPrepareReStock,
+  };
   try {
     order?.items?.forEach((item) => {
       const { type } = item;
-      switch (type) {
-        case "decor":
-          decorPrepareReStock(item, bulkOperations);
-          break;
-        case "clothes":
-          clothesPrepareReStock(item, bulkOperations);
-          break;
-        default:
-          console.warn(`Unknown item type: ${type}`);
-      }
+      const helper = reStcockTypes[type];
+      if (helper) helper(item, bulkOperations);
     });
-  } catch (error) {
-    console.error("Error while releasing stock:", error);
-  }
+  } catch (error) {}
   return bulkOperations;
-};
-
-export const insertOrder = async (order) => {
-  let newOrder = new orderModel(order);
-  await newOrder.save();
-  return newOrder;
 };
 export const orderServices = {
   decor: decorPrepareForMakeOrder,
   clothes: clothesPrepareForMakeOrder,
   reStock: prepareForRestock,
+};
+export const insertOrder = async (order) => {
+  let newOrder = new orderModel(order);
+  await newOrder.save();
+  return newOrder;
 };

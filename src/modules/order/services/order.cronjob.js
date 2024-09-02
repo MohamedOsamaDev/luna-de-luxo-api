@@ -19,7 +19,7 @@ export const cleanCanceledOrders = async () => {
     let removedList = [];
     let bulkwriteOperations = {};
     let coupontasks = [];
-    canceledOrders?.forEach(async (order) => {
+    canceledOrders?.forEach((order) => {
       removedList.push(order?._id);
       bulkwriteOperations = prepareForRestock(order, bulkwriteOperations);
       coupontasks = perpareForDeleteCouponsRecord(order, coupontasks);

@@ -2,6 +2,8 @@ import {
   ClothesModel,
   DecorModel,
 } from "../../../database/models/product.model.js";
+// --------------------------------- prepare product for make order  ---------------------------------
+// clothes case
 export const clothesPrepareForMakeOrder = ({
   product,
   color,
@@ -71,6 +73,7 @@ export const clothesPrepareForMakeOrder = ({
   }
   return true;
 };
+// decor case
 export const decorPrepareForMakeOrder = ({
   product,
   color,
@@ -125,36 +128,8 @@ export const decorPrepareForMakeOrder = ({
   }
   return true;
 };
-export const decorPrepareReStock= (item, bulkOperations) => {
-  const { original_id, selectedOptions } = item;
-  const { color } = selectedOptions;
-
-  const task = {
-    updateOne: {
-      filter: { _id: original_id },
-      update: {
-        $inc: {
-          "colors.$[colorElem].stock": item.quantity,
-        },
-      },
-      arrayFilters: [
-        {
-          "colorElem.color": color?.original_id,
-        },
-      ],
-    },
-  };
-
-  if (bulkOperations?.decor) {
-    bulkOperations.decor.tasks.push(task);
-  } else {
-    bulkOperations.decor = {
-      model: DecorModel,
-      tasks: [task],
-    };
-  }
-  return true;
-};
+// --------------------------------- restock in case order is cancled  ---------------------------------
+// clothes case
 export const clothesPrepareReStock = (item, bulkOperations) => {
   const { original_id, selectedOptions } = item;
   const { color, size } = selectedOptions;
@@ -187,6 +162,37 @@ export const clothesPrepareReStock = (item, bulkOperations) => {
   } else {
     bulkOperations.clothes = {
       model: ClothesModel,
+      tasks: [task],
+    };
+  }
+  return true;
+};
+// decor case
+export const decorPrepareReStock = (item, bulkOperations) => {
+  const { original_id, selectedOptions } = item;
+  const { color } = selectedOptions;
+
+  const task = {
+    updateOne: {
+      filter: { _id: original_id },
+      update: {
+        $inc: {
+          "colors.$[colorElem].stock": item.quantity,
+        },
+      },
+      arrayFilters: [
+        {
+          "colorElem.color": color?.original_id,
+        },
+      ],
+    },
+  };
+
+  if (bulkOperations?.decor) {
+    bulkOperations.decor.tasks.push(task);
+  } else {
+    bulkOperations.decor = {
+      model: DecorModel,
       tasks: [task],
     };
   }

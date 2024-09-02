@@ -28,6 +28,5 @@ export const orderServices = {
 };
 export const insertOrder = async (order) => {
   let newOrder = new orderModel(order);
-  await newOrder.save();
-  return newOrder;
+  return newOrder.save();
 };

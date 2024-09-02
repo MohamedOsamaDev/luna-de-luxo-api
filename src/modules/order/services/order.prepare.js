@@ -2,7 +2,40 @@ import {
   ClothesModel,
   DecorModel,
 } from "../../../database/models/product.model.js";
-// --------------------------------- prepare product for make order  ---------------------------------
+// utility functions
+const formateItem = (item) => {
+  // get product details
+  let color = {
+    original_id: item.color?._id,
+    name: item.color?.name,
+    code: item.color?.code,
+  };
+  let size = {
+    original_id: item.size?._id,
+    name: item.size?.name,
+  };
+  let selectedOptions =
+    {
+      clothes: {
+        color,
+        size,
+      },
+      decor: {
+        color,
+      },
+    }[item.product?.type] || {};
+  return {
+    original_id: item.product?._id,
+    name: item.product?.name,
+    price: item.product?.price,
+    discount: item.product?.discount,
+    quantity: item.quantity,
+    poster: item.product?.poster?.url,
+    type: item.product?.type,
+    selectedOptions,
+  };
+};
+// --------------------------------- start prepare product for make order  ---------------------------------
 // clothes case
 export const clothesPrepareForMakeOrder = ({
   product,
@@ -24,27 +57,14 @@ export const clothesPrepareForMakeOrder = ({
     return false;
 
   // Add formatted order item to list
-  items.push({
-    original_id: product?._id,
-    name: product?.name,
-    price: product?.price,
-    discount: product?.discount,
-    quantity: quantity,
-    poster: product?.poster?.url,
-    type: product?.type,
-    selectedOptions: {
-      color: {
-        original_id: colorMatch?.color?._id,
-        name: colorMatch?.color?.name,
-        code: colorMatch?.color?.code,
-      },
-      size: {
-        original_id: sizeMatch?.size?._id,
-        name: sizeMatch?.size?.name,
-      },
-    },
-  });
-
+  items.push(
+    formateItem({
+      product,
+      color,
+      size,
+      quantity,
+    })
+  );
   let task = {
     updateOne: {
       filter: {
@@ -87,22 +107,13 @@ export const decorPrepareForMakeOrder = ({
   if (!product?._id || !colorMatch || colorMatch?.stock < quantity)
     return false;
   // Add formatted order item to list
-  items.push({
-    original_id: product?._id,
-    name: product?.name,
-    price: product?.price,
-    discount: product?.discount,
-    quantity,
-    poster: product?.poster?.url,
-    type: product?.type,
-    selectedOptions: {
-      color: {
-        original_id: colorMatch?.color?._id,
-        name: colorMatch?.color?.name,
-        code: colorMatch?.color?.code,
-      },
-    },
-  });
+  items.push(
+    formateItem({
+      product,
+      color,
+      quantity,
+    })
+  );
 
   let task = {
     updateOne: {
@@ -128,7 +139,8 @@ export const decorPrepareForMakeOrder = ({
   }
   return true;
 };
-// --------------------------------- restock in case order is cancled  ---------------------------------
+// ---------------------------------                End                --------------------------------------
+// --------------------------------- start restock in cases ( for handle if order is cancled)  --------------
 // clothes case
 export const clothesPrepareReStock = (item, bulkOperations) => {
   const { original_id, selectedOptions } = item;
@@ -171,7 +183,6 @@ export const clothesPrepareReStock = (item, bulkOperations) => {
 export const decorPrepareReStock = (item, bulkOperations) => {
   const { original_id, selectedOptions } = item;
   const { color } = selectedOptions;
-
   const task = {
     updateOne: {
       filter: { _id: original_id },
@@ -187,7 +198,6 @@ export const decorPrepareReStock = (item, bulkOperations) => {
       ],
     },
   };
-
   if (bulkOperations?.decor) {
     bulkOperations.decor.tasks.push(task);
   } else {
@@ -198,3 +208,4 @@ export const decorPrepareReStock = (item, bulkOperations) => {
   }
   return true;
 };
+// ---------------------------------                End                --------------------------------------

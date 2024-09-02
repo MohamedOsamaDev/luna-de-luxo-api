@@ -59,14 +59,8 @@ export const getCachedPath = (key) => {
   }
   return null;
 };
-export const revaildatePath = (key) => {
+export const revaildatePath = (keys) => {
   try {
-    let keys = [];
-    if (Array.isArray(key)) {
-      keys = [getCoresegment(key?.[0]), ...key];
-    } else {
-      keys = [getCoresegment(key), key];
-    }
     cache.del(keys);
     return true;
   } catch (error) {}

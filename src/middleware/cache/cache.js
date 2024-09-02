@@ -1,5 +1,3 @@
-// Import the cache instance from the configuration file
-import cache from "../../config/cache.js";
 import {
   cachePath,
   cachPathes,
@@ -65,13 +63,10 @@ export const clearCacheMiddleware = (req, res, next) => {
       res?.statusCode > 99
     ) {
       req.revaildatecache = true;
-      let keys = [req.originalUrl];
-      if (body?.data?.slug)
-        keys.push(
-          `/api/${getCoresegment(req.originalUrl)}/${body?.data?.slug}`
-        );
+      const corekey = getCoresegment(req?.originalUrl);
+      const keys = [req.originalUrl, corekey];
+      if (body?.data?.slug) keys.push(`/api/${corekey}/${body?.data?.slug}`);
       revaildatePath(keys);
-
       // Call the original res.json method to send the response
     }
     return originalJson.call(this, body);

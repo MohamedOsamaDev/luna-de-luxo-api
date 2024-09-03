@@ -19,25 +19,25 @@ import {  globalMiddlewares, notfound, welcome } from "../config/middlewares.js"
 import { scheduleTasks } from "../config/cronjob.js";
 import { databaseConnection } from "../config/database.js";
 export const bootstrap = (app, express) => {
-  const mainroute = "/api"; // main route
+  const routeverion = "/api"; // main route
   globalMiddlewares.forEach((mw) => app.use(mw));
   // start  Endpoints ----------------------------------------- |
-  app.get(mainroute, welcome);
-  app.use(`${mainroute}/auth`, AuthRouter);
-  app.use(`${mainroute}/users`, UserRouter);
-  app.use(`${mainroute}/files`, fileRouter);
-  app.use(`${mainroute}/carts`, cartRouter);
-  app.use(`${mainroute}/categories`, categoryRouter);
-  app.use(`${mainroute}/subcategories`, subCategoryRouter);
-  app.use(`${mainroute}/products`, productRouter);
-  app.use(`${mainroute}/orders`, orderRouter);
-  app.use(`${mainroute}/sizes`, sizesRouter);
-  app.use(`${mainroute}/colors`, colorsRouter);
-  app.use(`${mainroute}/coupons`, couponRouter);
-  app.use(`${mainroute}/influencers`, influncerRouter);
-  app.use(`${mainroute}/single-type`, singleTypeRouter);
-  app.use(`${mainroute}/custom-product`, customProductRouter);
-  app.use(`${mainroute}/contact-us`, contactRouter);
+  app.get(routeverion, welcome);
+  app.use(`${routeverion}/auth`, AuthRouter);
+  app.use(`${routeverion}/users`, UserRouter);
+  app.use(`${routeverion}/files`, fileRouter);
+  app.use(`${routeverion}/carts`, cartRouter);
+  app.use(`${routeverion}/categories`, categoryRouter);
+  app.use(`${routeverion}/subcategories`, subCategoryRouter);
+  app.use(`${routeverion}/products`, productRouter);
+  app.use(`${routeverion}/orders`, orderRouter);
+  app.use(`${routeverion}/sizes`, sizesRouter);
+  app.use(`${routeverion}/colors`, colorsRouter);
+  app.use(`${routeverion}/coupons`, couponRouter);
+  app.use(`${routeverion}/influencers`, influncerRouter);
+  app.use(`${routeverion}/single-type`, singleTypeRouter);
+  app.use(`${routeverion}/custom-product`, customProductRouter);
+  app.use(`${routeverion}/contact-us`, contactRouter);
   // End  Endpoints ------------------------------------------- |
   scheduleTasksHandler(scheduleTasks); // cron jobs
   databaseConnection(); // database connection

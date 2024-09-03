@@ -24,7 +24,7 @@ const schema = new mongoose.Schema(
     },
     poster: { type: ObjectId, ref: "file" },
     publish: { type: Boolean, default: false },
-    isDeleted: { type: Boolean,default: false },
+    isDeleted: { type: Boolean, default: false },
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
   },
@@ -36,7 +36,7 @@ schema.pre(/^find/, function (next) {
   this.populate({
     path: "poster",
     model: "file",
-    select: "url",
+    select: "_id url mimetype",
   });
   next();
 });

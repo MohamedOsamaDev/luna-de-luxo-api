@@ -8,6 +8,8 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   const { cart = {} } = user; // cart is populated with user
   // Handle error cases
   if (!cart || !cart?.items?.length) {
+    console.log("cart is empty");
+
     return next(
       new AppError({
         message: "Cart is empty",
@@ -36,7 +38,8 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   const items = [];
   const bulkOperations = {};
   // error response fro case any product not exist
-  const onError = () => {
+  const onError = (reason) => {
+    console.log("error product case", reason);
     return next(
       new AppError({
         message: "Some products are not available",
@@ -53,14 +56,14 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     // call orderServices to handle select handler debend on product type
     let orderHelper = orderServices?.[item?.product?.type];
     // call Error() if orderHelper not recognize on product type
-    if (!orderHelper) return onError();
+    if (!orderHelper) return onError("Order not available");
     const isValid = orderHelper({
       ...item,
       bulkOperations,
       items,
     });
     // call Error() any product is not Valid
-    if (!isValid) return onError();
+    if (!isValid) return onError("some of products is not vaild ");
     // if everything is valid then continue to next step
     // Calculate order item price and add to total order price
     const itemPrice = product?.price * quantity;
@@ -88,5 +91,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     bulkOperations,
   };
   // call next middleware to continue to next controller
+
+  
   return next();
 });

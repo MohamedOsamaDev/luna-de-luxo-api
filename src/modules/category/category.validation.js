@@ -8,7 +8,7 @@ const CategorySchemaVal = Joi.object({
   name: Joi.string().min(1).max(30).required().trim(),
   description: Joi.string().min(3).max(1500).required(),
   poster,
-  publish
+  publish,
 });
 const UpdateCategorySchemaVal = Joi.object({
   name: Joi.string().min(1).max(30).trim(),

@@ -15,15 +15,15 @@ import {
 } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
 const createOrder = AsyncHandler(async (req, res, next) => {
-  const { order, bulkOperations } =  req.makeOrder;
-  // Update stock products
-  await makeMultibulkWrite(bulkOperations);
+  const { order, bulkOperations } = req.makeOrder;
   // Handle order creation
   const newOrder = await insertOrder(order);
   // Handle coupon usage
   await handleSubmitUseCoupon(newOrder);
   // Handle clear cart
   await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
+  // Update stock products
+  await makeMultibulkWrite(bulkOperations);
   res.status(201).json({
     message: "Order created successfully",
   });
@@ -91,8 +91,8 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
 });
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
-  const { order, bulkOperations } =  req.makeOrder;
-  // 1 
+  const { order, bulkOperations } = req.makeOrder;
+  // 1
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
   // Handle order creation

@@ -20,11 +20,12 @@ const schema = new mongoose.Schema(
       lowercase: true,
       required: true,
     },
-    publish: { type: Boolean, default: false, default: false },
+    category: [{ type: mongoose.Types.ObjectId, ref: "category" }],
     poster: { type: ObjectId, ref: "file" },
-    createdBy: { type: ObjectId, ref: "user" },
+    publish: { type: Boolean, default: false, default: false },
+    isDeleted: { type: Boolean, default: false },
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
-    isDeleted:{ type: Boolean,default: false },
+    createdBy: { type: ObjectId, ref: "user" },
   },
   { timestamps: true }
 );
@@ -38,5 +39,4 @@ schema.pre(/^find/, function (next) {
   });
   next();
 });
-
 export const SubCategoryModel = mongoose.model("subcategory", schema);

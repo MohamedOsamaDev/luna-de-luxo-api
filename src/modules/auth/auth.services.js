@@ -109,7 +109,7 @@ export const getUserAndVerify = async (decodeReq) => {
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
-      .populate([{ path: "cart" }, { path: "influencer" }])
+      .populate([{ path: "cart" }, { path: "influencer" }]).lean()
       .exec();
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user.isblocked) return false;

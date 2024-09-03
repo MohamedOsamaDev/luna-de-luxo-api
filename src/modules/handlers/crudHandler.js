@@ -8,6 +8,7 @@ import {
   handleFilterwithLookUp,
   handleQuerySlugOrid,
 } from "../../utils/QueryHandler.js";
+import mongoose from "mongoose";
 
 export const InsertOne = ({
   model,
@@ -72,15 +73,27 @@ export const FindAll = ({
   customFiltersFN = null,
   publish = true,
   isDeletedConditon = true,
+  margeParam,
 }) => {
   return AsyncHandler(async (req, res, next) => {
     // Handle filter with lookup and apply custom query logic
-    let pipeline = handleFilterwithLookUp(customQuery, req?.query);
+    let pipeline = handleFilterwithLookUp(customQuery, req?.query.filters);
 
     // Conditionally add $match for non-admin users
     if (req.user?.role !== "admin" && publish === true) {
       pipeline.push({
         $match: { publish: true },
+      });
+    }
+    if (
+      margeParam &&
+      req.params?.[margeParam] &&
+      mongoose.Types.ObjectId.isValid(req.params?.[margeParam])
+    ) {
+      pipeline.push({
+        $match: {
+          category: new mongoose.Types.ObjectId(req.params?.[margeParam]),
+        },
       });
     }
     // Conditionally add $match for deleted documents
@@ -116,7 +129,6 @@ export const FindAll = ({
       .pagination();
     // Fetch data
     const data = await model.aggregate(apiFetcher.pipeline);
-
     // Calculate total pages
     const total = await apiFetcher.count(model);
     // Calculate total pages
@@ -133,13 +145,14 @@ export const FindAll = ({
     res.status(200).json(responsedata);
   });
 };
-export const FindOne = ({ model, name = "" }) => {
+export const FindOne = ({ model, name = "", populate = [] }) => {
   return AsyncHandler(async (req, res, next) => {
     let user = req?.user;
-    let populateQuery = [];
+    let populateQuery = [...populate];
     let query = handleQuerySlugOrid(req.params?.id);
     if (user?.role == "admin") {
       populateQuery = [
+        ...populateQuery,
         {
           path: "updatedBy",
           select: "fullName",
@@ -154,6 +167,8 @@ export const FindOne = ({ model, name = "" }) => {
         // isDeleted: false,
       };
     }
+    console.log(populateQuery);
+
     let data = await model.findOne(query).populate(populateQuery).lean();
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
     res.status(200).json(data);

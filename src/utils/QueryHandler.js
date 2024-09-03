@@ -47,4 +47,3 @@ export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
   } catch (e) {}
   return pipeline;
 };
-

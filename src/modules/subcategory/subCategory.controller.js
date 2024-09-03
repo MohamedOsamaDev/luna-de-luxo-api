@@ -6,12 +6,19 @@ import {
   deleteOne,
   updateOne,
 } from "../handlers/crudHandler.js";
-
+import { populate } from "dotenv";
 
 const config = {
   model: SubCategoryModel,
   name: "subcategory",
   uniqueFields: ["name"],
+  margeParam:'category',
+  populate: [
+    {
+      path: "category",
+      select: " _id name ", // select only the name field from the category model
+    },
+  ],
 };
 const addOneSubCategory = InsertOne(config);
 const updateOneSubCategory = updateOne(config);

@@ -10,7 +10,6 @@ import {
 import {
   CategorySchemaVal,
   UpdateCategorySchemaVal,
-  paramsIdVal,
 } from "./category.validation.js";
 import { validation } from "../../middleware/globels/validation.js";
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
@@ -20,11 +19,9 @@ import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
 import { subCategoryRouter } from "../subcategory/subCategory.routes.js";
 import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 import { cacheResponse } from "../../middleware/cache/cache.js";
-import { timeToMillis, timeToSeconds } from "../../utils/formateTime.js";
+import { paramsIdVal } from "../commens/validation.js";
 
 const categoryRouter = express.Router();
-
-
 
 categoryRouter.use("/:category/subcategories", subCategoryRouter);
 categoryRouter
@@ -36,7 +33,7 @@ categoryRouter
     AttributedTo,
     addOneCategory
   )
-  .get(cacheResponse({ stdTTL: '30d' }), tokenDetector, getAllCategoryies);
+  .get(cacheResponse(), tokenDetector, getAllCategoryies);
 categoryRouter
   .route("/:id")
   .get(cacheResponse(), validation(paramsIdVal), tokenDetector, getOneCategory)

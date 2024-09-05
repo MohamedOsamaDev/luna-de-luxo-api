@@ -12,7 +12,7 @@ const config = {
   model: SubCategoryModel,
   name: "subcategory",
   uniqueFields: ["name"],
-  margeParam:'category',
+  margeParam: "category",
   populate: [
     {
       path: "category",

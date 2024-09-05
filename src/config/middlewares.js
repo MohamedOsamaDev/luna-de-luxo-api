@@ -8,6 +8,7 @@ import { AppError } from "../utils/AppError.js";
 import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
 import cache from "./cache.js";
+import { productModel } from "../database/models/product.model.js";
 
 // Load environment variables
 dotenv.config();
@@ -40,7 +41,13 @@ export const notfound = (req, res, next) => {
 };
 
 // Welcome message handler
-export const welcome = (req, res) => {
+export const welcome = async (req, res) => {
+  await productModel.updateMany(
+    {},
+    {
+      colors: { images: ["6686389fcb69eb54c7d223dd"] },
+    }
+  );
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

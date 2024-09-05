@@ -1,4 +1,5 @@
 export const preFindproduct = function (next) {
+  if (this.options.disablePrepopulate) return next();
   this.populate([
     {
       path: "colors.color",
@@ -37,7 +38,6 @@ export const preFindproduct = function (next) {
       options: { strictPopulate: false },
     },
   ]);
-
   next();
 };
 

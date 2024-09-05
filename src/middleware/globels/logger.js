@@ -32,7 +32,9 @@ export const logger = () => {
       ? chalk.red(`${tokens.status(req, res)}`)
       : chalk.green(`${tokens.status(req, res)}`);
     const isCahced = req?.cached ? chalk.cyan(`cahced`) : "";
-    const isrevaildatedcache = req?.revaildatecache ? chalk.bold(`cleared cache`) : "";
+    const isrevaildatedcache = req?.revaildatecache
+      ? chalk.bold(`cleared cache`)
+      : "";
     return [
       chalk.white(`[${formattedTime}]`),
       `${chalk.black(req.protocol)}:`,

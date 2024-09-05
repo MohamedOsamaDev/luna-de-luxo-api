@@ -42,7 +42,7 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
 };
 // Middleware to check if the request has a valid JWT and if the user is an admin
 export const checkCache = (req, res, next) => {
-  if (req?.decodeReq?.role !== "admin") {
+  if (req?.decodeReq?.role !== "admin" && req.method.toUpperCase() === "GET") {
     const cachedResponse = getCachedPath(req?.originalUrl);
     // If the JWT is present, the user is an admin, and a cached response exists
     if (cachedResponse) {

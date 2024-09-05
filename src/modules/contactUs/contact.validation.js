@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { publish } from "../commens/validation.js";
-let ObjectIdVal = Joi.string().hex().length(24);
+let objectIdVal = Joi.string().hex().length(24);
 
 
 const ContactVal = Joi.object({
@@ -11,7 +11,7 @@ const ContactVal = Joi.object({
 });
 
 const paramsIdVal = Joi.object({
-  id: ObjectIdVal,
-  _id: ObjectIdVal,
+  id: objectIdVal,
+  _id: objectIdVal,
 });
 export { ContactVal, paramsIdVal };

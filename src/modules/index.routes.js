@@ -5,7 +5,6 @@ import orderRouter from "./order/order.routes.js";
 import colorsRouter from "./colors/colors.routes.js";
 import sizesRouter from "./sizes/sizes.routes.js";
 import influncerRouter from "./influncer/influncer.routes.js";
-import singleTypeRouter from "./singleType/singleType.routes.js";
 import { UserRouter } from "./user/user.routes.js";
 import { categoryRouter } from "./category/category.routes.js";
 import { AuthRouter } from "./auth/auth.routes.js";
@@ -18,6 +17,7 @@ import { scheduleTasksHandler } from "../utils/scheduleTasksHandler.js";
 import {  globalMiddlewares, notfound, welcome } from "../config/middlewares.js";
 import { scheduleTasks } from "../config/cronjob.js";
 import { databaseConnection } from "../config/database.js";
+import pageRouter from "./page/page.routes.js";
 export const bootstrap = (app, express) => {
   const routeverion = "/api"; // main route
   globalMiddlewares.forEach((mw) => app.use(mw));
@@ -35,7 +35,7 @@ export const bootstrap = (app, express) => {
   app.use(`${routeverion}/colors`, colorsRouter);
   app.use(`${routeverion}/coupons`, couponRouter);
   app.use(`${routeverion}/influencers`, influncerRouter);
-  app.use(`${routeverion}/single-type`, singleTypeRouter);
+  app.use(`${routeverion}/pages`, pageRouter);
   app.use(`${routeverion}/custom-product`, customProductRouter);
   app.use(`${routeverion}/contact-us`, contactRouter);
   // End  Endpoints ------------------------------------------- |

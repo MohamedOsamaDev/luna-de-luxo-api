@@ -1,10 +1,10 @@
 import Joi from "joi";
 import { relationFileVal } from "../file/file.validation.js";
-import { publish } from "../commens/validation.js";
-let ObjectIdVal = Joi.string().hex().length(24);
-let poster = Joi.alternatives().try(ObjectIdVal, relationFileVal);
+import { commensVal, publish } from "../commens/validation.js";
+let objectIdVal = Joi.string().hex().length(24);
+let poster = Joi.alternatives().try(objectIdVal, relationFileVal);
 const CategorySchemaVal = Joi.object({
-  _id: ObjectIdVal,
+  _id: objectIdVal,
   name: Joi.string().min(1).max(30).required().trim(),
   description: Joi.string().min(3).max(1500).required(),
   poster,
@@ -12,13 +12,13 @@ const CategorySchemaVal = Joi.object({
 });
 const UpdateCategorySchemaVal = Joi.object({
   name: Joi.string().min(1).max(30).trim(),
-  id: ObjectIdVal,
+  id: objectIdVal,
   poster: poster.allow(null),
   description: Joi.string().min(3).max(1500),
   publish,
-  _id: ObjectIdVal,
+  ...commensVal
 });
 const paramsIdVal = Joi.object({
-  id: ObjectIdVal,
+  id: objectIdVal,
 });
 export { CategorySchemaVal, UpdateCategorySchemaVal, paramsIdVal };

@@ -20,14 +20,17 @@ const config = {
       select: " _id name ", // select only the name field from the category model
     },
   ],
-  customFiltersFN: (req) => {
+  customPiplineFN: (pipline, req) => {
     let { query } = req;
     if (query?.filters?.category) {
-      query.filters.category = new mongoose.Types.ObjectId(query?.filters?.category);
+      pipline.push({
+        $match: {
+          category: new mongoose.Types.ObjectId(query?.filters?.category),
+        },
+      });
+      delete query?.filters?.category 
     }
-    
-    console.log("🚀 ~ query:", query)
-    return query;
+    //return pipline;
   },
 };
 const addOneSubCategory = InsertOne(config);

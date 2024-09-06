@@ -24,7 +24,7 @@ const createOrder = AsyncHandler(async (req, res, next) => {
   await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
-  res.status(201).json({
+  return res.status(201).json({
     message: "Order created successfully",
   });
 });
@@ -43,7 +43,7 @@ const cancelOrder = AsyncHandler(async (req, res) => {
     await orderModel.findByIdAndDelete(order?._id);
     await removeCouponRecord(order);
   }
-  res.status(201).json({
+  return res.status(201).json({
     message: "Order cancelled successfully",
   });
 });
@@ -62,7 +62,7 @@ const confirmOrder = AsyncHandler(async (req, res) => {
     });
     await handleSubmitUseCoupon(order);
   }
-  res.status(201).json({
+  return res.status(201).json({
     message: "Order confirmed successfully",
   });
 });
@@ -87,7 +87,7 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
     return next(new AppError({ message: "Order not found", code: 404 }));
   }
 
-  res.json(order);
+  return res.json(order);
 });
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
@@ -99,7 +99,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   const newOrder = await insertOrder(order);
   const getwaySession = new getwaySessionModel({ order: newOrder._id });
   await getwaySession.save();
-  res.status(201).json({
+  return res.status(201).json({
     message: "Getway session created successfully",
     session: getwaySession._id,
   });

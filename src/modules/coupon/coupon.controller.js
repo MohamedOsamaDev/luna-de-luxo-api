@@ -33,7 +33,7 @@ const verifyCoupon = AsyncHandler(async (req, res, next) => {
     code: coupon.code,
     discount: coupon.discount,
   };
-  res.status(200).json(data);
+  return res.status(200).json(data);
 });
 export {
   addOneCoupon,

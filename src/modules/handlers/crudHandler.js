@@ -59,7 +59,7 @@ export const InsertOne = ({
       ...document?._doc,
       createdBy: { fullName: req.user.fullName, _id: req.user._id },
     };
-    res.status(200).json({
+    return res.status(200).json({
       message: `${name} Added Sucessfully`,
       data,
     });
@@ -71,6 +71,7 @@ export const FindAll = ({
   customQuery = null, // Function to define custom query logic
   pushToPipeLine = [],
   customFiltersFN = null,
+  customPiplineFN = null,
   publish = true,
   isDeletedConditon = true,
   margeParam,
@@ -98,17 +99,6 @@ export const FindAll = ({
         },
       });
     }
-    // Conditionally add $match for deleted documents
-    if (isDeletedConditon) {
-      // pipeline.push({
-      //   $match: {
-      //     $and: [
-      //       { isDeleted: { $exists: true } }, // Check if the field exists
-      //       { isDeleted: false }, // Apply the filter only if the field exists
-      //     ],
-      //   },
-      // });
-    }
     // Add custom query to pipeline
     pipeline = pipeline.concat(pushToPipeLine);
     let sort = req?.query?.sort || defaultSort;
@@ -120,6 +110,9 @@ export const FindAll = ({
         sort,
         ...customFiltersFN(req, res, next),
       };
+    }
+    if (customPiplineFN) {
+      customPiplineFN(pipeline, req, res, next);
     }
     // Add sort field to pipeline
     req.query.sort = sort;
@@ -144,7 +137,7 @@ export const FindAll = ({
       },
     };
 
-    res.status(200).json(responsedata);
+    return res.status(200).json(responsedata);
   });
 };
 export const FindOne = ({ model, name = "", populate = [] }) => {
@@ -169,11 +162,9 @@ export const FindOne = ({ model, name = "", populate = [] }) => {
         // isDeleted: false,
       };
     }
-    console.log(populateQuery);
-
     let data = await model.findOne(query).populate(populateQuery).lean();
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
-    res.status(200).json(data);
+    return res.status(200).json(data);
   });
 };
 export const updateOne = ({
@@ -255,7 +246,7 @@ export const deleteOne = ({ model, name = "", mode = "hard" }) => {
       document = await model.findByIdAndDelete(req.params.id);
     }
     if (!document) return next(new AppError(httpStatus.NotFound));
-    res.status(200).json({
+    return res.status(200).json({
       message: `${name} Deleted Sucessfully`,
     });
   });

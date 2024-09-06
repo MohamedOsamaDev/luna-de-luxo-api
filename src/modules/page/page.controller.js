@@ -38,7 +38,7 @@ const getPage = AsyncHandler(async (req, res, next) => {
   if (!document) {
     return next(new AppError({ message: "Page not found", code: 404 }));
   }
-  res.status(200).json(document);
+  return res.status(200).json(document);
 });
 const updatePage = AsyncHandler(async (req, res, next) => {
   // Find the single Model first to determine its type

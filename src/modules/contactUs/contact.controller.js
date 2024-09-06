@@ -16,7 +16,7 @@ const addOneContact = AsyncHandler(async (req, res, next) => {
   const data = new contactModel(req.body);
   await data.save();
 
-  res.status(200).json({
+  return res.status(200).json({
     message: "send Sucessfully",
   });
 });
@@ -25,7 +25,7 @@ const getOneContact = AsyncHandler(async (req, res, next) => {
   let data = null;
   data = await contactModel.findById(req.params?.id).lean();
   if (!data) return next(new AppError(responseHandler("NotFound", "Form")));
-  res.status(200).json(data);
+  return res.status(200).json(data);
 });
 
 const getAllContacts = FindAll(config);

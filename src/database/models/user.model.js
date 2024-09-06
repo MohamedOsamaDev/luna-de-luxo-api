@@ -33,7 +33,7 @@ const schema = new mongoose.Schema(
 );
 
 schema.pre("save", async function (next) {
-  if (this.isModified('password')) {
+  if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 8);
   }
   next();
@@ -64,7 +64,7 @@ const autoPopulateFields = function (next) {
   this.populate({
     path: "updatedBy",
     select: "fullName _id",
-  })
+  });
   next();
 };
 

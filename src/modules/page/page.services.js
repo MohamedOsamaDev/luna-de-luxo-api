@@ -23,7 +23,7 @@ export const allPagesModel = {
   about_us: aboutPageModel,
   faq: faqPageModel,
   landing: landingPageModel,
-  "privacy-policy": privacyPolicyPageModel,
+  privacy_policy: privacyPolicyPageModel,
   legal: legalPageModel,
   care_service: CareServiceModel,
 };
@@ -42,7 +42,7 @@ export const allPagesValidation = {
     PUT: faqUpdateVal,
   },
 
-  "privacy-policy": {
+  privacy_policy: {
     POST: privacyPolicyCreateVal,
     PUT: privacyPolicyUpdateVal,
   },

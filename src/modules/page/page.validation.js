@@ -302,6 +302,7 @@ export const privacyPolicyCreateVal = Joi.object({
             "string.max": "Sub-section content cannot exceed 2000 characters",
             "any.required": "Sub-section content is required",
           }),
+          ...commensVal,
         }),
        
       ).optional(),

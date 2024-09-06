@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { SingleTypeModel } from "../singleType";
+import { SingleTypeModel } from "../singleType.js";
+import { ObjectId } from "../order.model.js";
 
 const careServiceSchema = new mongoose.Schema(
   {
@@ -55,7 +56,29 @@ const careServiceSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+careServiceSchema.pre(/^find/, function (next) {
+  this.populate([
+    {
+      path: "categories.poster",
+      model: "file",
+      select: "_id url", // Example fields to select from the 'color' model
+      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+    },
+    {
+      path: "categories.category",
+      model: "category",
+      select: "_id name description", // Example fields to select from the 'color' model
+      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+    },
+    {
+      path: "categories.content.image",
+      model: "file",
+      select: "_id url", // Example fields to select from the 'color' model
+      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+    },
+  ]);
+  next();
+});
 export const CareServiceModel = SingleTypeModel.discriminator(
   "care_service",
   careServiceSchema

@@ -6,7 +6,6 @@ import { allPagesModel } from "./page.services.js";
 
 const insertPage = AsyncHandler(async (req, res, next) => {
   const key = req.params.key;
-  req.body.key = key;
   const check = await SingleTypeModel.findOne({ key });
   if (check)
     return next(
@@ -17,6 +16,8 @@ const insertPage = AsyncHandler(async (req, res, next) => {
   if (!Model) {
     return next(new AppError({ message: `Page not found`, code: 404 }));
   }
+
+  req.body.key = key;
   const newPage = new Model(req.body);
   newPage.createdBy = req.user._id;
   await newPage.save();

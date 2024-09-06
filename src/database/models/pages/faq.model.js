@@ -2,6 +2,7 @@
 
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
+import { ObjectId } from "../order.model.js";
 
 // FAQ Schema
 const faqSchema = new mongoose.Schema({

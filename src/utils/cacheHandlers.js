@@ -61,8 +61,8 @@ export const getCachedPath = (key) => {
 };
 export const revaildatePath = (keys) => {
   try {
-    cache.del(keys);
-    return true;
+    let result = cache.del(keys);
+    return result;
   } catch (error) {}
   return null;
 };

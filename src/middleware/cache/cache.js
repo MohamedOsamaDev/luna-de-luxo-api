@@ -62,11 +62,13 @@ export const clearCacheMiddleware = (req, res, next) => {
       res?.statusCode < 309 &&
       res?.statusCode > 99
     ) {
-      req.revaildatecache = true;
       const corekey = getCoresegment(req?.originalUrl);
       const keys = [req.originalUrl, corekey];
       if (body?.data?.slug) keys.push(`/api/${corekey}/${body?.data?.slug}`);
-      revaildatePath(keys);
+      const result = revaildatePath(keys);
+      if (result) {
+        req.revaildatecache = true;
+      }
       // Call the original res.json method to send the response
     }
     return originalJson.call(this, body);

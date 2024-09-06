@@ -33,25 +33,25 @@ export const allPagesValidation = {
     create: landingCreateVal,
     update: landingUpdateVal,
   },
-  about_us: {
-    POST: aboutUsCreateVal,
-    PUT: aboutUsUpdateVal,
+  'about-us': {
+    create: aboutUsCreateVal,
+    update: aboutUsUpdateVal,
   },
   faq: {
-    POST: faqCreateVal,
-    PUT: faqUpdateVal,
+    create: faqCreateVal,
+    update: faqUpdateVal,
   },
 
   privacy_policy: {
-    POST: privacyPolicyCreateVal,
-    PUT: privacyPolicyUpdateVal,
+    create: privacyPolicyCreateVal,
+    update: privacyPolicyUpdateVal,
   },
   legal: {
-    POST: legalCreateVal,
-    PUT: legalUpdateVal,
+    create: legalCreateVal,
+    update: legalUpdateVal,
   },
   care_service: {
-    POST: careServiceCreateVal,
-    PUT: careServiceUpdateVal,
+    create: careServiceCreateVal,
+    update: careServiceUpdateVal,
   },
 };

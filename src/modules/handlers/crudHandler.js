@@ -92,7 +92,9 @@ export const FindAll = ({
     ) {
       pipeline.push({
         $match: {
-          category: new mongoose.Types.ObjectId(req.params?.[margeParam]),
+          [req.params?.[margeParam]]: new mongoose.Types.ObjectId(
+            req.params?.[margeParam]
+          ),
         },
       });
     }

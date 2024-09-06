@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export class ApiFetcher {
   constructor(pipeline, searchQuery) {
     this.pipeline = Array.isArray(pipeline) ? pipeline : [];
@@ -38,15 +40,23 @@ export class ApiFetcher {
               )} }`
             : `"${value}"`;
           return `"${key}": ${arrayValue} `;
-        });
-      // Parse the modified JSON string back to an object
-      query = JSON.parse(query);
+        })
+        // Parse the modified JSON string back to an object
+        query = JSON.parse(query, (key, value) => {
+          // // Special handling for ObjectId string since JSON.parse won't evaluate code
+          // if (typeof value === "string" && /^[a-fA-F0-9]{24}$/.test(value)) {
+            //   return new mongoose.Types.ObjectId(value);
+            // }
+            return value;
+          });
+          console.log(query);
       if (Object.keys(query)?.length) {
         this.pipeline.push({ $match: query });
       }
     }
     return this;
   }
+
   // Sort method
   sort() {
     if (this.searchQuery.sort) {
@@ -76,8 +86,7 @@ export class ApiFetcher {
             return acc;
           }, {});
         this.pipeline.push({ $project: fields });
-      } catch (e) {
-      }
+      } catch (e) {}
     }
     return this;
   }

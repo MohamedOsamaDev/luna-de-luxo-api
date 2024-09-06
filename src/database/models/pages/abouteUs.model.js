@@ -37,13 +37,12 @@ const aboutUsSchema = new mongoose.Schema({
       message: "Mission poster image is optional",
     },
   },
-
   vision: {
     visionStatement: {
       type: String,
       trim: true,
       minLength: [1, "Vision statement is required"],
-      maxLength: [2000, "Vision statement cannot exceed 2000 characters"],
+      maxLength: [500, "Vision statement cannot exceed 500 characters"],
     },
     visionPoster: {
       type: mongoose.Schema.Types.ObjectId,
@@ -52,7 +51,6 @@ const aboutUsSchema = new mongoose.Schema({
       message: "Vision poster image is optional",
     },
   },
-
   poster: { type: ObjectId, ref: "file" },
 });
 aboutUsSchema.pre(/^find/, function (next) {

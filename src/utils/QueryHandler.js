@@ -13,7 +13,6 @@ export const convrtQueryToIn = (val) => {
   return val;
 };
 export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
-  console.log("🚀 ~ handleFilterwithLookUp ~ searchQuery:", searchQuery)
   let pipeline = [];
   try {
     filters?.map((val) => {
@@ -46,7 +45,6 @@ export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
       }
     });
   } catch (e) {}
-  console.log("Pipeline:", pipeline);
-  
+
   return pipeline;
 };

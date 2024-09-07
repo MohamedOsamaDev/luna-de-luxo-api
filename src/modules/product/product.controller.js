@@ -44,14 +44,14 @@ const addproduct = AsyncHandler(async (req, res, next) => {
   } else if (type === "decor") {
     data = new DecorModel(req.body);
   } else {
-    res.status(400).send("Invalid product type");
+    return res.status(400).send("Invalid product type");
   }
   await data.save();
   data = {
     ...data?._doc,
     createdBy: { fullName: req.user.fullName, _id: req.user._id },
   };
-  res.status(200).json({
+  return res.status(200).json({
     message: "Added Sucessfully",
     data,
   });
@@ -118,7 +118,7 @@ const getFilters = AsyncHandler(async (req, res, next) => {
   const subcategories = await SubCategoryModel.find().lean();
   const sizes = await sizeModel.find().lean();
 
-  res.status(200).json({
+  return res.status(200).json({
     message: "success",
     colors,
     categories,

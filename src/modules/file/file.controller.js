@@ -16,7 +16,7 @@ const Insert = AsyncHandler(async (req, res, next) => {
     originalname: file?.originalname,
   };
   const data = await FileModel.create(newFile);
-  res.status(201).json({
+  return res.status(201).json({
     data,
     message: "file uploaded successfully",
   });
@@ -28,7 +28,7 @@ const Delete = AsyncHandler(async (req, res, next) => {
     return next(new AppError("file not found", 404));
   }
   await deleteFileCloudinary(deletedFile?.public_id);
-  res.status(200).json({
+  return res.status(200).json({
     message: "File deleted successfully",
   });
 });

@@ -262,9 +262,9 @@ export const aboutUsUpdateVal = Joi.object({
     visionPoster: relationFileVal,
     ...commensVal,
   }),
+  poster: relationFileVal,
   ...commensVal,
 });
-
 
 // Validation for privacy Policy
 export const privacyPolicyCreateVal = Joi.object({
@@ -278,37 +278,57 @@ export const privacyPolicyCreateVal = Joi.object({
     "string.max": "Description cannot exceed 2000 characters",
     "any.required": "Description is required",
   }),
-  parts: Joi.array().items(
-    Joi.object({
-      partTitle: Joi.string().trim().min(1).max(150).required().messages({
-        "string.min": "Part title is required",
-        "string.max": "Part title cannot exceed 150 characters",
-        "any.required": "Part title is required",
-      }),
-      partDescription: Joi.string().trim().min(1).max(2000).required().messages({
-        "string.min": "Part description is required",
-        "string.max": "Part description cannot exceed 2000 characters",
-        "any.required": "Part description is required",
-      }),
-      subSections: Joi.array().items(
-        Joi.object({
-          subSectionTitle: Joi.string().trim().min(1).max(150).required().messages({
-            "string.min": "Sub-section title is required",
-            "string.max": "Sub-section title cannot exceed 150 characters",
-            "any.required": "Sub-section title is required",
-          }),
-          subSectionContent: Joi.string().trim().min(1).max(2000).required().messages({
-            "string.min": "Sub-section content is required",
-            "string.max": "Sub-section content cannot exceed 2000 characters",
-            "any.required": "Sub-section content is required",
-          }),
-          ...commensVal,
+  parts: Joi.array()
+    .items(
+      Joi.object({
+        partTitle: Joi.string().trim().min(1).max(150).required().messages({
+          "string.min": "Part title is required",
+          "string.max": "Part title cannot exceed 150 characters",
+          "any.required": "Part title is required",
         }),
-       
-      ).optional(),
-      ...commensVal,
-    })
-  ).optional(),
+        partDescription: Joi.string()
+          .trim()
+          .min(1)
+          .max(2000)
+          .required()
+          .messages({
+            "string.min": "Part description is required",
+            "string.max": "Part description cannot exceed 2000 characters",
+            "any.required": "Part description is required",
+          }),
+        subSections: Joi.array()
+          .items(
+            Joi.object({
+              subSectionTitle: Joi.string()
+                .trim()
+                .min(1)
+                .max(150)
+                .required()
+                .messages({
+                  "string.min": "Sub-section title is required",
+                  "string.max":
+                    "Sub-section title cannot exceed 150 characters",
+                  "any.required": "Sub-section title is required",
+                }),
+              subSectionContent: Joi.string()
+                .trim()
+                .min(1)
+                .max(2000)
+                .required()
+                .messages({
+                  "string.min": "Sub-section content is required",
+                  "string.max":
+                    "Sub-section content cannot exceed 2000 characters",
+                  "any.required": "Sub-section content is required",
+                }),
+              ...commensVal,
+            })
+          )
+          .optional(),
+        ...commensVal,
+      })
+    )
+    .optional(),
   ...commensVal,
 });
 export const privacyPolicyUpdateVal = Joi.object({
@@ -320,31 +340,36 @@ export const privacyPolicyUpdateVal = Joi.object({
     "string.min": "Description is required",
     "string.max": "Description cannot exceed 2000 characters",
   }),
-  parts: Joi.array().items(
-    Joi.object({
-      partTitle: Joi.string().trim().min(1).max(150).messages({
-        "string.min": "Part title is required",
-        "string.max": "Part title cannot exceed 150 characters",
-      }),
-      partDescription: Joi.string().trim().min(1).max(2000).messages({
-        "string.min": "Part description is required",
-        "string.max": "Part description cannot exceed 2000 characters",
-      }),
-      subSections: Joi.array().items(
-        Joi.object({
-          subSectionTitle: Joi.string().trim().min(1).max(150).messages({
-            "string.min": "Sub-section title is required",
-            "string.max": "Sub-section title cannot exceed 150 characters",
-          }),
-          subSectionContent: Joi.string().trim().min(1).max(2000).messages({
-            "string.min": "Sub-section content is required",
-            "string.max": "Sub-section content cannot exceed 2000 characters",
-          }),
-          ...commensVal,
-        })
-      ).optional(),
-    }),
-  ).optional(),
+  parts: Joi.array()
+    .items(
+      Joi.object({
+        partTitle: Joi.string().trim().min(1).max(150).messages({
+          "string.min": "Part title is required",
+          "string.max": "Part title cannot exceed 150 characters",
+        }),
+        partDescription: Joi.string().trim().min(1).max(2000).messages({
+          "string.min": "Part description is required",
+          "string.max": "Part description cannot exceed 2000 characters",
+        }),
+        subSections: Joi.array()
+          .items(
+            Joi.object({
+              subSectionTitle: Joi.string().trim().min(1).max(150).messages({
+                "string.min": "Sub-section title is required",
+                "string.max": "Sub-section title cannot exceed 150 characters",
+              }),
+              subSectionContent: Joi.string().trim().min(1).max(2000).messages({
+                "string.min": "Sub-section content is required",
+                "string.max":
+                  "Sub-section content cannot exceed 2000 characters",
+              }),
+              ...commensVal,
+            })
+          )
+          .optional(),
+      })
+    )
+    .optional(),
   ...commensVal,
 });
 
@@ -360,21 +385,23 @@ export const legalCreateVal = Joi.object({
     "string.max": "Description cannot exceed 2000 characters",
     "any.required": "Description is required",
   }),
-  contentBlocks: Joi.array().items(
-    Joi.object({
-      header: Joi.string().trim().min(1).max(150).required().messages({
-        "string.min": "Header is required",
-        "string.max": "Header cannot exceed 150 characters",
-        "any.required": "Header is required",
-      }),
-      body: Joi.string().trim().min(1).max(5000).required().messages({
-        "string.min": "Body content is required",
-        "string.max": "Body content cannot exceed 5000 characters",
-        "any.required": "Body content is required",
-      }),
-      ...commensVal,
-    })
-  ).optional(),
+  contentBlocks: Joi.array()
+    .items(
+      Joi.object({
+        header: Joi.string().trim().min(1).max(150).required().messages({
+          "string.min": "Header is required",
+          "string.max": "Header cannot exceed 150 characters",
+          "any.required": "Header is required",
+        }),
+        body: Joi.string().trim().min(1).max(5000).required().messages({
+          "string.min": "Body content is required",
+          "string.max": "Body content cannot exceed 5000 characters",
+          "any.required": "Body content is required",
+        }),
+        ...commensVal,
+      })
+    )
+    .optional(),
   ...commensVal,
 });
 export const legalUpdateVal = Joi.object({
@@ -386,18 +413,20 @@ export const legalUpdateVal = Joi.object({
     "string.min": "Description is required",
     "string.max": "Description cannot exceed 2000 characters",
   }),
-  contentBlocks: Joi.array().items(
-    Joi.object({
-      header: Joi.string().trim().min(1).max(150).messages({
-        "string.min": "Header is required",
-        "string.max": "Header cannot exceed 150 characters",
-      }),
-      body: Joi.string().trim().min(1).max(5000).messages({
-        "string.min": "Body content is required",
-        "string.max": "Body content cannot exceed 5000 characters",
-      }),
-      ...commensVal,
-    })
-  ).optional(),
+  contentBlocks: Joi.array()
+    .items(
+      Joi.object({
+        header: Joi.string().trim().min(1).max(150).messages({
+          "string.min": "Header is required",
+          "string.max": "Header cannot exceed 150 characters",
+        }),
+        body: Joi.string().trim().min(1).max(5000).messages({
+          "string.min": "Body content is required",
+          "string.max": "Body content cannot exceed 5000 characters",
+        }),
+        ...commensVal,
+      })
+    )
+    .optional(),
   ...commensVal,
 });

@@ -18,7 +18,7 @@ const createuser = AsyncHandler(async (req, res, next) => {
     );
   const user = new UserModel(req.body);
   await user.save();
-  res.json({
+  return res.json({
     message: "sucess",
     data: {
       _id: user._id,
@@ -54,7 +54,7 @@ const updateuser = AsyncHandler(async (req, res, next) => {
     ...data?._doc,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },
   };
-  res.status(200).json({ message: "Updated Sucessfully", data });
+  return res.status(200).json({ message: "Updated Sucessfully", data });
 });
 const deleteUser = deleteOne({
   model: UserModel,
@@ -87,6 +87,6 @@ const findOneUser = AsyncHandler(async (req, res, next) => {
     .populate("updatedBy", "fullName")
     .select("-password");
   if (!document) return next(new AppError(httpStatus.NotFound));
-  res.status(200).json(document);
+  return res.status(200).json(document);
 });
 export { updateuser, deleteUser, createuser, getAllUsers, findOneUser };

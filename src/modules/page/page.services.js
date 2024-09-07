@@ -23,9 +23,9 @@ export const allPagesModel = {
   "about-us": aboutPageModel,
   faq: faqPageModel,
   landing: landingPageModel,
-  privacy_policy: privacyPolicyPageModel,
+  "privacy-policy": privacyPolicyPageModel,
   legal: legalPageModel,
-  care_service: CareServiceModel,
+  "care-service": CareServiceModel,
 };
 
 export const allPagesValidation = {
@@ -33,7 +33,7 @@ export const allPagesValidation = {
     create: landingCreateVal,
     update: landingUpdateVal,
   },
-  'about-us': {
+  "about-us": {
     create: aboutUsCreateVal,
     update: aboutUsUpdateVal,
   },
@@ -42,7 +42,7 @@ export const allPagesValidation = {
     update: faqUpdateVal,
   },
 
-  privacy_policy: {
+  "privacy-policy": {
     create: privacyPolicyCreateVal,
     update: privacyPolicyUpdateVal,
   },
@@ -50,7 +50,7 @@ export const allPagesValidation = {
     create: legalCreateVal,
     update: legalUpdateVal,
   },
-  care_service: {
+  "care-service": {
     create: careServiceCreateVal,
     update: careServiceUpdateVal,
   },

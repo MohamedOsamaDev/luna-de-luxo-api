@@ -98,7 +98,7 @@ const verfiyEmail = AsyncHandler(async (req, res, next) => {
         new AppError({ message: `email Already verified`, code: 401 })
       );
 
-    res.status(200).json({ message: "Confirmed successfully" });
+    return res.status(200).json({ message: "Confirmed successfully" });
   });
 });
 const unsubscribe = AsyncHandler(async (req, res, next) => {
@@ -109,7 +109,7 @@ const unsubscribe = AsyncHandler(async (req, res, next) => {
     if (user?.confirmEmail)
       return next(new AppError(`email Already verified`, 401));
     await UserModel.findOneAndDelete({ email: decoded.email });
-    res.status(200).json({ message: " now your not subscribe" });
+    return res.status(200).json({ message: " now your not subscribe" });
   });
 });
 const FPsendEmail = AsyncHandler(async (req, res, next) => {
@@ -125,7 +125,7 @@ const FPsendEmail = AsyncHandler(async (req, res, next) => {
     pincode: securePin,
     isresetPassword: true,
   });
-  res.status(200).json({ message: `We sent email to ${email} ` });
+  return res.status(200).json({ message: `We sent email to ${email} ` });
 });
 
 const forgetPassword = AsyncHandler(async (req, res, next) => {
@@ -139,14 +139,14 @@ const forgetPassword = AsyncHandler(async (req, res, next) => {
     { new: true }
   );
 
-  if (!user) res.status(400).json({ message: "User not found" });
+  if (!user) return res.status(400).json({ message: "User not found" });
 
   const emailSent = await forgetPasswordEmail({ OTP, email });
-  if (!emailSent) res.status(400).json({ message: "Cannot send email" });
+  if (!emailSent) return res.status(400).json({ message: "Cannot send email" });
 
   const maskedEmail = email.replace(/(.{2}).+(@.+)/, "$1****$2");
 
-  res.status(200).json({ message: `Email sent to ${maskedEmail}` });
+  return res.status(200).json({ message: `Email sent to ${maskedEmail}` });
 });
 
 const ResetPassword = AsyncHandler(async (req, res, next) => {
@@ -154,15 +154,15 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
 
   // Find the user by email
   const user = await UserModel.findOne({ email });
-  if (!user) res.status(400).json({ message: "User not found" });
+  if (!user) return res.status(400).json({ message: "User not found" });
 
   // Check if the reset password session is valid
   if (!user.isresetPassword || user.isresetPassword < Date.now()) {
-    res.status(400).json({ message: "Session expired or not found" });
+    return res.status(400).json({ message: "Session expired or not found" });
   }
 
   // Check if the OTP is valid
-  if (OTP !== user.OTP) res.status(400).json({ message: "Invalid OTP" });
+  if (OTP !== user.OTP) return res.status(400).json({ message: "Invalid OTP" });
 
   // Hash the new password
   const hashedPassword = bcrypt.hashSync(password, 8);
@@ -194,7 +194,7 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
   // Set the new token in a cookie
   res.cookie("token", newToken, SetCookie());
 
-  res.status(200).json({ message: "Password changed" });
+  return res.status(200).json({ message: "Password changed" });
 });
 
 /* #################### */
@@ -211,14 +211,14 @@ const changepassword = AsyncHandler(async (req, res, next) => {
     }),
     SetCookie()
   );
-  res.status(200).json({ message: "sucess" });
+  return res.status(200).json({ message: "sucess" });
 });
 const updateuser = AsyncHandler(async (req, res, next) => {
   const { _id } = req.user;
   const data = await UserModel.findByIdAndUpdate(_id, req.body, {
     new: true,
   }).select("-password");
-  res.status(200).json({
+  return res.status(200).json({
     message: "sucess",
     data: {
       _id,
@@ -234,7 +234,7 @@ const updateuser = AsyncHandler(async (req, res, next) => {
 const deleteUser = AsyncHandler(async (req, res, next) => {
   const { _id } = req.user;
   await UserModel.findByIdAndDelete(_id);
-  res.status(200).json({ message: "sucess" });
+  return res.status(200).json({ message: "sucess" });
 });
 const softdelete = AsyncHandler(async (req, res, next) => {
   const { _id } = req.user;
@@ -242,7 +242,7 @@ const softdelete = AsyncHandler(async (req, res, next) => {
     isblocked: true,
     isActive: false,
   });
-  res.status(200).json({ message: "success" });
+  return res.status(200).json({ message: "success" });
 });
 const verfiySession = AsyncHandler(async (req, res, next) => {
   const user = req.user;
@@ -267,7 +267,7 @@ const logOut = AsyncHandler(async (req, res, next) => {
       maxAge: 0,
     })
   );
-  res.status(200).json({ message: "success" });
+  return res.status(200).json({ message: "success" });
 });
 export {
   signUp,

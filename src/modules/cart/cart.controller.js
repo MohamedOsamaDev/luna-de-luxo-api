@@ -35,7 +35,7 @@ const addToCart = AsyncHandler(async (req, res, next) => {
       new: true,
     }
   );
-  res.status(200).json(data);
+  return res.status(200).json(data);
 });
 const removeItemCart = AsyncHandler(async (req, res, next) => {
   let query = req?.user?._id ? { user: req.user._id } : null;
@@ -60,18 +60,18 @@ const removeItemCart = AsyncHandler(async (req, res, next) => {
   );
 
   if (!cart) return next(new AppError(httpStatus.internalServerError));
-  res.status(200).json(cart);
+  return res.status(200).json(cart);
 });
 const getLoggedCart = AsyncHandler(async (req, res, next) => {
   let cart = req?.cart;
-  res.json(cart);
+  return res.json(cart);
 });
 const clearCart = AsyncHandler(async (req, res, next) => {
   let cart = req?.cart;
   cart.items = [];
   await cart.save();
   if (!cart) return next(new AppError(httpStatus.internalServerError));
-  res.json(cart);
+  return res.json(cart);
 });
 const applyCoupon = AsyncHandler(async (req, res, next) => {
   let coupon = await couponModel.findOne({
@@ -87,10 +87,10 @@ const applyCoupon = AsyncHandler(async (req, res, next) => {
   cart.totalPriceAfterDiscount = totalPriceAfterDiscount;
   cart.discount = coupon.discount;
   await cart.save();
-  res.json({ message: "success", cart });
+  return res.json({ message: "success", cart });
 });
 const boundary = AsyncHandler(async (req, res, next) => {
-  res.status(200).json({ message: "success" });
+  return res.status(200).json({ message: "success" });
 });
 
 export {

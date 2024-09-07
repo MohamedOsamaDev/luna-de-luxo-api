@@ -25,7 +25,7 @@ const addCustomProduct = AsyncHandler(async (req, res, next) => {
   const document = new customProductModel(customProduct);
   await document.save();
 
-  res.status(200).json({
+  return res.status(200).json({
     message: "Sucessfully Requested! We will message you :)",
   });
 });
@@ -44,7 +44,7 @@ const deleteCustomProduct = AsyncHandler(async (req, res, next) => {
     return next(new AppError("file not found", 404));
   }
   await deleteFileCloudinary(deletedFile?.poster.public_id);
-  res.status(200).json({
+  return res.status(200).json({
     message: "File deleted successfully",
   });
 });

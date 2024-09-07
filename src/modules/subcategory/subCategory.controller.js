@@ -7,6 +7,7 @@ import {
   updateOne,
 } from "../handlers/crudHandler.js";
 import { populate } from "dotenv";
+import mongoose from "mongoose";
 
 const config = {
   model: SubCategoryModel,
@@ -19,6 +20,18 @@ const config = {
       select: " _id name ", // select only the name field from the category model
     },
   ],
+  customPiplineFN: (pipline, req) => {
+    let { query } = req;
+    if (query?.filters?.category) {
+      pipline.push({
+        $match: {
+          category: new mongoose.Types.ObjectId(query?.filters?.category),
+        },
+      });
+      delete query?.filters?.category 
+    }
+    //return pipline;
+  },
 };
 const addOneSubCategory = InsertOne(config);
 const updateOneSubCategory = updateOne(config);

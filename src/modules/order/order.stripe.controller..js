@@ -34,7 +34,7 @@ const createCashOrder = AsyncHandler(async (req, res, next) => {
   //5- clear cart
   await cartModel.findByIdAndDelete(req.params.id);
 
-  res.json(order);
+  return res.json(order);
 });
 const getSpecificOrder = AsyncHandler(async (req, res, next) => {
   let user = req.user;
@@ -52,7 +52,7 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
       })
     );
 
-  res.json(order);
+  return res.json(order);
 });
 const getAllOrders = AsyncHandler(async (req, res, next) => {
   // Define the populate array, you can adjust this as per your requirements
@@ -80,7 +80,7 @@ const getAllOrders = AsyncHandler(async (req, res, next) => {
   // Calculate pagination metadata
   const pages = Math.ceil(total / apiFetcher.metadata.pageLimit);
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     data,
     metadata: {
@@ -119,7 +119,7 @@ const createCheckoutSession = AsyncHandler(async (req, res, next) => {
     client_reference_id: req.params.id,
     metadata: req.body.shippingAddress,
   });
-  res.status(200).json(session);
+  return res.status(200).json(session);
 });
 
 export {

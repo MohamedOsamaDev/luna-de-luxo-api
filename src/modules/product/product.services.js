@@ -63,6 +63,13 @@ export let customQueryproduct = [
     foreignField: "_id",
     matchField: "slug",
   },
+  {
+    field: "subcategory",
+    fromCollection: "subcategories",
+    localField: "subcategory",
+    foreignField: "_id",
+    matchField: "slug",
+  },
 ];
 
 export let colorsLookup = [

@@ -76,6 +76,9 @@ export const FindAll = ({
   margeParam,
 }) => {
   return AsyncHandler(async (req, res, next) => {
+
+    console.log(req?.query.filters);
+    
     // Handle filter with lookup and apply custom query logic
     let pipeline = handleFilterwithLookUp(customQuery, req?.query.filters);
 

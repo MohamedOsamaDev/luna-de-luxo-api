@@ -11,6 +11,7 @@ import { categoryModel } from "../../database/models/category.model.js";
 import { sizeModel } from "../../database/models/size.model.js";
 import { Posterlookup } from "../commens/lookup.js";
 import { customQueryproduct as customQuery } from "./product.services.js";
+import { SubCategoryModel } from "../../database/models/subcategory.model.js";
 
 let config = {
   model: productModel,
@@ -114,12 +115,14 @@ const getFilters = AsyncHandler(async (req, res, next) => {
   };
   const colors = await colorModel.find().lean();
   const categories = await categoryModel.find().lean();
+  const subcategories = await SubCategoryModel.find().lean();
   const sizes = await sizeModel.find().lean();
 
   res.status(200).json({
     message: "success",
     colors,
     categories,
+    subcategories,
     sizes,
   });
 });

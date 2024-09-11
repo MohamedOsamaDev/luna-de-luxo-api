@@ -1,4 +1,6 @@
+import { cartModel } from "../../../database/models/cart.model.js";
 import { orderModel } from "../../../database/models/order.model.js";
+import { makeMultibulkWrite } from "../../handlers/crudHandler.js";
 import {
   clothesPrepareForMakeOrder,
   decorPrepareForMakeOrder,
@@ -31,3 +33,26 @@ export const insertOrder = async (order) => {
   return newOrder.save();
 };
 
+export const OrderCompleted = async (_id) => {
+  const order = await orderModel
+    .findByIdAndUpdate(_id, { status: "completed" }, { new: true })
+    .populate("user");
+  if (!order) return null;
+  await cartModel.findOneAndUpdate(
+    { user: order?.user?._id },
+    {
+      items: [],
+    }
+  );
+  return order;
+};
+export const orderFiled = async (_id) => {
+  const bulkwriteOperations = {};
+  const order = await orderModel.findById(_id);
+  if (!order) return null;
+  prepareForRestock(order, bulkwriteOperations);
+  await makeMultibulkWrite(bulkwriteOperations);
+  // handle coupon case
+  await removeCouponRecord(order);
+  return true;
+};

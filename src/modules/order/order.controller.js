@@ -16,6 +16,8 @@ import { orderModel } from "../../database/models/order.model.js";
 import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js";
 
 import { createStripeSession } from "../../services/payments/stripe/session.js";
+import { createJwt, verifyJwt } from "../../utils/jwt.js";
+import httpStatus from "../../assets/messages/httpStatus.js";
 
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
@@ -23,10 +25,20 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   //create
   const newOrder = await insertOrder(order);
   // perpare Session payload
+  const secureSignature = createJwt(
+    {
+      user: req.user?._id,
+      order: newOrder._id,
+    },
+    {
+      expiresIn: "15m",
+    }
+  );
   const payload = {
     user: req.user,
     order: newOrder,
     shippingAddress: req.body.shippingAddress,
+    secureSignature,
   };
   // create stripe Session
   const session = await createStripeSession(payload);
@@ -45,6 +57,29 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
     session: session?.url,
   });
 });
+const verfiyOrder = AsyncHandler(
+  async (req, res) => {
+    const { secureSignature = null } = req.query;
+    if (!secureSignature) {
+      return next(new AppError(httpStatus.unAuthorized));
+    }
+    const payload = verifyJwt(secureSignature, process.env.JWT_SECRET);
+    if (!payload) {
+      return next(new AppError(httpStatus.unAuthorized));
+    }
+    const { user, order } = payload;
+    const foundOrder = await orderModel.findById(order);
+    if (!foundOrder) {
+      return next(new AppError(httpStatus.NotFound));
+    }
+    return res.json({
+      message: "Order completed successfully",
+    });
+  },
+  {
+    onError: httpStatus.unAuthorized,
+  }
+);
 
 const createOrder = AsyncHandler(async (req, res, next) => {
   const { order, bulkOperations } = req.makeOrder;
@@ -121,6 +156,7 @@ export {
   getAllOrders,
   updateOrder,
   webhookOrders,
+  verfiyOrder,
 };
 
 // let testdata = {

@@ -5,6 +5,7 @@ import {
   getAllOrders,
   getSpecificOrder,
   updateOrder,
+  verfiyOrder,
   webhookOrders,
 } from "./order.controller.js";
 
@@ -32,6 +33,7 @@ orderRouter
     AttributedTo,
     updateOrder
   );
+  orderRouter.get("/checkout/success", verfiyOrder)
 // webhook
 webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders);
 

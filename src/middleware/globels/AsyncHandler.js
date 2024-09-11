@@ -1,16 +1,18 @@
 import { AppError } from "../../utils/AppError.js";
 
-export function AsyncHandler(fun) {
+export function AsyncHandler(fun, {onError = null} ={}) {
   return (req, res, next) => {
     fun(req, res, next).catch((error) => {
       const message =
         process.env.NODE_ENV === "production" ? "something went wrong" : error;
-      next(
-        new AppError({
-          message,
-          code: 500,
-        })
-      );
+      let errorResponse = {
+        message,
+        code: 500,
+      };
+      if (onError) {
+        errorResponse = onError;
+      }
+      next(new AppError(errorResponse));
     });
   };
 }

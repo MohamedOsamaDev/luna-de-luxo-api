@@ -96,20 +96,22 @@ export const decodeJwt = (key = "", signature = "") => {
   }
 };
 export const detectJwtAndDecodeJwtFromRequest = (req) => {
-  let token = req?.headers?.token || req?.params?.token || req?.cookies?.token;
+  const token =
+    req?.headers?.token || req?.params?.token || req?.cookies?.token;
   if (!token) return false;
   // Verify token
   const decoded = decodeJwt(token, process.env.SECRETKEY);
   // Check if token is expired
   if (!decoded) return false;
-  return decoded;
+  return { decoded, token };
 };
 export const getUserAndVerify = async (decodeReq) => {
   try {
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
-      .populate([{ path: "cart" }, { path: "influencer" }]).lean()
+      .populate([{ path: "cart" }, { path: "influencer" }])
+      .lean()
       .exec();
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user.isblocked) return false;

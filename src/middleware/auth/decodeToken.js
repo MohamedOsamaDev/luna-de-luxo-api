@@ -4,9 +4,11 @@ import { detectJwtAndDecodeJwtFromRequest } from "../../modules/auth/auth.servic
 import { AsyncHandler } from "../globels/AsyncHandler.js";
 
 export const decodeToken = AsyncHandler(async (req, res, next) => {
-  const decodeReq = detectJwtAndDecodeJwtFromRequest(req);
-  if (decodeReq) {
-    req.decodeReq = decodeReq;
+  const { decoded = null, token = null } =
+    detectJwtAndDecodeJwtFromRequest(req);
+  if (decoded) {
+    req.decodeReq = decoded;
+    req.token = token;
   }
   next();
 });

@@ -15,4 +15,5 @@ export const webhookStripe = AsyncHandler(async (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   req.webhook = { event };
+  next()
 });

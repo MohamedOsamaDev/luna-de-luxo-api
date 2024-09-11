@@ -19,7 +19,6 @@ import stripe from "./main.js";
  * @throws Will throw an error if the session creation fails.
  */
 export const createStripeSession = async (payload = {}) => {
-  console.log("🚀 ~ createStripeSession ~ payload:", payload)
   const newPayload = {
     line_items: [
       {

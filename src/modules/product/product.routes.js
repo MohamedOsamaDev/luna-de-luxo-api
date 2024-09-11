@@ -22,7 +22,6 @@ import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 import { cacheResponse } from "../../middleware/cache/cache.js";
 
 const productRouter = express.Router();
-// productRouter.use(cacheResponse()); // this is way to cache globally for product router
 productRouter
   .route("/")
   .post(

@@ -1,16 +1,16 @@
 import mongoose, { Schema, model } from "mongoose";
+import { allPayments } from "../../config/payments.js";
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema(
   {
-    sessionID: {
+    session: {
       type: String,
     },
     getwayProvidor: {
       type: String,
-      enum: ["paybal", "stripe"],
+      enum:allPayments,
     },
-    cartItems: [{}],
-    order: {},
+    order :{ type: ObjectId, ref: "user" },
     user: { type: ObjectId, ref: "user" },
   },
   {

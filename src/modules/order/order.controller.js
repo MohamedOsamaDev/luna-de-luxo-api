@@ -1,5 +1,4 @@
 import { cartModel } from "../../database/models/cart.model.js";
-
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import {
@@ -7,13 +6,38 @@ import {
   makeMultibulkWrite,
   updateOne,
 } from "./../handlers/crudHandler.js";
-import { insertOrder, prepareForRestock } from "./services/order.services.js";
-import { getwaySessionModel } from "../../database/models/getwaySession.model.js";
-import {
-  handleSubmitUseCoupon,
-  removeCouponRecord,
-} from "../coupon/coupon.services.js";
+import { insertOrder } from "./services/order.services.js";
+import { handleSubmitUseCoupon } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
+import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js";
+
+import { createStripeSession } from "../../services/payments/stripe/session.js";
+
+const createCheckOutSession = AsyncHandler(async (req, res) => {
+  // create getway session and return the session id
+  const { order, bulkOperations } = req.makeOrder;
+  //create
+  const newOrder = await insertOrder(order);
+  // perpare Session payload
+  const payload = {
+    user: req.user,
+    order: newOrder,
+    shippingAddress: req.body.shippingAddress,
+  };
+  // create stripe Session
+  const session = await createStripeSession(payload);
+  // create record getway Session into database
+  await createGetwaySession({
+    user: req.user?._id,
+    order: newOrder._id,
+    getwayProvidor: order?.paymentType,
+    session: session?.id,
+  });
+  // Update stock products
+  await makeMultibulkWrite(bulkOperations);
+  return res.redirect(303, session.url);
+});
+
 const createOrder = AsyncHandler(async (req, res, next) => {
   const { order, bulkOperations } = req.makeOrder;
   // Handle order creation
@@ -22,50 +46,11 @@ const createOrder = AsyncHandler(async (req, res, next) => {
   await handleSubmitUseCoupon(newOrder);
   // Handle clear cart
   await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
-  // Update stock products
-  await makeMultibulkWrite(bulkOperations);
   return res.status(201).json({
     message: "Order created successfully",
   });
 });
-const cancelOrder = AsyncHandler(async (req, res) => {
-  // remove session from getway sessions
-  // find order and delete
-  // release hold qty
-  const { id } = req.params;
-  const getwaySession = await getwaySessionModel
-    .findByIdAndDelete(id)
-    .populate("order")
-    .lean();
-  let order = getwaySession?.order;
-  if (order) {
-    await makeMultibulkWrite(prepareForRestock(order));
-    await orderModel.findByIdAndDelete(order?._id);
-    await removeCouponRecord(order);
-  }
-  return res.status(201).json({
-    message: "Order cancelled successfully",
-  });
-});
-const confirmOrder = AsyncHandler(async (req, res) => {
-  // update order status to confirmed
-  // remove session from getway sessions
-  // find order and update status
-  const getwaySession = await getwaySessionModel
-    .findByIdAndDelete(req.params.id)
-    .populate("order")
-    .lean();
-  const order = getwaySession?.order;
-  if (order) {
-    await orderModel.findByIdAndUpdate(order?._id, {
-      paid: true,
-    });
-    await handleSubmitUseCoupon(order);
-  }
-  return res.status(201).json({
-    message: "Order confirmed successfully",
-  });
-});
+
 const getSpecificOrder = AsyncHandler(async (req, res, next) => {
   const { user } = req;
   const { id } = req.params;
@@ -89,21 +74,7 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
 
   return res.json(order);
 });
-const createCheckOutSession = AsyncHandler(async (req, res) => {
-  // create getway session and return the session id
-  const { order, bulkOperations } = req.makeOrder;
-  // 1
-  // Update stock products
-  await makeMultibulkWrite(bulkOperations);
-  // Handle order creation
-  const newOrder = await insertOrder(order);
-  const getwaySession = new getwaySessionModel({ order: newOrder._id });
-  await getwaySession.save();
-  return res.status(201).json({
-    message: "Getway session created successfully",
-    session: getwaySession._id,
-  });
-});
+
 const config = {
   model: orderModel,
   name: "order",
@@ -123,8 +94,6 @@ export {
   createOrder,
   getSpecificOrder,
   createCheckOutSession,
-  cancelOrder,
-  confirmOrder,
   getAllOrders,
   updateOrder,
 };

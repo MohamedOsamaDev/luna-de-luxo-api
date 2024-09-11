@@ -4,14 +4,14 @@ const signupschemaVal = Joi.object({
   fullName: Joi.string().min(1).max(30).required(),
   email: Joi.string().email().required(),
   password: Joi.string()
-    .pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
+    // .pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
     .required(),
   rePassword: Joi.valid(Joi.ref("password")).required(),
 });
 const signinSchemaVal = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string()
-    .pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
+    // .pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/)
     .required(),
 });
 

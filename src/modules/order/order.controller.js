@@ -25,20 +25,10 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   //create
   const newOrder = await insertOrder(order);
   // perpare Session payload
-  const secureSignature = createJwt(
-    {
-      user: req.user?._id,
-      order: newOrder._id,
-    },
-    {
-      expiresIn: "15m",
-    }
-  );
   const payload = {
     user: req.user,
     order: newOrder,
     shippingAddress: req.body.shippingAddress,
-    secureSignature,
   };
   // create stripe Session
   const session = await createStripeSession(payload);

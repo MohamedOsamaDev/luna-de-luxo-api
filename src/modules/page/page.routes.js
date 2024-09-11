@@ -29,4 +29,5 @@ pageRouter
     updatePage
   )
   .get(cacheResponse({ stdTTL: "1y" }), tokenDetector, getPage);
+
 export default pageRouter;

@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { allPayments } from './../../config/payments.js';
 
 export const ObjectId = mongoose.Schema.Types.ObjectId;
 const items = new Schema({
@@ -31,7 +32,7 @@ const schema = new Schema(
     },
     paymentType: {
       type: String,
-      enum: ["COD", "getway"],
+      enum: allPayments,
       default: "COD",
     },
     orderStatus: {

@@ -14,12 +14,19 @@ import { fileRouter } from "./file/file.routes.js";
 import { subCategoryRouter } from "./subcategory/subCategory.routes.js";
 import { customProductRouter } from "./customProduct/customProduct.routes.js";
 import { scheduleTasksHandler } from "../utils/scheduleTasksHandler.js";
-import {  globalMiddlewares, notfound, welcome } from "../config/middlewares.js";
+import { globalMiddlewares, notfound, welcome } from "../config/middlewares.js";
 import { scheduleTasks } from "../config/cronjob.js";
 import { databaseConnection } from "../config/database.js";
 import pageRouter from "./page/page.routes.js";
+import webHookRouter from "./webhook/webhook.routes.js";
 export const bootstrap = (app, express) => {
   const routeverion = "/api"; // main route
+  // webhooks
+  app.use(
+    `${routeverion}/webhook`,
+    express.raw({ type: "application/json" }),
+    webHookRouter
+  );
   globalMiddlewares.forEach((mw) => app.use(mw));
   // start  Endpoints ----------------------------------------- |
   app.get(routeverion, welcome);

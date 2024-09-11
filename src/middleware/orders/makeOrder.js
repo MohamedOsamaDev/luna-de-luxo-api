@@ -2,12 +2,13 @@ import { allPayments } from "../../config/payments.js";
 import { FindCouponWithVerfiy } from "../../modules/coupon/coupon.services.js";
 import { orderServices } from "../../modules/order/services/order.services.js";
 import { AppError } from "../../utils/AppError.js";
+import responseHandler from "../../utils/responseHandler.js";
 import { AsyncHandler } from "../globels/AsyncHandler.js";
 
 export const makeOrder = AsyncHandler(async (req, res, next) => {
   const { user = {} } = req;
   const { cart = {} } = user; // cart is populated with user
-
+  req.body.paymentType = "stripe";
   if (!allPayments.includes(req.body.paymentType))
     return next(
       new AppError(
@@ -97,6 +98,5 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     bulkOperations,
   };
   // call next middleware to continue to next controller
-
   return next();
 });

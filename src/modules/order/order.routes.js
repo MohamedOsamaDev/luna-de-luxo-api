@@ -5,6 +5,7 @@ import {
   getAllOrders,
   getSpecificOrder,
   updateOrder,
+  webhookOrders,
 } from "./order.controller.js";
 
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
@@ -14,6 +15,8 @@ import { updateOrderVal } from "./order.validation.js";
 import { authorized } from "../../middleware/globels/authorized.js";
 import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
+import { webhookStripe } from "../../middleware/orders/webHook.stripe.js";
+import webHookRouter from "../webhook/webhook.routes.js";
 
 const orderRouter = express.Router();
 orderRouter.route("/").get(protectedRoutes, getAllOrders);
@@ -29,5 +32,7 @@ orderRouter
     AttributedTo,
     updateOrder
   );
+// webhook
+webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders);
 
 export default orderRouter;

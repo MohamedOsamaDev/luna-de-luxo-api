@@ -35,7 +35,10 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   });
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
-  return res.redirect(303, session.url);
+  return res.json({
+    message: "Checkout session created successfully",
+    session: session?.url,
+  });
 });
 
 const createOrder = AsyncHandler(async (req, res, next) => {
@@ -90,10 +93,28 @@ const config = {
 };
 const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
+const webhookOrders = AsyncHandler(async (req, res, next) => {
+  let { event } = req.webhook;
+  const allEvenets = {
+    "checkout.session.completed": () => {},
+    "payment.intent.payment_failed": () => {},
+    default: () => {},
+  };
+  const handler = allEvenets[event];
+  console.log("🚀 ~ webhookOrders ~ event:", event)
+  if (handler) {
+    handler();
+    
+  } else {
+    console.log(`Unhandled event type ${event}`);
+  }
+  res.json({ received: true });
+});
 export {
   createOrder,
   getSpecificOrder,
   createCheckOutSession,
   getAllOrders,
   updateOrder,
+  webhookOrders,
 };

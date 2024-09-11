@@ -2,7 +2,7 @@ import { getwaySessionModel } from "../../database/models/getwaySession.model.js
 
 export const createGetwaySession = async (payload = {}) => {
   // Create a new session
-  const session = new getwaySessionModel.create(payload);
+  const session = new getwaySessionModel(payload);
   // Save the session
   await session.save();
   // Return the session data

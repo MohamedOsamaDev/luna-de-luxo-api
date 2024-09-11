@@ -19,9 +19,11 @@ import { scheduleTasks } from "../config/cronjob.js";
 import { databaseConnection } from "../config/database.js";
 import pageRouter from "./page/page.routes.js";
 import webHookRouter from "./webhook/webhook.routes.js";
+import { logger } from "../middleware/globels/logger.js";
 export const bootstrap = (app, express) => {
   const routeverion = "/api"; // main route
   // webhooks
+  app.use(logger());
   app.use(
     `${routeverion}/webhook`,
     express.raw({ type: "application/json" }),

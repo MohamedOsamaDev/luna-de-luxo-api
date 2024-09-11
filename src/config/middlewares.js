@@ -56,7 +56,6 @@ export const welcome = async (req, res) => {
 
 // Global middleware setup
 export const globalMiddlewares = [
-  logger(), // Log requests in the terminal
   cors(corsOptions), // Enable CORS with specified options
   helmet(), // Enhance security and handle XSS attacks
   bodyParser.urlencoded({ extended: true, limit: "50mb" }), // Handle URL-encoded data with size limit

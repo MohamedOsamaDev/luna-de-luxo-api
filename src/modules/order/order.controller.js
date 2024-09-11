@@ -95,20 +95,19 @@ const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
 const webhookOrders = AsyncHandler(async (req, res, next) => {
   let { event } = req.webhook;
+  console.log("🚀 ~ webhookOrders ~ event:", event);
   const allEvenets = {
     "checkout.session.completed": () => {},
     "payment.intent.payment_failed": () => {},
     default: () => {},
   };
   const handler = allEvenets[event];
-  console.log("🚀 ~ webhookOrders ~ event:", event)
   if (handler) {
     handler();
-    
   } else {
     console.log(`Unhandled event type ${event}`);
   }
-  res.json({ received: true });
+  return res.json({ received: true });
 });
 export {
   createOrder,

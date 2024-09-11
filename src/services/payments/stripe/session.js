@@ -37,7 +37,7 @@ export const createStripeSession = async (payload = {}) => {
     success_url: `${process.env.DOMAIN_client}/profile/my-purchases`, // to home page or orders page
     cancel_url: `${process.env.DOMAIN_client}/checkout`, // to cart
     customer_email: payload.user.email,
-    client_reference_id: payload.order._id,
+    client_reference_id: payload.order._id.toString(),
     metadata: payload.shippingAddress,
   };
   const session = await stripe.checkout.sessions.create(newPayload);

@@ -33,6 +33,8 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
     getwayProvidor: order?.paymentType,
     session: session?.id,
   });
+  console.log(session);
+  
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
   return res.json({

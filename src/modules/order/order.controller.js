@@ -95,13 +95,12 @@ const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
 const webhookOrders = AsyncHandler(async (req, res, next) => {
   let { event } = req.webhook;
-  console.log("🚀 ~ webhookOrders ~ event:", event);
   const allEvenets = {
     "checkout.session.completed": () => {},
     "payment.intent.payment_failed": () => {},
     default: () => {},
   };
-  const handler = allEvenets[event];
+  const handler = allEvenets[event.type];
   if (handler) {
     handler();
   } else {
@@ -117,3 +116,69 @@ export {
   updateOrder,
   webhookOrders,
 };
+/*
+ {
+id: 'evt_1PxvFi2MB7cIzNR0cFl0xjEk',
+object: 'event',
+api_version: '2024-06-20',
+created: 1726079214,
+data: {
+  object: {
+    id: 'cs_test_a1JIPffnXQlGqszdGTZkfAcbGxBUxcT5MkeDzVHGV6sftaQxFBrvlE5myT',
+    object: 'checkout.session',
+    after_expiration: null,
+    allow_promotion_codes: null,
+    amount_subtotal: 55000,
+    amount_total: 55000,
+    automatic_tax: [Object],
+    billing_address_collection: null,
+    cancel_url: 'https://www.lunadeluxo.com/checkout',
+    client_reference_id: null,
+    client_secret: null,
+    consent: null,
+    consent_collection: null,
+    created: 1726079206,
+    currency: 'usd',
+    currency_conversion: null,
+    custom_fields: [],
+    custom_text: [Object],
+    customer: null,
+    customer_creation: 'if_required',
+    customer_details: [Object],
+    customer_email: 'mohamedosdama10085@gmail.com',
+    expires_at: 1726165606,
+    invoice: null,
+    invoice_creation: [Object],
+    livemode: false,
+    locale: null,
+    metadata: [Object],
+    mode: 'payment',
+    payment_intent: 'pi_3PxvFh2MB7cIzNR00ejpK3c0',
+    payment_link: null,
+    payment_method_collection: 'if_required',
+    payment_method_configuration_details: null,
+    payment_method_options: [Object],
+    payment_method_types: [Array],
+    payment_status: 'paid',
+    phone_number_collection: [Object],
+    recovered_from: null,
+    saved_payment_method_options: null,
+    setup_intent: null,
+    shipping_address_collection: null,
+    shipping_cost: null,
+    shipping_details: null,
+    shipping_options: [],
+    status: 'complete',
+    submit_type: null,
+    subscription: null,
+    success_url: 'https://www.lunadeluxo.com/profile/my-purchases',
+    total_details: [Object],
+    ui_mode: 'hosted',
+    url: null
+  }
+},
+livemode: false,
+pending_webhooks: 1,
+request: { id: null, idempotency_key: null },
+type: 'checkout.session.completed'
+*/

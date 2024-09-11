@@ -15,8 +15,7 @@ dotenv.config();
 
 // CORS options configuration
 export const corsOptions = {
-  //process.env.DOMAINS.split(",")
-  origin: '*', // List of allowed origins
+  origin: process.env.DOMAINS.split(","), // List of allowed origins
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], // Allowed HTTP methods
   allowedHeaders: [

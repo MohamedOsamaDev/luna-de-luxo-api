@@ -29,6 +29,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
     user: req.user,
     order: newOrder,
     shippingAddress: req.body.shippingAddress,
+    secureSignature:req?.token
   };
   // create stripe Session
   const session = await createStripeSession(payload);

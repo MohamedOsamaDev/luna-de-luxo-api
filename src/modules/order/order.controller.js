@@ -25,14 +25,16 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   //create
   const newOrder = await insertOrder(order);
   // perpare Session payload
-  const secureSignature = createJwt({
-    user: req.user._id,
-    order: newOrder._id,
-  },{
-    expiresIn: "15m",
-  });
+  const secureSignature = createJwt(
+    {
+      user: req.user._id,
+      order: newOrder._id,
+    },
+    {
+      expiresIn: "15m",
+    }
+  );
 
-  
   const payload = {
     user: req.user,
     order: newOrder,
@@ -69,7 +71,7 @@ const verfiyOrder = AsyncHandler(
     const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
     if (!foundOrder || order.user !== req.user_.id) {
-      return next(new AppError(httpStatus.sessionExpired));
+      return next(new AppError(httpStatus.NotFound));
     }
     return res.json({
       message: "Order completed successfully",

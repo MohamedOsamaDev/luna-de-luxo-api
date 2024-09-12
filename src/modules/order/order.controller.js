@@ -31,6 +31,8 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   },{
     expiresIn: "15m",
   });
+  console.log(secureSignature);
+  
   const payload = {
     user: req.user,
     order: newOrder,

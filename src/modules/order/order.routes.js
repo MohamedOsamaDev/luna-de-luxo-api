@@ -33,7 +33,7 @@ orderRouter
     AttributedTo,
     updateOrder
   );
-  orderRouter.get("/checkout/success", verfiyOrder)
+orderRouter.get("/checkout/success", protectedRoutes, verfiyOrder);
 // webhook
 webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders);
 

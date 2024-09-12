@@ -31,7 +31,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   },{
     expiresIn: "15m",
   });
-  console.log(secureSignature);
+
   
   const payload = {
     user: req.user,
@@ -68,7 +68,7 @@ const verfiyOrder = AsyncHandler(
     }
     const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
-    if (!foundOrder) {
+    if (!foundOrder || order.user !== req.user_.id) {
       return next(new AppError(httpStatus.sessionExpired));
     }
     return res.json({

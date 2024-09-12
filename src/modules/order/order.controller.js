@@ -58,11 +58,11 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
 });
 const verfiyOrder = AsyncHandler(
   async (req, res) => {
-    const { secureSignature = null } = req.query;
-    if (!secureSignature) {
+    const { sig = null } = req.query;
+    if (!sig) {
       return next(new AppError(httpStatus.unAuthorized));
     }
-    const payload = verifyJwt(secureSignature, process.env.JWT_SECRET);
+    const payload = verifyJwt(sig, process.env.JWT_SECRET);
     if (!payload) {
       return next(new AppError(httpStatus.sessionExpired));
     }

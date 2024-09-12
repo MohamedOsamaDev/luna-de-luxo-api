@@ -25,11 +25,17 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   //create
   const newOrder = await insertOrder(order);
   // perpare Session payload
+  const secureSignature = createJwt({
+    user: req.user._id,
+    order: newOrder._id,
+  },{
+    expiresIn: "15m",
+  });
   const payload = {
     user: req.user,
     order: newOrder,
     shippingAddress: req.body.shippingAddress,
-    secureSignature: req?.token,
+    secureSignature,
   };
   // create stripe Session
   const session = await createStripeSession(payload);
@@ -56,12 +62,12 @@ const verfiyOrder = AsyncHandler(
     }
     const payload = verifyJwt(secureSignature, process.env.JWT_SECRET);
     if (!payload) {
-      return next(new AppError(httpStatus.unAuthorized));
+      return next(new AppError(httpStatus.sessionExpired));
     }
     const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
     if (!foundOrder) {
-      return next(new AppError(httpStatus.NotFound));
+      return next(new AppError(httpStatus.sessionExpired));
     }
     return res.json({
       message: "Order completed successfully",

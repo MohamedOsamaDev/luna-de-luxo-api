@@ -3,12 +3,9 @@ import httpStatus from "../../assets/messages/httpStatus.js";
 import SetCookie from "../../utils/SetCookie.js";
 
 export const globalError = (error, req, res, next) => {
-  /*
-    process.env.MODE === "dev"
+  process.env.MODE === "dev"
     ? console.log(chalk.red(`❌  - Error  - ${error?.message}`))
     : "";
-  */
-  console.log(chalk.red(`❌  - Error  - ${error?.message}`))
   let code = error?.code || 500;
   let message = error?.message || "something went wrong";
   let details = error?.details || {};

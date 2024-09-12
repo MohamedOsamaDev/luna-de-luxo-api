@@ -70,7 +70,7 @@ const verfiyOrder = AsyncHandler(
     }
     const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
-    if (!foundOrder || order.user !== req.user_.id) {
+    if (!foundOrder || order.user !== req.user._id) {
       return next(new AppError(httpStatus.NotFound));
     }
     return res.json({

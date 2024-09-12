@@ -68,8 +68,12 @@ const verfiyOrder = AsyncHandler(
     if (!payload) {
       return next(new AppError(httpStatus.sessionExpired));
     }
-    const {  order } = payload;
+    const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
+
+    if (!foundOrder) {
+      return next(new AppError(httpStatus.NotFound));
+    }
     return res.json({
       message: "Order completed successfully",
     });

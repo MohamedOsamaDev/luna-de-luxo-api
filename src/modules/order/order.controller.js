@@ -70,10 +70,11 @@ const verfiyOrder = AsyncHandler(
     }
     const { user, order } = payload;
     const foundOrder = await orderModel.findById(order);
-
-    if (!foundOrder) {
+    if (!foundOrder || !foundOrder?.orderSession) {
       return next(new AppError(httpStatus.NotFound));
     }
+    foundOrder.orderSession = true;
+    await orderModel.findByIdAndUpdate(foundOrder._id, foundOrder);
     return res.json({
       message: "Order completed successfully",
     });

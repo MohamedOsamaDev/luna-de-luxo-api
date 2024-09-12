@@ -57,6 +57,10 @@ const schema = new Schema(
       default: "",
       max: 500,
     },
+    orderSession:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }
 );

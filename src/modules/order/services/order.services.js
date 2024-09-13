@@ -1,5 +1,6 @@
 import { cartModel } from "../../../database/models/cart.model.js";
 import { orderModel } from "../../../database/models/order.model.js";
+import { makeSessionExpirated } from "../../../services/payments/stripe/session.js";
 import { makeMultibulkWrite } from "../../handlers/crudHandler.js";
 import {
   clothesPrepareForMakeOrder,
@@ -33,6 +34,15 @@ export const insertOrder = async (order) => {
   return newOrder.save();
 };
 
+export const cancelSession = async (session) => {
+  const isProviderAcceptedRequest = await makeSessionExpirated(
+    session?.session?.id
+  );
+  if (isProviderAcceptedRequest) {
+    await orderFiled(session?.order);
+  }
+  return true;
+};
 export const OrderCompleted = async (_id) => {
   const order = await orderModel
     .findByIdAndUpdate(_id, { status: "completed" }, { new: true })

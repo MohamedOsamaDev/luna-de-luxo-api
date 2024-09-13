@@ -48,7 +48,10 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
     user: req.user?._id,
     order: newOrder._id,
     getwayProvidor: order?.paymentType,
-    session: session?.id,
+    session: {
+      id: session?.id,
+      url: session?.url,
+    },
   });
 
   // Update stock products

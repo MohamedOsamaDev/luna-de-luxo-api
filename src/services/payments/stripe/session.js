@@ -19,7 +19,7 @@ import stripe from "./main.js";
  * @throws Will throw an error if the session creation fails.
  */
 export const createStripeSession = async (payload = {}) => {
-  const expires_at = new Date(math.floor(Date.now() / 1000)) + 10 * 60;
+  const expires_at = new Date(new Date().getTime() + 31 * 60000); // Add 30 minutes (30 * 60000 ms)
   const newPayload = {
     line_items: [
       {
@@ -35,7 +35,9 @@ export const createStripeSession = async (payload = {}) => {
     ],
     mode: "payment",
     success_url: `${process.env.DOMAIN_client}/checkout/success?sig=${payload?.secureSignature}`, // to home page or orders page
-    cancel_url: `${process.env.DOMAIN_client}/redirect?to_=checkout`, // to cart
+    cancel_url: `${
+      process.env.DOMAIN_client
+    }/redirect?to_=checkout?id=${newOrder?._id?.toString()}`, // to cart
     customer_email: payload.user.email,
     client_reference_id: payload.order._id.toString(),
     metadata: payload.shippingAddress,
@@ -45,6 +47,12 @@ export const createStripeSession = async (payload = {}) => {
   return session;
 };
 
+export const makeSessionExpirated = async (id) => {
+  try {
+    const session = await stripe.checkout.sessions.expire(id);
+    return session 
+  } catch (error) {}
+};
 // Retrieve a Checkout Session
 // Retrieves an existing Checkout Session using its ID.
 

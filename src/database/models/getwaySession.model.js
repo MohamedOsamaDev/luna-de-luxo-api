@@ -4,7 +4,12 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema(
   {
     session: {
+     id:{
       type: String,
+     },
+     url:{
+      type: String,
+     }
     },
     getwayProvidor: {
       type: String,

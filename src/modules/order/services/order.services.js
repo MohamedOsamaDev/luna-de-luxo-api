@@ -1,6 +1,7 @@
 import { cartModel } from "../../../database/models/cart.model.js";
 import { orderModel } from "../../../database/models/order.model.js";
 import { makeSessionExpirated } from "../../../services/payments/stripe/session.js";
+import { removeCouponRecord } from "../../coupon/coupon.services.js";
 import { makeMultibulkWrite } from "../../handlers/crudHandler.js";
 import {
   clothesPrepareForMakeOrder,

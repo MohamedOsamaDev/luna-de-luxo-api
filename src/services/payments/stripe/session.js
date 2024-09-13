@@ -34,10 +34,8 @@ export const createStripeSession = async (payload = {}) => {
       },
     ],
     mode: "payment",
-    success_url: `${process.env.DOMAIN_client}/checkout/success?sig=${payload?.secureSignature}`, // to home page or orders page
-    cancel_url: `${
-      process.env.DOMAIN_client
-    }/redirect?to_=checkout?id=${newOrder?._id?.toString()}`, // to cart
+    success_url:`${process.env.DOMAIN_client}/checkout/success?sig=${payload?.secureSignature}`, // to home page or orders page
+    cancel_url:`${process.env.DOMAIN_client}/redirect?to_=checkout?id=${payload?.order?._id?.toString()}`, // to cart
     customer_email: payload.user.email,
     client_reference_id: payload.order._id.toString(),
     metadata: payload.shippingAddress,

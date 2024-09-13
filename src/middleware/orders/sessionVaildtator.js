@@ -1,7 +1,7 @@
-import { cancelSession } from "../../modules/order/services/order.services";
-import { makeSessionExpirated } from "../../services/payments/stripe/session";
-import { AppError } from "../../utils/AppError";
-import { AsyncHandler } from "../globels/AsyncHandler";
+import { getwaySessionModel } from "../../database/models/getwaySession.model.js";
+import { cancelSession } from "../../modules/order/services/order.services.js";
+import { AppError } from "../../utils/AppError.js";
+import { AsyncHandler } from "../globels/AsyncHandler.js";
 
 export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
   const { user } = req;
@@ -11,17 +11,17 @@ export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
       user: user._id,
     })
     .lean();
+  console.log("session 1");
 
   if (session) {
     // Get the difference in milliseconds
     const differenceInMs = Math.abs(new Date() - session?.createdAt);
-
     // Convert milliseconds to minutes (1 minute = 60,000 milliseconds)
-    const isvalid = Math.floor(differenceInMs / (1000 * 60)) > 5;
+    const isvalid = Math.floor(differenceInMs / (1000 * 60)) < 24;
     if (isvalid) {
       return next(
         new AppError({
-          message: "you already have an active session",
+          message: " already have an active session",
           code: 409,
           details: {
             session,
@@ -32,4 +32,7 @@ export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
       await cancelSession(session);
     }
   }
+  console.log("session 2");
+
+  return next();
 });

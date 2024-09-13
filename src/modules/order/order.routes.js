@@ -18,11 +18,11 @@ import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
 import { webhookStripe } from "../../middleware/orders/webHook.stripe.js";
 import webHookRouter from "../webhook/webhook.routes.js";
+import { sessionVaildtator } from "../../middleware/orders/sessionVaildtator.js";
 
 const orderRouter = express.Router();
 orderRouter.route("/").get(protectedRoutes, getAllOrders);
 
-orderRouter.post("/getway", protectedRoutes, makeOrder, createCheckOutSession);
 orderRouter
   .route("/:id")
   .get(protectedRoutes, getSpecificOrder)
@@ -33,6 +33,14 @@ orderRouter
     AttributedTo,
     updateOrder
   );
+// getway endpoints
+orderRouter.post(
+  "/getway",
+  protectedRoutes,
+  sessionVaildtator,
+  makeOrder,
+  createCheckOutSession
+);
 orderRouter.get("/checkout/success", verfiyOrder);
 // webhook
 webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders);

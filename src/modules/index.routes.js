@@ -25,11 +25,7 @@ export const bootstrap = (app, express) => {
   const routeverion = "/api"; // main route
   // webhooks
   app.use(logger());
-  app.use(
-    `${routeverion}/webhook`,
-    express.raw({ type: "application/json" }),
-    webHookRouter
-  );
+  app.use(`${routeverion}/webhook`, webHookRouter);
   globalMiddlewares.forEach((mw) => app.use(mw));
   // start  Endpoints ----------------------------------------- |
   app.get(routeverion, welcome);

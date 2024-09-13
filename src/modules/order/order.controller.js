@@ -15,7 +15,6 @@ import {
 import { handleSubmitUseCoupon } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
 import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js";
-
 import { createStripeSession } from "../../services/payments/stripe/session.js";
 import { createJwt, verifyJwt } from "../../utils/jwt.js";
 import httpStatus from "../../assets/messages/httpStatus.js";

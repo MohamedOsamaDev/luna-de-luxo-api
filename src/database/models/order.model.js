@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { allPayments } from './../../config/payments.js';
+import { allPayments } from "./../../config/payments.js";
 
 export const ObjectId = mongoose.Schema.Types.ObjectId;
 const items = new Schema({
@@ -10,6 +10,7 @@ const items = new Schema({
   quantity: { type: Number, default: 1 },
   poster: String,
   selectedOptions: {},
+  id: { type: ObjectId },
 });
 const couponSchema = new Schema({
   code: { type: String, required: true },
@@ -50,17 +51,17 @@ const schema = new Schema(
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     discount: { type: Number, min: 0, max: 100, default: 0 },
-    isDeleted:{ type: Boolean,default: false },
+    isDeleted: { type: Boolean, default: false },
     coupon: couponSchema,
     notes: {
       type: String,
       default: "",
       max: 500,
     },
-    orderSession:{
-      type:Boolean,
-      default:false
-    }
+    orderSession: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

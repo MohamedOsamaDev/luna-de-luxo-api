@@ -21,7 +21,7 @@ export const updateGetwaySession = async (sessionId, payload) => {
   });
 };
 
-export const deleteGetwaySession = async (sessionId) => {
+export const deleteGetwaySession = async (query = {}) => {
   // Delete the session by its ID
-  return await getwaySessionModel.findByIdAndDelete(sessionId);
+  return await getwaySessionModel.findOneAndDelete(query);
 };

@@ -34,26 +34,24 @@ export const createStripeSession = async (payload = {}) => {
       },
     ],
     mode: "payment",
-    success_url:`${process.env.DOMAIN_client}/checkout/success?sig=${payload?.secureSignature}`, // to home page or orders page
-    cancel_url:`${process.env.DOMAIN_client}/redirect?to_=checkout?id=${payload?.order?._id?.toString()}`, // to cart
+    success_url: `${process.env.DOMAIN_client}/checkout/success?sig=${payload?.secureSignature}`, // to home page or orders page
+    cancel_url: `${process.env.DOMAIN_client}/redirect?to_=checkout`, // to cart
     customer_email: payload.user.email,
-    client_reference_id: payload.order._id.toString(),
+    client_reference_id: payload?.order?._id?.toString(),
     metadata: payload.shippingAddress,
     expires_at,
   };
   const session = await stripe.checkout.sessions.create(newPayload);
   return session;
 };
-
 export const makeSessionExpirated = async (id) => {
   try {
     const session = await stripe.checkout.sessions.expire(id);
-    return session 
+    return session;
   } catch (error) {}
 };
 // Retrieve a Checkout Session
 // Retrieves an existing Checkout Session using its ID.
-
 const allstripeMethods = async () => {
   // 1 Create a Checkout Session
   // Creates a new Checkout Session.
@@ -71,8 +69,6 @@ const allstripeMethods = async () => {
     customer: "customer_id", // Optionally filter by customer
   });
 };
-
-//Webhook Support
 // Webhook endpoint for handling Checkout events
 const Webhook = () => {
   app.post(

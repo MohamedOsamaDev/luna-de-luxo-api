@@ -33,6 +33,7 @@ const formateItem = (item) => {
     poster: item.product?.poster?.url,
     type: item.product?.type,
     selectedOptions,
+    id: item?._id,
   };
 };
 // --------------------------------- start prepare product for make order  ---------------------------------
@@ -44,7 +45,7 @@ export const clothesPrepareForMakeOrder = ({
   quantity,
   bulkOperations,
   items,
-}) => {  
+}) => {
   const colorMatch = product?.colors?.find((c) =>
     c?.color?._id.equals(color?._id)
   );
@@ -53,7 +54,12 @@ export const clothesPrepareForMakeOrder = ({
     s?.size?._id.equals(size?._id)
   );
 
-  if (!product?._id || !colorMatch || !sizeMatch || sizeMatch?.stock < quantity) {
+  if (
+    !product?._id ||
+    !colorMatch ||
+    !sizeMatch ||
+    sizeMatch?.stock < quantity
+  ) {
     console.log(
       "Product is not available (clothes)",
       product?._id,
@@ -104,20 +110,12 @@ export const clothesPrepareForMakeOrder = ({
 };
 // decor case
 export const decorPrepareForMakeOrder = (item) => {
-  console.log("🚀 ~ decorPrepareForMakeOrder ~ item:", item)
   const { product, color, quantity, bulkOperations, items } = item;
-  
+
   const colorMatch = product?.colors?.find((c) =>
     c?.color?._id.equals(color?._id)
   );
   if (!product?._id || !colorMatch || colorMatch?.stock < quantity) {
-    console.log(
-      "Product is not available (decor)",
-      product?._id,
-      colorMatch,
-      colorMatch?.stock,
-      quantity
-    );
     return false;
   }
   // Add formatted order item to list

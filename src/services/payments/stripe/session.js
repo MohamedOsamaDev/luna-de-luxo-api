@@ -19,6 +19,7 @@ import stripe from "./main.js";
  * @throws Will throw an error if the session creation fails.
  */
 export const createStripeSession = async (payload = {}) => {
+  const expires_at = new Date(math.floor(Date.now() / 1000)) + 10 * 60;
   const newPayload = {
     line_items: [
       {
@@ -38,6 +39,7 @@ export const createStripeSession = async (payload = {}) => {
     customer_email: payload.user.email,
     client_reference_id: payload.order._id.toString(),
     metadata: payload.shippingAddress,
+    expires_at,
   };
   const session = await stripe.checkout.sessions.create(newPayload);
   return session;

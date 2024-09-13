@@ -10,7 +10,6 @@ export const globalError = (error, req, res, next) => {
     let code = error?.code || 500;
     let message = error?.message || "something went wrong";
     let details = error?.details || {};
-    console.log({ message, details, stack: error.stack });
   if (message === httpStatus.Forbidden.message) {
     res.cookie(
       "token",

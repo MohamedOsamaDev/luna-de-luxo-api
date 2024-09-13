@@ -23,7 +23,7 @@ const formateItem = (item) => {
       decor: {
         color,
       },
-    }[item.product?.type] || {};
+    }[item.product?.type] || {};    
   return {
     original_id: item.product?._id,
     name: item.product?.name,
@@ -45,6 +45,7 @@ export const clothesPrepareForMakeOrder = ({
   quantity,
   bulkOperations,
   items,
+  _id
 }) => {
   const colorMatch = product?.colors?.find((c) =>
     c?.color?._id.equals(color?._id)
@@ -60,14 +61,6 @@ export const clothesPrepareForMakeOrder = ({
     !sizeMatch ||
     sizeMatch?.stock < quantity
   ) {
-    console.log(
-      "Product is not available (clothes)",
-      product?._id,
-      colorMatch,
-      sizeMatch,
-      sizeMatch.stock,
-      quantity
-    );
     return false;
   }
 
@@ -78,6 +71,7 @@ export const clothesPrepareForMakeOrder = ({
       color,
       size,
       quantity,
+      id:_id
     })
   );
   let task = {
@@ -110,7 +104,7 @@ export const clothesPrepareForMakeOrder = ({
 };
 // decor case
 export const decorPrepareForMakeOrder = (item) => {
-  const { product, color, quantity, bulkOperations, items } = item;
+  const { product,_id ,color, quantity, bulkOperations, items } = item;
 
   const colorMatch = product?.colors?.find((c) =>
     c?.color?._id.equals(color?._id)
@@ -124,6 +118,7 @@ export const decorPrepareForMakeOrder = (item) => {
       product,
       color,
       quantity,
+      id:_id
     })
   );
 

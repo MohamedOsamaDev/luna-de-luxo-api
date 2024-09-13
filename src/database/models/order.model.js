@@ -11,6 +11,7 @@ const items = new Schema({
   poster: String,
   selectedOptions: {},
   id: { type: ObjectId },
+  type:String
 });
 const couponSchema = new Schema({
   code: { type: String, required: true },

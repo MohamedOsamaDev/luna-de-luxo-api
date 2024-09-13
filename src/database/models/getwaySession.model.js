@@ -4,18 +4,18 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema(
   {
     session: {
-     id:{
-      type: String,
-     },
-     url:{
-      type: String,
-     }
+      id: {
+        type: String,
+      },
+      url: {
+        type: String,
+      },
     },
     getwayProvidor: {
       type: String,
-      enum:allPayments,
+      enum: allPayments,
     },
-    order :{ type: ObjectId, ref: "user" },
+    order: { type: ObjectId, ref: "order" },
     user: { type: ObjectId, ref: "user" },
   },
   {

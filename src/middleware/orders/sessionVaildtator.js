@@ -5,33 +5,37 @@ import { AsyncHandler } from "../globels/AsyncHandler.js";
 
 export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
   const { user } = req;
+  const now = new Date();
+  const twentyFiveMinutesAgo = new Date(now.getTime() - 25 * 60 * 1000);
+
   const getwaySession = await getwaySessionModel
     .findOne({
       user: user._id,
+      createdAt: {
+        $gte: twentyFiveMinutesAgo,
+        $lte: now,
+      },
     })
+    .lean()
     .populate({
       path: "order",
       select: "items",
-    })
-    .lean();
+    });
   if (getwaySession) {
-    // Get the difference in milliseconds
-    const differenceInMs = Math.abs(new Date() - getwaySession?.createdAt);
-    // Convert milliseconds to minutes (1 minute = 60,000 milliseconds)
-    const isvalid = Math.floor(differenceInMs / (1000 * 60)) < 24;
-    if (isvalid) {
-      return next(
-        new AppError({
-          message: " already have an active session",
-          code: 409,
-          details: {
-            session: getwaySession?.session,
+    return next(
+      new AppError({
+        message: " already have an active session",
+        code: 409,
+        details: {
+          session: {
+            ...getwaySession?.session,
             preview: getwaySession?.order?.items || [],
           },
-        })
-      );
-    }
+        },
+      })
+    );
   }
 
   return next();
 });
+// /Model.schema.index({ createdAt: 1 });

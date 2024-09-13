@@ -7,6 +7,7 @@ import {
   updateOne,
 } from "./../handlers/crudHandler.js";
 import {
+  cancelSession,
   insertOrder,
   OrderCompleted,
   orderFiled,
@@ -18,7 +19,61 @@ import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js"
 import { createStripeSession } from "../../services/payments/stripe/session.js";
 import { createJwt, verifyJwt } from "../../utils/jwt.js";
 import httpStatus from "../../assets/messages/httpStatus.js";
+import { getwaySessionModel } from "../../database/models/getwaySession.model.js";
 
+//cash flow
+const createOrder = AsyncHandler(async (req, res, next) => {
+  const { order, bulkOperations } = req.makeOrder;
+  // Handle order creation
+  const newOrder = await insertOrder(order);
+  // Handle coupon usage
+  await handleSubmitUseCoupon(newOrder);
+  // Handle clear cart
+  await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
+  return res.status(201).json({
+    message: "Order created successfully",
+  });
+});
+// crud operations
+const getSpecificOrder = AsyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const { id } = req.params;
+  const isAdmin = user.role === "admin";
+
+  let query = orderModel.findById(id);
+
+  if (isAdmin) {
+    query = query.populate([
+      { path: "user", select: "fullName email" },
+      { path: "createdBy", select: "fullName email" },
+      { path: "updatedBy", select: "fullName email" },
+    ]);
+  }
+
+  const order = await query;
+
+  if (!order || (order.user.toString() !== user._id.toString() && !isAdmin)) {
+    return next(new AppError({ message: "Order not found", code: 404 }));
+  }
+
+  return res.json(order);
+});
+const config = {
+  model: orderModel,
+  name: "order",
+  publish: false,
+  customFiltersFN: (req) => {
+    let user = req.user;
+    let query = req.query;
+    if (!user.role === "admin") {
+      query = { user: user?._id };
+    }
+    return query;
+  },
+};
+const getAllOrders = FindAll(config);
+const updateOrder = updateOne(config);
+// paymentsGetway
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
   const { order, bulkOperations } = req.makeOrder;
@@ -86,60 +141,23 @@ const verfiyOrder = AsyncHandler(
     onError: httpStatus.unAuthorized,
   }
 );
-
-const createOrder = AsyncHandler(async (req, res, next) => {
-  const { order, bulkOperations } = req.makeOrder;
-  // Handle order creation
-  const newOrder = await insertOrder(order);
-  // Handle coupon usage
-  await handleSubmitUseCoupon(newOrder);
-  // Handle clear cart
-  await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
-  return res.status(201).json({
-    message: "Order created successfully",
+const cancelCheckOutSession = AsyncHandler(async (req, res) => {
+  const sessionid = req.params.session;
+  const user = req.user;
+  const session = await getwaySessionModel.findOne({
+    user: user._id,
+    _id: sessionid,
+  });
+  if (!session) {
+    return next(new AppError(httpStatus.NotFound));
+  }
+  await cancelSession(session);
+  return res.json({
+    message: "Checkout session cancelled successfully",
   });
 });
-
-const getSpecificOrder = AsyncHandler(async (req, res, next) => {
-  const { user } = req;
-  const { id } = req.params;
-  const isAdmin = user.role === "admin";
-
-  let query = orderModel.findById(id);
-
-  if (isAdmin) {
-    query = query.populate([
-      { path: "user", select: "fullName email" },
-      { path: "createdBy", select: "fullName email" },
-      { path: "updatedBy", select: "fullName email" },
-    ]);
-  }
-
-  const order = await query;
-
-  if (!order || (order.user.toString() !== user._id.toString() && !isAdmin)) {
-    return next(new AppError({ message: "Order not found", code: 404 }));
-  }
-
-  return res.json(order);
-});
-
-const config = {
-  model: orderModel,
-  name: "order",
-  publish: false,
-  customFiltersFN: (req) => {
-    let user = req.user;
-    let query = req.query;
-    if (!user.role === "admin") {
-      query = { user: user?._id };
-    }
-    return query;
-  },
-};
-const getAllOrders = FindAll(config);
-const updateOrder = updateOne(config);
-const webhookOrders = AsyncHandler(async (req, res, next) => {
+// webhook
+const webhookOrders_Stripe = AsyncHandler(async (req, res, next) => {
   let { event } = req.webhook;
   const allEvenets = {
     "checkout.session.completed": OrderCompleted,
@@ -161,8 +179,9 @@ export {
   createCheckOutSession,
   getAllOrders,
   updateOrder,
-  webhookOrders,
+  webhookOrders_Stripe,
   verfiyOrder,
+  cancelCheckOutSession,
 };
 
 // let testdata = {

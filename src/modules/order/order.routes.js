@@ -1,14 +1,13 @@
 import express from "express";
 import {
   createCheckOutSession,
-  createOrder,
+  cancelCheckOutSession,
   getAllOrders,
   getSpecificOrder,
   updateOrder,
   verfiyOrder,
-  webhookOrders,
+  webhookOrders_Stripe,
 } from "./order.controller.js";
-
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
 import { makeOrder } from "../../middleware/orders/makeOrder.js";
 import { validation } from "../../middleware/globels/validation.js";
@@ -25,24 +24,22 @@ orderRouter.route("/").get(protectedRoutes, getAllOrders);
 
 orderRouter
   .route("/:id")
-  .get(protectedRoutes, getSpecificOrder)
+  .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route
+  .get(getSpecificOrder)
   .put(
     validation(updateOrderVal),
-    protectedRoutes,
     authorized(enumRoles.admin),
     AttributedTo,
     updateOrder
   );
 // getway endpoints
-orderRouter.post(
-  "/getway",
-  protectedRoutes,
-  sessionVaildtator,
-  makeOrder,
-  createCheckOutSession
-);
+orderRouter
+  .route("/getway")
+  .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route
+  .post(sessionVaildtator, makeOrder, createCheckOutSession)
+  .delete(cancelCheckOutSession);
 orderRouter.get("/checkout/success", verfiyOrder);
 // webhook
-webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders);
+webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders_Stripe);
 
 export default orderRouter;

@@ -35,15 +35,6 @@ export const insertOrder = async (order) => {
   let newOrder = new orderModel(order);
   return newOrder.save();
 };
-export const cancelSession = async (session) => {
-  const isProviderAcceptedRequest = await makeSessionExpirated(
-    session?.session?.id
-  );
-  if (isProviderAcceptedRequest) {
-    await orderFiled(session?.order);
-  }
-  return true;
-};
 export const OrderCompleted = async (_id) => {
   const order = await orderModel
     .findByIdAndUpdate(_id, { status: "completed" }, { new: true })
@@ -80,5 +71,14 @@ export const orderFiled = async (_id) => {
   await makeMultibulkWrite(bulkwriteOperations);
   // handle coupon case
   await removeCouponRecord(order);
+  return true;
+};
+export const cancelSession = async (session) => {
+  const isProviderAcceptedRequest = await makeSessionExpirated(
+    session?.session?.id
+  );
+  if (isProviderAcceptedRequest) {
+    await orderFiled(session?.order);
+  }
   return true;
 };

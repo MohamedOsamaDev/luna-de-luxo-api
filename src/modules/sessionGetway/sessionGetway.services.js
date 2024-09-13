@@ -9,9 +9,9 @@ export const createGetwaySession = async (payload = {}) => {
   return session;
 };
 
-export const findGetwaySessionById = async (sessionId) => {
+export const findGetwaySessionById = async (sessionId, populate = []) => {
   // Get the session by its ID
-  return await getwaySessionModel.findById(sessionId);
+  return await getwaySessionModel.findById(sessionId).populate(populate);
 };
 
 export const updateGetwaySession = async (sessionId, payload) => {

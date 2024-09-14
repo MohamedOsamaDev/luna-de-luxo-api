@@ -140,16 +140,18 @@ const verfiyOrder = AsyncHandler(
     onError: httpStatus.unAuthorized,
   }
 );
-const cancelCheckOutSession = AsyncHandler(async (req, res) => {
-  const sessionid = req.params.session;
+const cancelCheckOutSession = AsyncHandler(async (req, res, next) => {
+  const sessionid = req.params?.session;
   const user = req.user;
   const session = await getwaySessionModel.findOne({
-    user: user._id,
+    user: user?._id,
     _id: sessionid,
   });
   if (!session) {
     return next(new AppError(httpStatus.NotFound));
   }
+
+  
   await cancelSession(session);
   return res.json({
     message: "Checkout session cancelled successfully",

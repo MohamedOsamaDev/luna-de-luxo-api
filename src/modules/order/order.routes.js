@@ -37,7 +37,7 @@ orderRouter
   .route("/getway")
   .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route
   .post(sessionVaildtator, makeOrder, createCheckOutSession)
-  .delete(cancelCheckOutSession);
+  orderRouter.delete('/getway/:session',protectedRoutes,cancelCheckOutSession);
 orderRouter.get("/checkout/success", verfiyOrder);
 // webhook
 webHookRouter.post("/orders/stripe", webhookStripe, webhookOrders_Stripe);

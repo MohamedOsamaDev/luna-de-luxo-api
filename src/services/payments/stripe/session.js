@@ -47,9 +47,9 @@ export const createStripeSession = async (payload = {}) => {
 export const makeSessionExpirated = async (id) => {
   try {
     const session = await stripe.checkout.sessions.expire(id);
-    console.log("🚀 ~ makeSessionExpirated ~ session:", session)
     return session;
   } catch (error) {}
+  return null;
 };
 // Retrieve a Checkout Session
 // Retrieves an existing Checkout Session using its ID.

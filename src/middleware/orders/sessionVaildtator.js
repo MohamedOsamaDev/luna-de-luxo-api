@@ -29,6 +29,7 @@ export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
         details: {
           session: {
             ...getwaySession?.session,
+            _id: getwaySession?._id,
             preview: getwaySession?.order?.items || [],
           },
         },

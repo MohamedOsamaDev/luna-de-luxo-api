@@ -74,6 +74,7 @@ export const handleSubmitUseCoupon = async (order) => {
 
 export const removeCouponRecord = async (order) => {
   if (!order?.coupon?.original_id) return;
+  
   return await couponhistoryModel.deleteOne({
     user: order?.user,
     coupon: order?.coupon?.original_id, // Store only ObjectId

@@ -21,6 +21,14 @@ export const sessionVaildtator = AsyncHandler(async (req, res, next) => {
       path: "order",
       select: "items",
     });
+
+
+
+
+
+
+
+    
   if (getwaySession) {
     return next(
       new AppError({

@@ -85,7 +85,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
       order: newOrder._id,
     },
     {
-      expiresIn: "15m",
+      expiresIn: "32m",
     }
   );
 
@@ -151,7 +151,6 @@ const cancelCheckOutSession = AsyncHandler(async (req, res, next) => {
     return next(new AppError(httpStatus.NotFound));
   }
 
-  
   await cancelSession(session);
   return res.json({
     message: "Checkout session cancelled successfully",
@@ -162,10 +161,11 @@ const webhookOrders_Stripe = AsyncHandler(async (req, res, next) => {
   let { event } = req.webhook;
   const allEvenets = {
     "checkout.session.completed": OrderCompleted,
-    "payment.intent.payment_failed": orderFiled,
+    "checkout.session.expired": orderFiled,
     default: () => {},
   };
-  const handler = allEvenets[event.type];
+
+  const handler = allEvenets?.[event.type];
   //client_reference_id is ref to order id
   if (handler) {
     await handler(event?.data.object?.client_reference_id);

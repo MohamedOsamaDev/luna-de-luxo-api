@@ -50,6 +50,7 @@ export const OrderCompleted = async (_id) => {
   await deleteGetwaySession({
     order: _id,
   });
+
   const cart = order?.user?.cart || {};
   let cartItems = cart?.items || [];
   const orderitems = order?.items || [];
@@ -59,6 +60,7 @@ export const OrderCompleted = async (_id) => {
   await cartModel.findByIdAndUpdate(cart?._id, {
     items: cartItems,
   });
+
   return order;
 };
 export const orderFiled = async (_id) => {

@@ -4,6 +4,7 @@ import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import responseHandler from "../../utils/responseHandler.js";
 import { FindAll, FindOne } from "../handlers/crudHandler.js";
+import { populateInfluencer } from "./influncer.services.js";
 
 const Errormassage = "influencer not found";
 
@@ -63,7 +64,7 @@ const Delete = AsyncHandler(async (req, res, next) => {
   const document = await influencerModel.findByIdAndDelete(req.params?.id);
   if (!document)
     return next(new AppError(responseHandler("NotFound", "Influncer")));
-  
+
   return res.status(200).json({
     message: "Deleted Sucessfully",
   });
@@ -73,7 +74,7 @@ const Update = AsyncHandler(async (req, res, next) => {
   if (req.body.socialAccount) {
     let check = await influencerModel.findOne({
       socialAccount: req.body.socialAccount,
-      _id: { $ne: req.params?.id }
+      _id: { $ne: req.params?.id },
     });
     if (check)
       return next(
@@ -88,7 +89,7 @@ const Update = AsyncHandler(async (req, res, next) => {
   }
   let data = await influencerModel
     .findByIdAndUpdate({ _id: req.params?.id }, req.body)
-    .populate("createdBy", "fullName")
+    .populate("createdBy", "fullName");
   if (!data)
     return next(new AppError(responseHandler("NotFound", `Influncer`)));
   data = {
@@ -106,6 +107,9 @@ let config = {
   name: "influencer",
 };
 const GetAll = FindAll(config);
-const GetOne =  FindOne(config)
+const GetOne = FindOne({
+  ...config,
+  populate: populateInfluencer,
+});
 
 export { InsertOne, GetAll, requestForBenfluencer, Delete, Update, GetOne };

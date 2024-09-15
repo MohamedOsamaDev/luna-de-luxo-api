@@ -25,8 +25,7 @@ const createOrder = AsyncHandler(async (req, res, next) => {
   const { order, bulkOperations } = req.makeOrder;
   // Handle order creation
   const newOrder = await insertOrder(order);
-  // Handle coupon usage
-  await handleSubmitUseCoupon(newOrder);
+
   // Handle clear cart
   await cartModel.findByIdAndUpdate(req?.user?.cart?._id, { items: [] });
   return res.status(201).json({
@@ -110,6 +109,8 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
 
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
+  // Handle coupon usage
+  await handleSubmitUseCoupon(newOrder);
   return res.json({
     message: "Checkout session created successfully",
     session: session?.url,

@@ -45,6 +45,7 @@ schema.virtual("cart", {
   localField: "_id",
   foreignField: "user",
   justOne: true, // Ensures the virtual field returns an object instead of an array
+  
 });
 
 // Virtual populate for influencer

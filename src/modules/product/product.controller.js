@@ -81,7 +81,7 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
   }
 
   req.body.createdBy = req.user._id;
-  let Model = allproductTypes?.[type];
+  let Model = allproductTypes?.[product?.type];
   if (!Model) return res.status(400).send("Invalid product type");
   let data = await Model.findByIdAndUpdate(req.params.id, req?.body, {
     new: true,

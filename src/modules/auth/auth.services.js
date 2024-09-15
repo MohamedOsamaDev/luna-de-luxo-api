@@ -3,6 +3,7 @@ import { cartModel } from "../../database/models/cart.model.js";
 import { productModel } from "../../database/models/product.model.js";
 import SetCookie from "../../utils/SetCookie.js";
 import { UserModel } from "../../database/models/user.model.js";
+import { delay } from "../../utils/delay.js";
 
 const handleMerageCartItems = (items1 = [], items2 = []) => {
   let array = [...items1, ...items2];
@@ -110,7 +111,7 @@ export const getUserAndVerify = async (decodeReq) => {
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
-      .populate([{ path: "cart" }, { path: "influencer" }])
+      .populate([{ path: "cart" }, { path: "influencer", populate: { path: 'coupon', select: ' expires code discount' } }])
       .lean()
       .exec();
     // Check if user exists, is not blocked, and has a valid token

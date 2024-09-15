@@ -30,29 +30,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-schema.pre(/^find/, function (next) {
-  // Populate `relatedTo` and conditionally populate `coupon`
-  let { admin = false } = this?.options;
-  let options = {
-    publish: true,
-    select: "_id code  expires discount",
-  };
-  if (admin) {
-    options = {
-      select: "_id code ",
-    };
-  }
-  this.populate([
-    {
-      path: "coupon",
-      ...options,
-    },
-    {
-      path: "relatedTo",
-      select: "_id fullName",
-    },
-  ]);
-  next();
-});
-
 export const influencerModel = mongoose.model("influencer", schema);

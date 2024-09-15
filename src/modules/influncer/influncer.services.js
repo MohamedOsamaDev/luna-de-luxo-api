@@ -6,3 +6,17 @@ export const increamentInfluncerBalance = async (query, totalEarned) => {
     $inc: { totalEarned, totalSales: 1 },
   });
 };
+
+
+
+
+export const populateInfluencer = [
+  {
+    path: "coupon",
+    select: "_id code ",
+  },
+  {
+    path: "relatedTo",
+    select: "_id fullName",
+  },
+]

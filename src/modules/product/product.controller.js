@@ -13,7 +13,11 @@ import { Posterlookup } from "../commens/lookup.js";
 import { customQueryproduct as customQuery } from "./product.services.js";
 import { SubCategoryModel } from "../../database/models/subcategory.model.js";
 
-let config = {
+const allproductTypes = {
+  clothes: ClothesModel,
+  decor: DecorModel,
+};
+const config = {
   model: productModel,
   name: "product",
   slug: "title",
@@ -38,14 +42,9 @@ const addproduct = AsyncHandler(async (req, res, next) => {
     );
   req.body.slug = slugify(req.body.name);
   req.body.createdBy = req.user._id;
-  let data;
-  if (type === "clothes") {
-    data = new ClothesModel(req.body);
-  } else if (type === "decor") {
-    data = new DecorModel(req.body);
-  } else {
-    return res.status(400).send("Invalid product type");
-  }
+  let Model = allproductTypes?.[type];
+  if (!Model) return res.status(400).send("Invalid product type");
+  let data = new Model(req.body);
   await data.save();
   data = {
     ...data?._doc,
@@ -81,21 +80,12 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     req.body.slug = slugify(req.body.name);
   }
 
-  let model;
-  switch (product?.type) {
-    case "decor":
-      model = DecorModel;
-      break;
-    case "clothes":
-      model = ClothesModel;
-      break;
-    default:
-      model = productModel;
-  }
-  let data = await model
-    .findByIdAndUpdate(req.params.id, req?.body, {
-      new: true,
-    })
+  req.body.createdBy = req.user._id;
+  let Model = allproductTypes?.[type];
+  if (!Model) return res.status(400).send("Invalid product type");
+  let data = await Model.findByIdAndUpdate(req.params.id, req?.body, {
+    new: true,
+  })
     .populate("createdBy", "fullName")
     .populate("updatedBy", "fullName");
   data = {
@@ -111,18 +101,16 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
 const getFilters = AsyncHandler(async (req, res, next) => {
   let query = {
     publish: true,
-    limit: 20,
   };
-  const colors = await colorModel.find().lean();
-  const categories = await categoryModel.find().lean();
-  const subcategories = await SubCategoryModel.find().lean();
-  const sizes = await sizeModel.find().lean();
+  let limit = 30;
+  const colors = await colorModel.find(query).limit(limit).lean();
+  const categories = await categoryModel.find(query).limit(limit).lean();
+  const sizes = await sizeModel.find(query).limit(limit).lean();
 
   return res.status(200).json({
     message: "success",
     colors,
     categories,
-    subcategories,
     sizes,
   });
 });

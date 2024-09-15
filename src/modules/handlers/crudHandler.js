@@ -9,6 +9,7 @@ import {
   handleQuerySlugOrid,
 } from "../../utils/QueryHandler.js";
 import mongoose from "mongoose";
+import { SubCategoryModel } from "../../database/models/subcategory.model.js";
 
 export const InsertOne = ({
   model,
@@ -93,11 +94,12 @@ export const FindAll = ({
     ) {
       pipeline.push({
         $match: {
-          [req.params?.[margeParam]]: new mongoose.Types.ObjectId(
+          [margeParam]: new mongoose.Types.ObjectId(
             req.params?.[margeParam]
           ),
         },
       });
+
     }
     // Add custom query to pipeline
     pipeline = pipeline.concat(pushToPipeLine);

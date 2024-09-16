@@ -32,8 +32,13 @@ const decorVal = Joi.array()
       stock: Joi.number().min(0).default(0),
       _id: objectIdVal,
     })
-  )
-  .optional();
+  ).optional();
+  
+  const additionalInfo = Joi.object({
+    title: Joi.string().min(1).max(300).required().trim(),
+    _id: objectIdVal,
+  });
+
 const ProductSchemaVal = Joi.object({
   _id: objectIdVal,
   name: Joi.string().min(1).max(300).required().trim(),
@@ -44,6 +49,7 @@ const ProductSchemaVal = Joi.object({
   isFeatured: Joi.boolean(),
   publish: Joi.boolean(),
   rateRange: Joi.number().min(0).max(100).default(1).optional(),
+  additionalInfo: Joi.array().items(additionalInfo).min(1),
   poster: Joi.alternatives().try(objectIdVal, relationFileVal),
   category: Joi.alternatives()
     .try(objectIdVal, UpdateCategorySchemaVal)
@@ -68,6 +74,7 @@ const UpdateproductSchemaVal = Joi.object({
   quantity: Joi.number().min(0).optional(),
   isFeatured: Joi.boolean(),
   publish: Joi.boolean(),
+  additionalInfo: Joi.array().items(additionalInfo),
   poster: Joi.alternatives().try(objectIdVal, relationFileVal),
   category: Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal),
   subcategory: Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal),

@@ -38,6 +38,15 @@ schema.pre("save", async function (next) {
   }
   next();
 });
+schema.pre('findOneAndUpdate', async function (next) {
+  // Check if password is being updated
+  const update = this.getUpdate();
+  if (update && update?.password) {   
+    update.password = await bcrypt.hash(update.password, 8);
+  }
+  next();
+});
+
 
 // Virtual populate for cart
 schema.virtual("cart", {

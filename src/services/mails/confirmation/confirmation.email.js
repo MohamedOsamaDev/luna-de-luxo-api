@@ -12,7 +12,7 @@ const confirmEmail = async (email) => {
     },
   });
 
-  let token = jwt.sign({ email }, process.env.SECRETKEY);
+  const token = jwt.sign({ email }, process.env.SECRETKEY);
 
   const info = await transporter.sendMail({
     from: ` 'Mazen Sherif' <${process.env.EMAIL_NAME}>`, //sender adress
@@ -20,7 +20,6 @@ const confirmEmail = async (email) => {
     subject: "Verfiy Your Email", //subject line
     html: confirmationLayout(token), //html body
   });
-  console.log("Message sent: %s", info.messageId);
 };
 
 export default confirmEmail;

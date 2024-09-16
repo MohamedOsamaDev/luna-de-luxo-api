@@ -38,7 +38,7 @@ AuthRouter.get(`/logout`, logOut); // log out
 AuthRouter.post("/verify-email/:token", verfiyEmail); // verfiy Email :)
 // AuthRouter.get(`/unsubscribe/:token`, unsubscribe); // unsubscribe  :)
 // AuthRouter.get(`/forget-Password/:token`, protectedRoutes, tokenForgetPassword); // this optional endpoint  for front-end to loaders(react js || next js) to check token for handle layout !
-AuthRouter.post(`/forget-password`,  forgetPassword ); // send email for reset password !
+AuthRouter.post(`/forget-password`, forgetPassword); // send email for reset password !
 AuthRouter.patch(`/reset-password`, ResetPassword);
 
 AuthRouter.route("/me")

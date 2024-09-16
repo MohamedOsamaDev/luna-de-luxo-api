@@ -35,6 +35,16 @@ const schema = new mongoose.Schema(
       min: 0,
       default: 0,
     },
+    additionalInfo: [
+      {
+        title: {
+          type: String,
+          trim: true,
+          required: true,
+          minLength: [1, "too short info name"],
+        },
+      },
+    ],
     sold: Number,
     isFeatured: { type: Boolean, default: false },
     publish: { type: Boolean, default: false },

@@ -18,11 +18,21 @@ const couponSchema = new Schema({
   discount: { type: Number, required: true },
   original_id: { type: ObjectId, ref: "coupon", required: true },
 });
+
+const overviewPricesSchema = new Schema({
+  subtotal: { type: Number, min: 0, default: 0 }, // Total of all item prices before any discounts
+  discount: { type: Number, min: 0, default: 0 }, // Total discount applied
+  shipping: { type: Number, min: 0, default: 0 }, // Shipping cost
+  total: { type: Number, min: 0, default: 0 }, // Total price after all calculations
+  finalTotal: { type: Number, min: 0, default: 0 }, // Final amount to be paid
+});
+
 const schema = new Schema(
   {
     user: { type: ObjectId, ref: "user", required: true },
     items: [items],
     totalOrderPrice: { type: Number, min: 0, default: 0, required: true },
+    overviewPrices: overviewPricesSchema,
     shippingAddress: {
       street: { type: String, required: true },
       city: { type: String, required: true },

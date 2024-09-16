@@ -42,6 +42,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   }
   // initialize order object
   let totalOrderPrice = 0;
+  let subtotal = 0;
   const items = [];
   const bulkOperations = {};
   // error response fro case any product not exist
@@ -75,12 +76,29 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     // Calculate order item price and add to total order price
     const itemPrice = product?.price * quantity;
     totalOrderPrice += itemPrice;
+    subtotal += itemPrice;
   });
+
+  
+  // Calculate shipping price
+  const shippingPrice = 50;
+
+  // Initialize the overviewPrices object
+  const overviewPrices = {
+    subtotal: subtotal,
+    discount: coupon ? subtotal * (coupon.discount / 100) : 0,
+    total: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0),
+    shipping: shippingPrice,
+    finalTotal: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0) + shippingPrice,
+  };
+
+
   // create order object for nect controller
   let order = {
     user: user?._id,
     items,
     totalOrderPrice,
+    overviewPrices,
     ...req?.body,
   };
   // handle if order has coupon

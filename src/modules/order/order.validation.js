@@ -43,7 +43,9 @@ const updateOrderVal = Joi.object({
           color: Joi.object().optional(),
           size: Joi.object().optional(),
         }).optional(),
+        type: Joi.string().optional(),
         _id: Joi.string().optional(),
+        id: Joi.string().optional(),
       })
     )
     .optional(),

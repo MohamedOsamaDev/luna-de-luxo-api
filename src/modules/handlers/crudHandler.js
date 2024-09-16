@@ -94,12 +94,9 @@ export const FindAll = ({
     ) {
       pipeline.push({
         $match: {
-          [margeParam]: new mongoose.Types.ObjectId(
-            req.params?.[margeParam]
-          ),
+          [margeParam]: new mongoose.Types.ObjectId(req.params?.[margeParam]),
         },
       });
-
     }
     // Add custom query to pipeline
     pipeline = pipeline.concat(pushToPipeLine);

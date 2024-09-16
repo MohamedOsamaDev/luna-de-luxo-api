@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { UserModel } from "../../database/models/user.model.js";
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
@@ -47,11 +48,12 @@ const updateuser = AsyncHandler(async (req, res, next) => {
   let data = await UserModel.findByIdAndUpdate(req?.params?.id, req?.body, {
     new: true,
   })
+    .lean()
     .populate("createdBy", "fullName")
     .select("-password");
   if (!data) next(new AppError(responseHandler("NotFound", "user")));
   data = {
-    ...data?._doc,
+    ...data,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },
   };
   return res.status(200).json({ message: "Updated Sucessfully", data });
@@ -63,12 +65,11 @@ const deleteUser = deleteOne({
 const getAllUsers = FindAll({
   model: UserModel,
   customFiltersFN: (req, res, next) => {
-    req.query.filters = {
-      ...req.query.filters,
-      _id: { $ne: req?.user?._id },
-    };
     if (!req.query?.filters?.role) {
-      req.query.filters.role = { $ne: enumRoles.admin };
+      req.query.filters = {
+        ...req.query?.filters,
+        role: { $ne: enumRoles.admin },
+      };
     }
     let fields = removeSpecificText(req.query?.fields, [
       "password",
@@ -76,6 +77,13 @@ const getAllUsers = FindAll({
     ]);
     req.query.fields = `${fields ? `${fields},` : ""}-password`;
     return req.query;
+  },
+  customPiplineFN: (pipeline, req, res, next) => {
+    let $match = {
+      _id: { $ne: new mongoose.Types.ObjectId(req?.user?._id) },
+    };
+    pipeline.push({ $match });
+    return pipeline;
   },
 });
 const findOneUser = AsyncHandler(async (req, res, next) => {

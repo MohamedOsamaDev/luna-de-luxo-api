@@ -62,19 +62,11 @@ export const upsertCouponRecord = async (order) => {
 export const handleSubmitUseCoupon = async (order) => {
   if (!order?.coupon?.original_id) return;
   await upsertCouponRecord(order);
-  // Calculate discount amount and update influencer earnings
-  const discountAmount = order?.totalOrderPrice * (order?.coupon?.discount / 100);
-  await increamentInfluncerBalance(
-    {
-      coupon: order?.coupon?.original_id,
-    },
-    discountAmount
-  );
+  await increamentInfluncerBalance(order);
 };
 
 export const removeCouponRecord = async (order) => {
   if (!order?.coupon?.original_id) return;
-  
   return await couponhistoryModel.deleteOne({
     user: order?.user,
     coupon: order?.coupon?.original_id, // Store only ObjectId

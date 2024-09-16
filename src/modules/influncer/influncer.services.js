@@ -1,14 +1,18 @@
 import { influencerModel } from "../../database/models/influencer.model.js";
 
-export const increamentInfluncerBalance = async (query, totalEarned) => {
+export const increamentInfluncerBalance = async (order) => {
   // Calculate discount amount and update influencer earnings
-  return await influencerModel.findOneAndUpdate(query, {
-    $inc: { totalEarned, totalSales: 1 },
-  });
+  const discountAmount =
+    order?.totalOrderPrice * (order?.coupon?.discount / 100);
+  return await influencerModel.findOneAndUpdate(
+    {
+      coupon: order?.coupon?.original_id,
+    },
+    {
+      $inc: { totalEarned: discountAmount, totalSales: 1 },
+    }
+  );
 };
-
-
-
 
 export const populateInfluencer = [
   {
@@ -19,4 +23,4 @@ export const populateInfluencer = [
     path: "relatedTo",
     select: "_id fullName",
   },
-]
+];

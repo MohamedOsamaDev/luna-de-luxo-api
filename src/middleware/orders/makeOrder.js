@@ -88,8 +88,8 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     subtotal: subtotal,
     discount: coupon ? subtotal * (coupon.discount / 100) : 0,
     tax: 0, // Assuming no tax calculation for now
+    total: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0),
     shipping: shippingPrice,
-    total: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0) + shippingPrice,
     finalTotal: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0) + shippingPrice,
   };
 

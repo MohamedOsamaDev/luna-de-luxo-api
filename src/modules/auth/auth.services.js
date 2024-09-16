@@ -114,8 +114,10 @@ export const getUserAndVerify = async (decodeReq) => {
       .populate([{ path: "cart" }, { path: "influencer", populate: { path: 'coupon', select: ' expires code discount' } }])
       .lean()
       .exec();
+      console.log(user);
+      
     // Check if user exists, is not blocked, and has a valid token
-    if (!user || user.isblocked) return false;
+    if (!user || user?.isblocked) return false;
 
     if (user.passwordChangedAt) {
       const passwordChangedAtTime = Math.floor(

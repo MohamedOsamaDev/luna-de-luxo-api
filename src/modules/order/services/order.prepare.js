@@ -33,7 +33,7 @@ const formateItem = (item) => {
     poster: item.product?.poster?.url,
     type: item.product?.type,
     selectedOptions,
-    id: item?._id,
+    id: item?.id,
   };
 };
 // --------------------------------- start prepare product for make order  ---------------------------------

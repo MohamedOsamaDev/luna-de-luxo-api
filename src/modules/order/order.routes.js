@@ -18,10 +18,15 @@ import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
 import { webhookStripe } from "../../middleware/orders/webHook.stripe.js";
 import webHookRouter from "../webhook/webhook.routes.js";
 import { sessionVaildtator } from "../../middleware/orders/sessionVaildtator.js";
+import { OrderCompleted } from "./services/order.services.js";
 
 const orderRouter = express.Router();
 orderRouter.route("/").get(protectedRoutes, getAllOrders);
-
+//for testing
+orderRouter.get("/test", async (req, res) => {
+  await OrderCompleted("66e7909e2b1e5e7c9be33fe4");
+  return res.json({ received: true });
+});
 orderRouter
   .route("/:id")
   .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route

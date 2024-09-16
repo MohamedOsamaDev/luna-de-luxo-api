@@ -37,7 +37,11 @@ export const insertOrder = async (order) => {
 };
 export const OrderCompleted = async (_id) => {
   const order = await orderModel
-    .findByIdAndUpdate(_id, { status: "completed" }, { new: true })
+    .findByIdAndUpdate(
+      _id,
+      { isPaid: true, orderStatus: "accepted" },
+      { new: true }
+    )
     .populate({
       path: "user",
       select: "name email",
@@ -55,7 +59,10 @@ export const OrderCompleted = async (_id) => {
   let cartItems = cart?.items || [];
   const orderitems = order?.items || [];
   cartItems = cartItems?.filter(
-    (cartItem) => !orderitems?.find((item2) => cartItem?._id === item2?.id)
+    (cartItem) =>
+      !orderitems?.find(
+        (item2) => cartItem?._id?.toString() === item2?.id?.toString()
+      )
   );
   await cartModel.findByIdAndUpdate(cart?._id, {
     items: cartItems,

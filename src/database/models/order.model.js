@@ -11,7 +11,7 @@ const items = new Schema({
   poster: String,
   selectedOptions: {},
   id: { type: ObjectId },
-  type:String
+  type: String,
 });
 const couponSchema = new Schema({
   code: { type: String, required: true },
@@ -46,13 +46,13 @@ const schema = new Schema(
       type: Boolean,
       default: false,
     },
-
     deliveredAt: Date,
     paidAt: Date,
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     discount: { type: Number, min: 0, max: 100, default: 0 },
     isDeleted: { type: Boolean, default: false },
+    isPaid: { type: Boolean, default: false },
     coupon: couponSchema,
     notes: {
       type: String,

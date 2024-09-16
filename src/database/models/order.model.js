@@ -22,7 +22,6 @@ const couponSchema = new Schema({
 const overviewPricesSchema = new Schema({
   subtotal: { type: Number, min: 0, default: 0 }, // Total of all item prices before any discounts
   discount: { type: Number, min: 0, default: 0 }, // Total discount applied
-  tax: { type: Number, min: 0, default: 0 }, // Tax amount
   shipping: { type: Number, min: 0, default: 0 }, // Shipping cost
   total: { type: Number, min: 0, default: 0 }, // Total price after all calculations
   finalTotal: { type: Number, min: 0, default: 0 }, // Final amount to be paid

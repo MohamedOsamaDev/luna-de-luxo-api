@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-import { allPayments } from "../../config/payments.js";
+import { allPaymentsProviders } from "../../config/payments.js";
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema(
   {
@@ -13,7 +13,7 @@ const schema = new mongoose.Schema(
     },
     getwayProvidor: {
       type: String,
-      enum: allPayments,
+      enum: allPaymentsProviders,
     },
     order: { type: ObjectId, ref: "order" },
     user: { type: ObjectId, ref: "user" },

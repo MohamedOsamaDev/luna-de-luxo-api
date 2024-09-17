@@ -9,6 +9,7 @@ import {
 import {
   cancelSession,
   insertOrder,
+  mainFilterOrder,
   OrderCompleted,
   orderFiled,
 } from "./services/order.services.js";
@@ -19,7 +20,6 @@ import { createStripeSession } from "../../services/payments/stripe/session.js";
 import { createJwt, verifyJwt } from "../../utils/jwt.js";
 import httpStatus from "../../assets/messages/httpStatus.js";
 import { getwaySessionModel } from "../../database/models/getwaySession.model.js";
-
 //cash flow
 const createOrder = AsyncHandler(async (req, res, next) => {
   const { order, bulkOperations } = req.makeOrder;
@@ -37,21 +37,23 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
   const { user } = req;
   const { id } = req.params;
   const isAdmin = user.role === "admin";
-
-  let query = orderModel.findById(id);
-
+  let populate = [];
   if (isAdmin) {
-    query = query.populate([
+    populate = [
       { path: "user", select: "fullName email" },
       { path: "createdBy", select: "fullName email" },
       { path: "updatedBy", select: "fullName email" },
-    ]);
+    ];
   }
-
-  const order = await query;
+  const order = await orderModel
+    .findOne({
+      _id: id,
+      ...mainFilterOrder,
+    })
+    .populate(populate);
 
   if (!order || (order.user.toString() !== user._id.toString() && !isAdmin)) {
-    return next(new AppError({ message: "Order not found", code: 404 }));
+    return next(new AppError(httpStatus.NotFound));
   }
 
   return res.json(order);
@@ -68,6 +70,11 @@ const config = {
     }
     return query;
   },
+  pushToPipeLine: [
+    {
+      $match: mainFilterOrder,
+    },
+  ],
 };
 const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
@@ -100,7 +107,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   await createGetwaySession({
     user: req.user?._id,
     order: newOrder._id,
-    getwayProvidor: order?.paymentType,
+    getwayProvidor: "stripe",
     session: {
       id: session?.id,
       url: session?.url,

@@ -1,3 +1,4 @@
+import { allPaymentsTypes } from "../../../config/payments.js";
 import { cartModel } from "../../../database/models/cart.model.js";
 import { orderModel } from "../../../database/models/order.model.js";
 import { makeSessionExpirated } from "../../../services/payments/stripe/session.js";
@@ -11,7 +12,22 @@ import {
   decorPrepareReStock,
   clothesPrepareReStock,
 } from "./order.prepare.js";
-
+export const mainFilterOrder = {
+  $or: [
+    {
+      isPaid: true,
+    },
+    {
+      paymentType: allPaymentsTypes.COD,
+    },
+    {
+      isPaid: false,
+      paymentType: {
+        $ne: allPaymentsTypes.getway,
+      },
+    },
+  ],
+};
 export const prepareForRestock = (order, bulkOp = {}) => {
   const bulkOperations = { ...bulkOp };
   const reStcockTypes = {

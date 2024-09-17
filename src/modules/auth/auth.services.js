@@ -107,9 +107,7 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
   return { decoded, token };
 };
 export const getUserAndVerify = async (decodeReq) => {
-  try {
-    console.log(decodeReq);
-    
+  try {    
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)

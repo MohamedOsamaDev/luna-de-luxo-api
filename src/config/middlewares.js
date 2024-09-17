@@ -2,19 +2,12 @@ import cors from "cors";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { logger } from "../middleware/globels/logger.js";
 import cookieParser from "cookie-parser";
 import { AppError } from "../utils/AppError.js";
 import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
-import cache from "./cache.js";
-import { productModel } from "../database/models/product.model.js";
-import { getwaySessionModel } from "../database/models/getwaySession.model.js";
-import { orderModel } from "../database/models/order.model.js";
-
 // Load environment variables
 dotenv.config();
-
 // CORS options configuration
 export const corsOptions = {
   origin: process.env.DOMAINS.split(","), // List of allowed origins
@@ -44,8 +37,6 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = async (req, res) => {
-  // await getwaySessionModel.deleteMany({});
-  // await orderModel.deleteMany({});
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

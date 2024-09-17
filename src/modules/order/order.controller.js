@@ -12,7 +12,7 @@ import {
   OrderCompleted,
   orderFiled,
 } from "./services/order.services.js";
-import {  upsertCouponRecord } from "../coupon/coupon.services.js";
+import { upsertCouponRecord } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
 import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js";
 import { createStripeSession } from "../../services/payments/stripe/session.js";
@@ -158,15 +158,13 @@ const cancelCheckOutSession = AsyncHandler(async (req, res, next) => {
 });
 // webhook
 const webhookOrders_Stripe = AsyncHandler(async (req, res, next) => {
-  let { event } = req.webhook;
+  const { event } = req.webhook;
   const allEvenets = {
     "checkout.session.completed": OrderCompleted,
     "checkout.session.expired": orderFiled,
     default: () => {},
   };
-console.log(event.type);
-
-  const handler = allEvenets?.[event.type];
+  const handler = allEvenets?.[event?.type];
   //client_reference_id is ref to order id
   if (handler) {
     await handler(event?.data.object?.client_reference_id);

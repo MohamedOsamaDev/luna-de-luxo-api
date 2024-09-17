@@ -200,17 +200,20 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
 /* #################### */
 const changepassword = AsyncHandler(async (req, res, next) => {
   const user = req.user;
-  await UserModel.findByIdAndUpdate(_id, {
-    password: bcrypt.hashSync(req.body.newpassword, 8),
-    passwordChangedAt: Date.now(),
+  await UserModel.findByIdAndUpdate(user?._id, {
+    password: req.body.newpassword,
+    passwordChangedAt: Date.now() - 1000,
   });
-  res.cookie(
-    "token",
-    jwt.sign({ _id: user?._id, role: user?.role }, process.env.SECRETKEY, {
+  const token = jwt.sign(
+    { _id: user?._id, role: user?.role },
+    process.env.SECRETKEY,
+    {
       expiresIn: 365 * 24 * 60 * 60 * 1000,
-    }),
-    SetCookie()
+    }
   );
+
+  res.cookie("token", token, SetCookie());
+
   return res.status(200).json({ message: "sucess" });
 });
 const updateuser = AsyncHandler(async (req, res, next) => {

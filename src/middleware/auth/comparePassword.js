@@ -7,7 +7,7 @@ export const comparePassword = async (req, res, next) => {
   if (!bcrypt.compareSync(currentpassword, req?.user?.password))
     return next(
       new AppError(
-        responseHandler("badRequest", undefined, "current password wrong !")
+        responseHandler("badRequest", undefined, "current password wrong.")
       )
     );
   if (bcrypt.compareSync(newpassword, req?.user?.password))

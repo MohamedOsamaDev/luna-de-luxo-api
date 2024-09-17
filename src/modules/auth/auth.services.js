@@ -47,7 +47,7 @@ export const handleConnectCart = async (user, req, res) => {
     try {
       const decoded = jwt.verify(req.cookies.cart, process.env.SECRETKEY);
       if (decoded?.cart) {
-        const localCart = await cartModel.findByIdAndDelete(decoded.cart, {
+        const localCart = await cartModel.findByIdAndDelete(decodeReq?.cart, {
           new: true,
         });
         if (localCart) {
@@ -108,6 +108,8 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
 };
 export const getUserAndVerify = async (decodeReq) => {
   try {
+    console.log(decodeReq);
+    
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
@@ -120,18 +122,20 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
+      
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;
 
     if (user.passwordChangedAt) {
       const passwordChangedAtTime = Math.floor(
-        user.passwordChangedAt.getTime() / 1000
+        user?.passwordChangedAt?.getTime() / 1000
       );
-      if (passwordChangedAtTime > decoded.iat) return false;
+      if (passwordChangedAtTime > (decodeReq?.iat)) return false;
     }
 
     return user;
   } catch (error) {
+    console.log("🚀 ~ getUserAndVerify ~ error:", error)
     // Token verification failed or some other error occurred
     return false;
   }

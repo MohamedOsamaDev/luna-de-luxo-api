@@ -24,16 +24,16 @@ const updateVal = Joi.object({
 });
 const updatePasswordVal = Joi.object({
   newpassword: Joi.string()
-    .pattern(/^[A-Z][a-z0-9#@]{8,30}$/)
+   // .pattern(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/)
     .required(),
   currentpassword: Joi.string()
-    .pattern(/^[A-Z][a-z0-9#@]{8,30}$/)
+ //   .pattern(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/)
     .required(),
 });
 const authResetPasswordVal = Joi.object({
   token: Joi.string().min(100).max(400).required(),
   newPassword: Joi.string()
-    .pattern(/^[A-Z][a-z0-9#@]{8,30}$/)
+   // .pattern(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/)
     .required(),
   rePassword: Joi.valid(Joi.ref("newPassword")).required(),
 });

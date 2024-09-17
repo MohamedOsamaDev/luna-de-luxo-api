@@ -34,7 +34,7 @@ const schema = new mongoose.Schema(
 
 schema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 8);
+    this.password =bcrypt.hashSync(this.password, 8)
   }
   next();
 });
@@ -42,7 +42,7 @@ schema.pre('findOneAndUpdate', async function (next) {
   // Check if password is being updated
   const update = this.getUpdate();
   if (update && update?.password) {   
-    update.password = await bcrypt.hash(update.password, 8);
+    update.password = bcrypt.hashSync(update.password, 8)
   }
   next();
 });

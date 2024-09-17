@@ -20,8 +20,7 @@ const ForgetPasswordVal = Joi.object({
 });
 const updateVal = Joi.object({
   fullName: Joi.string().min(1).max(30),
-  // email: Joi.string().email(),
-  age: Joi.number().integer().min(10).max(80),
+  phone: Joi.string().min(8).max(30),
 });
 const updatePasswordVal = Joi.object({
   newpassword: Joi.string()

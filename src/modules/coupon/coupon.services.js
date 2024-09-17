@@ -4,7 +4,6 @@ import { AppError } from "../../utils/AppError.js";
 import { couponModel } from "../../database/models/coupon.model.js";
 import { increamentInfluncerBalance } from "../influncer/influncer.services.js";
 import { couponhistoryModel } from "../../database/models/coupon_history.js";
-
 export const FindCouponWithVerfiy = async ({ filters, user }) => {
   let matchCondition = {
     expires: { $gt: new Date() },
@@ -48,7 +47,6 @@ export const FindCouponWithVerfiy = async ({ filters, user }) => {
     throw new AppError({ message: "the coupon is used before", code: 409 });
   return coupon;
 };
-
 export const upsertCouponRecord = async (order) => {
   if (order?.user || !order?.coupon?.original_id) return;
   return await couponhistoryModel
@@ -61,18 +59,21 @@ export const upsertCouponRecord = async (order) => {
 };
 export const handleSubmitUseCoupon = async (order) => {
   if (!order?.coupon?.original_id) return;
-  await upsertCouponRecord(order);
-  await increamentInfluncerBalance(order);
+  try {
+    await upsertCouponRecord(order);
+    await increamentInfluncerBalance(order);
+  } catch (e) {}
 };
-
 export const removeCouponRecord = async (order) => {
   if (!order?.coupon?.original_id) return;
-  return await couponhistoryModel.deleteOne({
-    user: order?.user,
-    coupon: order?.coupon?.original_id, // Store only ObjectId
-  });
+  try {
+    return await couponhistoryModel.deleteOne({
+      user: order?.user,
+      coupon: order?.coupon?.original_id, // Store only ObjectId
+    });
+  } catch (e) {}
+  return;
 };
-
 export const perpareForDeleteCouponsRecord = (order, list = []) => {
   if (!order?.coupon?.original_id) return list;
   return [

@@ -3,6 +3,7 @@ import { orderModel } from "../../../database/models/order.model.js";
 import { makeSessionExpirated } from "../../../services/payments/stripe/session.js";
 import { removeCouponRecord } from "../../coupon/coupon.services.js";
 import { makeMultibulkWrite } from "../../handlers/crudHandler.js";
+import { increamentInfluncerBalance } from "../../influncer/influncer.services.js";
 import { deleteGetwaySession } from "../../sessionGetway/sessionGetway.services.js";
 import {
   clothesPrepareForMakeOrder,
@@ -55,6 +56,7 @@ export const OrderCompleted = async (_id) => {
     order: _id,
   });
 
+  await increamentInfluncerBalance(order);
   const cart = order?.user?.cart || {};
   let cartItems = cart?.items || [];
   const orderitems = order?.items || [];
@@ -67,6 +69,7 @@ export const OrderCompleted = async (_id) => {
   await cartModel.findByIdAndUpdate(cart?._id, {
     items: cartItems,
   });
+
 
   return order;
 };

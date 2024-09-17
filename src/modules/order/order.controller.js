@@ -12,7 +12,7 @@ import {
   OrderCompleted,
   orderFiled,
 } from "./services/order.services.js";
-import { handleSubmitUseCoupon } from "../coupon/coupon.services.js";
+import {  upsertCouponRecord } from "../coupon/coupon.services.js";
 import { orderModel } from "../../database/models/order.model.js";
 import { createGetwaySession } from "../sessionGetway/sessionGetway.services.js";
 import { createStripeSession } from "../../services/payments/stripe/session.js";
@@ -110,7 +110,7 @@ const createCheckOutSession = AsyncHandler(async (req, res) => {
   // Update stock products
   await makeMultibulkWrite(bulkOperations);
   // Handle coupon usage
-  await handleSubmitUseCoupon(newOrder);
+  await upsertCouponRecord(order);
   return res.json({
     message: "Checkout session created successfully",
     session: session?.url,

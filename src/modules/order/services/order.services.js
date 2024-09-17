@@ -74,7 +74,9 @@ export const OrderCompleted = async (_id) => {
   return order;
 };
 export const orderFiled = async (_id) => {
-  const order = await orderModel.findById(_id);
+  const order = await orderModel.findByIdAndDelete(_id , {
+    new: true,
+  });
   if (!order) return null;
   await deleteGetwaySession({
     order: _id,

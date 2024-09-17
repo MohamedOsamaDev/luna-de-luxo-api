@@ -44,8 +44,8 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = async (req, res) => {
-  await getwaySessionModel.deleteMany({});
-  await orderModel.deleteMany({});
+  // await getwaySessionModel.deleteMany({});
+  // await orderModel.deleteMany({});
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

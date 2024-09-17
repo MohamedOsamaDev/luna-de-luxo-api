@@ -164,6 +164,7 @@ const webhookOrders_Stripe = AsyncHandler(async (req, res, next) => {
     "checkout.session.expired": orderFiled,
     default: () => {},
   };
+console.log(event.type);
 
   const handler = allEvenets?.[event.type];
   //client_reference_id is ref to order id

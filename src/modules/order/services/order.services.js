@@ -70,11 +70,10 @@ export const OrderCompleted = async (_id) => {
     items: cartItems,
   });
 
-
   return order;
 };
 export const orderFiled = async (_id) => {
-  const order = await orderModel.findByIdAndDelete(_id , {
+  const order = await orderModel.findByIdAndDelete(_id, {
     new: true,
   });
   if (!order) return null;
@@ -91,8 +90,5 @@ export const cancelSession = async (session) => {
   const isProviderAcceptedRequest = await makeSessionExpirated(
     session?.session?.id
   );
-  if (isProviderAcceptedRequest) {
-    await orderFiled(session?.order);
-  }
   return true;
 };

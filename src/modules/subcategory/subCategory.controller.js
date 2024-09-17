@@ -12,7 +12,7 @@ import mongoose from "mongoose";
 const config = {
   model: SubCategoryModel,
   name: "subcategory",
-  uniqueFields: ["name"],
+  slug: "name",
   margeParam: "category",
   populate: [
     {

@@ -49,7 +49,7 @@ const ProductSchemaVal = Joi.object({
   isFeatured: Joi.boolean(),
   publish: Joi.boolean(),
   rateRange: Joi.number().min(0).max(100).default(1).optional(),
-  additionalInfo: Joi.array().items(additionalInfo).min(1),
+  additionalInfo: Joi.array().items(additionalInfo),
   poster: Joi.alternatives().try(objectIdVal, relationFileVal),
   category: Joi.alternatives()
     .try(objectIdVal, UpdateCategorySchemaVal)

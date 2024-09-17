@@ -48,10 +48,10 @@ export const InsertOne = ({
       });
       if (checkDocument)
         return next(
-          new AppError(
-            responseHandler("conflict", undefined, `${name} is already exists`)
-          )
-        );
+      new AppError(
+        responseHandler("conflict", undefined, `${name} is already exists`)
+      )
+    );
       req.body.slug = slugify(req?.body?.[slug]);
     }
     const document = new model(req.body);

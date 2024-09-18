@@ -15,7 +15,9 @@ export const increamentInfluncerBalance = async (order) => {
       }
     );
     return influencerAfterUpdate;
-  } catch (e) {}
+  } catch (e) {
+    
+  }
   return null;
 };
 

@@ -1,4 +1,3 @@
-
 export const preFindproduct = function (next) {
   if (this.options.disablePrepopulate) return next();
   this.populate([
@@ -220,3 +219,37 @@ export let colorsLookup = [
     },
   },
 ];
+
+const decoreCase = (product, selectedOptions = {}) => {
+try {
+  const { color } = selectedOptions;
+
+  const iColorVaild = product?.colors?.find(
+    (val) => val?.color?._id?.toString() === color?.toString()
+  );
+  return !!iColorVaild
+} catch (error) {
+  
+}
+return false
+};
+
+const clothesCase = (product, selectedOptions) => {
+  try {
+    const { color, size } = selectedOptions;
+  
+    const iColorVaild = product?.colors?.find(
+      (val) => val?.color?._id?.toString() === color?.toString()
+    );
+    const iSizeVaild = iColorVaild?.sizes?.find(
+      (val) => val?.size?._id?.toString() === size?.toString()
+    );
+    return !!iSizeVaild
+  } catch (error) { 
+  }
+  return false
+};
+export const allproductTypes = {
+  decor: decoreCase,
+  clothes: clothesCase,
+};

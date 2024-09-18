@@ -56,7 +56,9 @@ productRouter
     deleteproduct
   )
   .get(
-    cacheResponse(),
+    cacheResponse({
+      stdTTL: "6h",
+    }),
     validation(paramsSlugVal),
     tokenDetector,
     getOneproduct

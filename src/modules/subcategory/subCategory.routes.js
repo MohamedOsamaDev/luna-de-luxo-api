@@ -19,6 +19,7 @@ import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
 import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 import { paramsIdVal } from "../commens/validation.js";
+import { cacheResponse } from "../../middleware/cache/cache.js";
 const subCategoryRouter = express.Router({ mergeParams: true });
 subCategoryRouter
   .route("/")
@@ -29,10 +30,13 @@ subCategoryRouter
     AttributedTo,
     addOneSubCategory
   )
-  .get(tokenDetector, getAllSubCategories);
+  .get(
+    tokenDetector,
+    getAllSubCategories
+  );
 subCategoryRouter
   .route("/:id")
-  .get(validation(paramsIdVal), tokenDetector, getOneSubCategory)
+  .get(cacheResponse({ stdTTL: "4h" }), tokenDetector, getOneSubCategory)
   .put(
     validation(UpdatesubCategorySchemaVal),
     protectedRoutes,

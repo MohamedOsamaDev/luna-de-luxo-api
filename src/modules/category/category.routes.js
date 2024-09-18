@@ -23,7 +23,11 @@ import { paramsIdVal } from "../commens/validation.js";
 
 const categoryRouter = express.Router();
 
-categoryRouter.use("/:category/subcategories", subCategoryRouter);
+categoryRouter.use(
+  "/:category/subcategories",
+  cacheResponse({ stdTTL: "4h", group: true }),
+  subCategoryRouter
+);
 categoryRouter
   .route("/")
   .post(
@@ -33,10 +37,19 @@ categoryRouter
     AttributedTo,
     addOneCategory
   )
-  .get(cacheResponse(), tokenDetector, getAllCategoryies);
+  .get(
+    cacheResponse({ stdTTL: "4h", group: true }),
+    tokenDetector,
+    getAllCategoryies
+  );
 categoryRouter
   .route("/:id")
-  .get(cacheResponse(), validation(paramsIdVal), tokenDetector, getOneCategory)
+  .get(
+    cacheResponse({ stdTTL: "4h" }),
+    validation(paramsIdVal),
+    tokenDetector,
+    getOneCategory
+  )
   .put(
     validation(UpdateCategorySchemaVal),
     protectedRoutes,

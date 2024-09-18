@@ -28,6 +28,6 @@ pageRouter
     AttributedTo,
     updatePage
   )
-  .get(cacheResponse({ stdTTL: "1y" }), tokenDetector, getPage);
+  .get(cacheResponse({ stdTTL: "6h" }), tokenDetector, getPage);
 
 export default pageRouter;

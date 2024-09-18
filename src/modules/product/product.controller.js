@@ -12,6 +12,8 @@ import { sizeModel } from "../../database/models/size.model.js";
 import { Posterlookup } from "../commens/lookup.js";
 import { customQueryproduct as customQuery } from "./product.services.js";
 import { SubCategoryModel } from "../../database/models/subcategory.model.js";
+import { AppError } from "../../utils/AppError.js";
+import responseHandler from "../../utils/responseHandler.js";
 
 const allproductTypes = {
   clothes: ClothesModel,
@@ -103,15 +105,21 @@ const getFilters = AsyncHandler(async (req, res, next) => {
     publish: true,
   };
   let limit = 30;
-  const colors = await colorModel.find(query).limit(limit).lean();
-  const categories = await categoryModel.find(query).limit(limit).lean();
-  const sizes = await sizeModel.find(query).limit(limit).lean();
-
+  const handlePromise = (promise) => {
+    return promise.then((data) => data).catch((error) => []);
+  };
+  const [colors, categories, sizes,subcategories] = await Promise.all([
+    handlePromise(colorModel.find(query).limit(limit).lean()),
+    handlePromise(categoryModel.find(query).limit(limit).lean()),
+    handlePromise(sizeModel.find(query).limit(limit).lean()),
+    handlePromise(SubCategoryModel.find(query).limit(limit).lean()),
+  ]);
   return res.status(200).json({
     message: "success",
     colors,
     categories,
     sizes,
+    subcategories,
   });
 });
 export {

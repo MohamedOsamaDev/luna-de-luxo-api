@@ -6,13 +6,14 @@ import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import jwt from "jsonwebtoken";
 import httpStatus from "../../assets/messages/httpStatus.js";
 import responseHandler from "../../utils/responseHandler.js";
+import { allproductTypes } from "../product/product.services.js";
 
 const addToCart = AsyncHandler(async (req, res, next) => {
   let product = await productModel.findById(req?.body?.product);
   if (!product)
     return next(new AppError(responseHandler("NotFound", "product")));
   const { color = null, size = null, quantity = null } = req.body;
-  let cart = req?.cart;
+  const cart = req?.cart;
   const item = cart.items.find(
     (v) =>
       v?.product?._id?.toString() === product?._id?.toString() &&
@@ -22,6 +23,13 @@ const addToCart = AsyncHandler(async (req, res, next) => {
   if (item) {
     item.quantity = quantity || +item?.quantity + 1;
   } else {
+    const productAvilabltyHandler = allproductTypes?.[product?.type](product, {
+      color,
+      size,
+    });
+    if (!productAvilabltyHandler) {
+      return next(new AppError(httpStatus.badRequest));
+    }
     cart.items.push({
       product: req?.body?.product,
       color,

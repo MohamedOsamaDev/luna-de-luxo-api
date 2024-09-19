@@ -2,6 +2,7 @@ import { cartModel } from "../../database/models/cart.model.js";
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import {
+  deleteOne,
   FindAll,
   makeMultibulkWrite,
   updateOne,
@@ -78,6 +79,7 @@ const config = {
 };
 const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
+const deleteOrder = deleteOne(config);
 // paymentsGetway
 const createCheckOutSession = AsyncHandler(async (req, res) => {
   // create getway session and return the session id
@@ -189,4 +191,5 @@ export {
   webhookOrders_Stripe,
   verfiyOrder,
   cancelCheckOutSession,
+  deleteOrder
 };

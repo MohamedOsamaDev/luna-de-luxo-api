@@ -7,6 +7,7 @@ import {
   updateOrder,
   verfiyOrder,
   webhookOrders_Stripe,
+  deleteOrder,
 } from "./order.controller.js";
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
 import { makeOrder } from "../../middleware/orders/makeOrder.js";
@@ -21,7 +22,10 @@ import { sessionVaildtator } from "../../middleware/orders/sessionVaildtator.js"
 import { OrderCompleted } from "./services/order.services.js";
 
 const orderRouter = express.Router();
-orderRouter.route("/").get(protectedRoutes, getAllOrders);
+orderRouter
+  .route("/")
+  .get(protectedRoutes, getAllOrders)
+  
 //for testing
 orderRouter.get("/test", async (req, res) => {
   await OrderCompleted("66e7909e2b1e5e7c9be33fe4");
@@ -31,6 +35,7 @@ orderRouter
   .route("/:id")
   .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route
   .get(getSpecificOrder)
+  .delete( authorized(enumRoles.admin), deleteOrder)
   .put(
     validation(updateOrderVal),
     authorized(enumRoles.admin),

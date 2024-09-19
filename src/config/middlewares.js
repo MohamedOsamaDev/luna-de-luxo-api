@@ -6,10 +6,10 @@ import cookieParser from "cookie-parser";
 import { AppError } from "../utils/AppError.js";
 import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
-import { FileModel } from './../database/models/file.model.js';
+import { FileModel } from "./../database/models/file.model.js";
 // Load environment variables
 dotenv.config();
-// CORS options configuration
+// CORS options configuration 
 export const corsOptions = {
   origin: process.env.DOMAINS.split(","), // List of allowed origins
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
@@ -38,24 +38,6 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = async (req, res) => {
-  let images = [
-    "https://res.cloudinary.com/dpuygkgve/image/upload/v1726562173/ibhthsnlbpx24kp7vmiy.webp",
-    "https://res.cloudinary.com/dpuygkgve/image/upload/v1726562171/pm9mqtewmegmuo5wufb8.webp",
-    "https://res.cloudinary.com/dpuygkgve/image/upload/v1726562169/qjgqqfhasq5jlwjcxd5x.webp",
-    "https://res.cloudinary.com/dpuygkgve/image/upload/v1726562166/htwhzv1ave5jm1xnvc3w.webp",
-    "https://res.cloudinary.com/dpuygkgve/image/upload/v1726562164/wtxe9iwqoxuby1fxubhu.webp",
-  ];
-  const files = await FileModel.find({});
-  
-  // Prepare bulk operations
-  const bulkOps = files.map((file,i) => ({
-    updateOne: {
-      filter: { _id: file._id },
-      update: { url :images?.[Math.round(Math.random() * 4)]  }, // Random score between 0 and 100
-    }
-  }));
-  // Execute bulk operations
-  await FileModel.bulkWrite(bulkOps);
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

@@ -65,7 +65,6 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 // Pre-find hook to populate fields
 schema.pre(/^find/, preFindproduct);
 // Post-find hook to update stock
@@ -102,3 +101,4 @@ export const ClothesModel = productModel.discriminator(
   "clothes",
   clothesSchema
 );
+ئ

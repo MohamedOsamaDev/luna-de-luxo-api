@@ -29,6 +29,7 @@ const config = {
 const deleteproduct = deleteOne(config);
 const getallproduct = FindAll(config);
 const getOneproduct = FindOne(config);
+
 const addproduct = AsyncHandler(async (req, res, next) => {
   const { type } = req.body;
   const check = await productModel.findOne({ name: req.body.name });
@@ -99,7 +100,7 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     message: "Updated Sucessfully",
     data,
   });
-});
+})
 const getFilters = AsyncHandler(async (req, res, next) => {
   let query = {
     publish: true,

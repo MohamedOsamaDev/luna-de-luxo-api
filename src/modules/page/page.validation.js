@@ -5,6 +5,7 @@ import { UpdateCategorySchemaVal } from "../category/category.validation.js";
 import { UpdateproductSchemaVal } from "../product/product.validation.js";
 import { commensVal, objectIdVal } from "../commens/validation.js";
 
+let poster = Joi.alternatives().try(objectIdVal, relationFileVal);
 // Validation for landing
 export const landingCreateVal = Joi.object({
   title: Joi.string().trim().required(),
@@ -133,9 +134,9 @@ export const careServiceCreateVal = Joi.object({
   }),
   categories: Joi.array().items(
     Joi.object({
-      category: objectIdVal.required().messages({
-        "any.required": "Category is required",
-      }),
+      category: Joi.alternatives()
+      .try(objectIdVal, UpdateCategorySchemaVal)
+      .required(),
       poster: relationFileVal,
       content: Joi.array().items(
         Joi.object({
@@ -147,7 +148,7 @@ export const careServiceCreateVal = Joi.object({
             "string.min": "Part description is required",
             "any.required": "Part description is required",
           }),
-          image: objectIdVal.optional(),
+          image: poster.optional(),
           ...commensVal,
         })
       ),
@@ -167,9 +168,9 @@ export const careServiceUpdateVal = Joi.object({
   }),
   categories: Joi.array().items(
     Joi.object({
-      category: objectIdVal.messages({
-        "any.required": "Category is required",
-      }),
+      category:  Joi.alternatives()
+      .try(objectIdVal, UpdateCategorySchemaVal)
+      .required(),
       poster: relationFileVal,
       content: Joi.array().items(
         Joi.object({
@@ -179,7 +180,7 @@ export const careServiceUpdateVal = Joi.object({
           description: Joi.string().trim().min(1).messages({
             "string.min": "Part description is required",
           }),
-          image: objectIdVal.optional(),
+          image: poster.optional(),
           ...commensVal,
         })
       ),
@@ -367,6 +368,7 @@ export const privacyPolicyUpdateVal = Joi.object({
             })
           )
           .optional(),
+           ...commensVal,
       })
     )
     .optional(),

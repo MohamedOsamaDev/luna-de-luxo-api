@@ -69,7 +69,7 @@ export class ApiFetcher {
     if (this.searchQuery.fields) {
       try {
         const fields = this.searchQuery.fields
-          .split(",")
+          .split(",").filter(Boolean)
           .reduce((acc, field) => {
             if (field.startsWith("-")) {
               acc[field.substring(1)] = 0; // Exclude field

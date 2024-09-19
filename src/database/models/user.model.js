@@ -34,19 +34,18 @@ const schema = new mongoose.Schema(
 
 schema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password =bcrypt.hashSync(this.password, 8)
+    this.password = bcrypt.hashSync(this.password, 8);
   }
   next();
 });
-schema.pre('findOneAndUpdate', async function (next) {
+schema.pre("findOneAndUpdate", async function (next) {
   // Check if password is being updated
   const update = this.getUpdate();
-  if (update && update?.password) {   
-    update.password = bcrypt.hashSync(update.password, 8)
+  if (update && update?.password) {
+    update.password = bcrypt.hashSync(update.password, 8);
   }
   next();
 });
-
 
 // Virtual populate for cart
 schema.virtual("cart", {
@@ -54,7 +53,6 @@ schema.virtual("cart", {
   localField: "_id",
   foreignField: "user",
   justOne: true, // Ensures the virtual field returns an object instead of an array
-  
 });
 
 // Virtual populate for influencer
@@ -78,6 +76,6 @@ const autoPopulateFields = function (next) {
   next();
 };
 
-schema.pre(/^find/, autoPopulateFields);
+//schema.pre(/^find/, autoPopulateFields);
 
 export const UserModel = mongoose.model("user", schema);

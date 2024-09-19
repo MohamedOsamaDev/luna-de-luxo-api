@@ -101,4 +101,3 @@ export const ClothesModel = productModel.discriminator(
   "clothes",
   clothesSchema
 );
-ئ

@@ -15,16 +15,11 @@ import {
 export const mainFilterOrder = {
   $or: [
     {
-      isPaid: true,
-    },
-    {
       paymentType: allPaymentsTypes.COD,
     },
     {
-      isPaid: false,
-      paymentType: {
-        $ne: allPaymentsTypes.getway,
-      },
+      paymentType: allPaymentsTypes.getway,
+      orderConfirmed: true,
     },
   ],
 };
@@ -56,7 +51,7 @@ export const OrderCompleted = async (_id) => {
   const order = await orderModel
     .findByIdAndUpdate(
       _id,
-      { isPaid: true, orderStatus: "accepted" },
+      { isPaid: true, orderStatus: "accepted", orderConfirmed: true },
       { new: true }
     )
     .populate({

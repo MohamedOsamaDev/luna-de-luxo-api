@@ -62,6 +62,7 @@ const schema = new Schema(
     createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     discount: { type: Number, min: 0, max: 100, default: 0 },
     isDeleted: { type: Boolean, default: false },
+    orderConfirmed: { type: Boolean, default: false },
     isPaid: { type: Boolean, default: false },
     coupon: couponSchema,
     notes: {

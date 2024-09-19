@@ -59,6 +59,8 @@ const updateOrderVal = Joi.object({
   _id: Joi.string().hex().length(24).optional(),
   paidAt: Joi.date().optional(),
   deliveredAt: Joi.date().optional(),
+  isPaid: Joi.boolean().optional(),
+  orderConfirmed:Joi.boolean().optional(),
 });
 
 export { createOrderVal, updateOrderVal };

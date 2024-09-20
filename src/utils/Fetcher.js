@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export class ApiFetcher {
   constructor(pipeline, searchQuery) {
     this.pipeline = Array.isArray(pipeline) ? pipeline : [];
+    this.ApiFetcherPipeline = null;
     this.searchQuery = searchQuery;
     this.metadata = {};
   }
@@ -11,6 +12,7 @@ export class ApiFetcher {
     const pageNumber = parseInt(this.searchQuery.page, 10) || 1;
     const pageLimit = parseInt(this.searchQuery.pagelimit, 10) || 20;
     const skip = (pageNumber - 1) * pageLimit;
+    this.ApiFetcherPipeline = [...this.pipeline];
     this.pipeline.push({ $skip: skip }, { $limit: pageLimit });
     this.metadata = { page: pageNumber, pageLimit };
     return this;
@@ -40,9 +42,9 @@ export class ApiFetcher {
               )} }`
             : `"${value}"`;
           return `"${key}": ${arrayValue} `;
-        })
-        // Parse the modified JSON string back to an object
-        query = JSON.parse(query)
+        });
+      // Parse the modified JSON string back to an object
+      query = JSON.parse(query);
       if (Object.keys(query)?.length) {
         this.pipeline.push({ $match: query });
       }
@@ -69,7 +71,8 @@ export class ApiFetcher {
     if (this.searchQuery.fields) {
       try {
         const fields = this.searchQuery.fields
-          .split(",").filter(Boolean)
+          .split(",")
+          .filter(Boolean)
           .reduce((acc, field) => {
             if (field.startsWith("-")) {
               acc[field.substring(1)] = 0; // Exclude field
@@ -117,8 +120,10 @@ export class ApiFetcher {
   }
   // Method to get total count of documents after applying filters
   async count(model) {
+    const pipeline = this?.ApiFetcherPipeline 
+    if (!pipeline) return 0
     const result = await model
-      .aggregate([...this.pipeline, { $count: "totalCount" }])
+      .aggregate([ ...pipeline, { $count: "totalCount" }])
       .exec();
     return result.length ? result[0].totalCount : 0;
   }

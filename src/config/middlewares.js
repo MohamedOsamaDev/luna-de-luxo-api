@@ -7,6 +7,7 @@ import { AppError } from "../utils/AppError.js";
 import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
 import { FileModel } from "./../database/models/file.model.js";
+import { colorModel } from "../database/models/color.model.js";
 // Load environment variables
 dotenv.config();
 // CORS options configuration 
@@ -38,6 +39,9 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = async (req, res) => {
+  await colorModel.updateMany({} , {
+    publish: true,
+  })
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

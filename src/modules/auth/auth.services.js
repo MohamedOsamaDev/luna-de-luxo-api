@@ -128,7 +128,7 @@ export const getUserAndVerify = async (decodeReq) => {
       const passwordChangedAtTime = Math.floor(
         user?.passwordChangedAt?.getTime() / 1000
       );
-      console.log("🚀 ~ getUserAndVerify ~ passwordChangedAtTime > decodeReq?.iat:", passwordChangedAtTime > decodeReq?.iat)
+      console.log("🚀 ~ getUserAndVerify ~ passwordChangedAtTime > decodeReq?.iat:", passwordChangedAtTime , decodeReq?.iat)
       if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
     return user;

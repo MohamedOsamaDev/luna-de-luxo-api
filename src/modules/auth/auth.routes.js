@@ -1,7 +1,5 @@
 import express from "express";
 import {
-  ForgetPasswordVal,
-  authResetPasswordVal,
   signinSchemaVal,
   signupschemaVal,
   updatePasswordVal,
@@ -13,11 +11,8 @@ import {
   signUp,
   signIn,
   verfiyEmail,
-  unsubscribe,
-  FPsendEmail,
   forgetPassword,
   ResetPassword,
-  softdelete,
   updateuser,
   deleteUser,
   changepassword,

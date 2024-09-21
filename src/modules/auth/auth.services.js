@@ -107,6 +107,7 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
   return { decoded, token };
 };
 export const getUserAndVerify = async (decodeReq) => {
+  console.log("🚀 ~ getUserAndVerify ~ decodeReq:", decodeReq)
   try {    
     if (!decodeReq) return false;
     // Check if user exists
@@ -120,6 +121,7 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
+      console.log(user);
       
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;

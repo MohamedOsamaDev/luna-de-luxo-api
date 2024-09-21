@@ -36,7 +36,9 @@ const signUp = AsyncHandler(async (req, res, next) => {
     },
     cart,
   });
+  
 });
+
 const signIn = AsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 

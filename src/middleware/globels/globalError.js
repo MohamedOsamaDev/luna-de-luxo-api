@@ -6,11 +6,12 @@ export const globalError = (error, req, res, next) => {
   process.env.MODE === "dev"
     ? console.log(chalk.red(`❌  - Error  - ${error?.message}`))
     : "";
-    
-    let code = error?.code || 500;
-    let message = error?.message || "something went wrong";
-    let details = error?.details || {};
+
+  let code = error?.code || 500;
+  let message = error?.message || "something went wrong";
+  let details = error?.details || {};
   if (message === httpStatus.Forbidden.message) {
+    console.log("cookies cleared");
     res.cookie(
       "token",
       "",

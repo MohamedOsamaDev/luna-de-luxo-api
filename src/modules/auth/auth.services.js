@@ -121,7 +121,7 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
-      console.log(user);
+      console.log('user' ,user);
       
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;

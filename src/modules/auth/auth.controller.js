@@ -275,7 +275,7 @@ const logOut = AsyncHandler(async (req, res, next) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: true, // Use the same secure options as when you set it
-    sameSite: 'strict',
+    sameSite: 'Strict',
   });
   return res.status(200).json({ message: "success" });
 });

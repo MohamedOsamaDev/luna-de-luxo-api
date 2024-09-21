@@ -8,6 +8,7 @@ import {
 } from "../handlers/crudHandler.js";
 import { populate } from "dotenv";
 import mongoose from "mongoose";
+import { Posterlookup } from "../commens/lookup.js";
 
 const config = {
   model: SubCategoryModel,
@@ -32,6 +33,7 @@ const config = {
     }
     //return pipline;
   },
+  pushToPipeLine: Posterlookup,
 };
 const addOneSubCategory = InsertOne(config);
 const updateOneSubCategory = updateOne(config);

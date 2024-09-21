@@ -107,8 +107,7 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
   return { decoded, token };
 };
 export const getUserAndVerify = async (decodeReq) => {
-  console.log("🚀 ~ getUserAndVerify ~ decodeReq:", decodeReq)
-  try {    
+  try {
     if (!decodeReq) return false;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
@@ -121,8 +120,8 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
-      console.log('user' ,user);
-      
+    console.log("user", user);
+
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;
 
@@ -130,12 +129,12 @@ export const getUserAndVerify = async (decodeReq) => {
       const passwordChangedAtTime = Math.floor(
         user?.passwordChangedAt?.getTime() / 1000
       );
-      if (passwordChangedAtTime > (decodeReq?.iat)) return false;
+      if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
 
     return user;
   } catch (error) {
-    console.log("🚀 ~ getUserAndVerify ~ error:", error)
+    console.log("🚀 ~ getUserAndVerify ~ error:", error);
     // Token verification failed or some other error occurred
     return false;
   }

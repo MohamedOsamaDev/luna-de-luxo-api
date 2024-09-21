@@ -12,6 +12,7 @@ const schema = new mongoose.Schema(
     publish: { type: Boolean, default: false, default: false },
     expires: Date,
     discount: { type: Number, default: 0, required: true, min: 0, max: 100 },
+    commission: { type: Number, default: 0, required: true, min: 0, max: 100 },
     count: { type: Number, default: 0, required: true, min: 0 },
     createdBy: { type: ObjectId, ref: "user" },
     updatedBy: { type: ObjectId, ref: "user" },

@@ -31,6 +31,14 @@ const landingSchema = new mongoose.Schema({
         required: true,
       },
       poster: { type: ObjectId, ref: "file" },
+      linkTitle: {
+        type: String,
+        trim: true,
+      },
+      linkHref: {
+        type: String,
+        trim: true,
+      },
     },
   ],
   topCategories: [{ type: ObjectId, ref: "category" }],
@@ -78,7 +86,7 @@ landingSchema.pre(/^find/, function (next) {
       path: "featuredProducts",
       model: "product",
       select: "_id name poster slug",
-      options: { strictPopulate: false,disablePrepopulate: true },
+      options: { strictPopulate: false, disablePrepopulate: true },
       match: { isFeatured: true }, // Only include products that are featured
     },
     {

@@ -17,6 +17,8 @@ export const landingCreateVal = Joi.object({
         title: Joi.string().trim().required(),
         description: Joi.string().trim().required(),
         poster: relationFileVal,
+        linkTitle: Joi.string().trim().required(),
+        linkHref: Joi.string().trim().required(),
         ...commensVal,
       })
     ),
@@ -44,6 +46,8 @@ export const landingUpdateVal = Joi.object({
         title: Joi.string().trim(),
         description: Joi.string().trim(),
         poster: relationFileVal,
+        linkTitle: Joi.string().trim(),
+        linkHref: Joi.string().trim(),
         ...commensVal,
       })
     ),

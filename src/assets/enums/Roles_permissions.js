@@ -9,6 +9,7 @@ Object.freeze(Roles_permissions);
 export const enumRoles = {
   admin: "admin",
   user: "user",
+  public: "public"
 };
 
 Object.freeze(enumRoles);

@@ -11,13 +11,18 @@ import { addCartVal, paramsIdVal } from "./cart.validation.js";
 import { validation } from "../../middleware/globels/validation.js";
 import { checkCart } from "../../middleware/cart/checkCart.js";
 import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
+import { authorized } from "../../middleware/globels/authorized.js";
+import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 const cartRouter = express.Router();
+const authConfig = {
+  admin: true,
+  user: true,
+}
 cartRouter
   .route("/")
   .post(
-    tokenDetector({
-      user: true,
-    }),
+    tokenDetector(authConfig),
+    authorized(enumRoles.public, enumRoles.user),
     validation(addCartVal),
     checkCart,
     addToCart
@@ -26,19 +31,22 @@ cartRouter
     tokenDetector({
       user: true,
     }),
+    authorized(enumRoles.public, enumRoles.user),
     checkCart,
     getLoggedCart
   )
   .patch(
-    tokenDetector({
-      user: true,
-    }),
+    tokenDetector(authConfig),
+    authorized(enumRoles.public, enumRoles.user),
     checkCart,
     clearCart
   );
 
-cartRouter
-  .route("/:id")
-  .put(tokenDetector, validation(paramsIdVal), removeItemCart);
+cartRouter.route("/:id").put(
+  tokenDetector(authConfig),
+  authorized(enumRoles.public, enumRoles.user),
+  validation(paramsIdVal),
+  removeItemCart
+);
 
 export default cartRouter;

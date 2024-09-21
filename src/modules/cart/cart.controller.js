@@ -61,12 +61,14 @@ const removeItemCart = AsyncHandler(async (req, res, next) => {
     );
   }
   if (!query) return next(new AppError(httpStatus.internalServerError));
+  console.log(req?.params?.id);
+  
   let cart = await cartModel.findOneAndUpdate(
     query,
     { $pull: { items: { _id: req?.params?.id } } },
     { new: true }
   );
-
+  
   if (!cart) return next(new AppError(httpStatus.internalServerError));
   return res.status(200).json(cart);
 });

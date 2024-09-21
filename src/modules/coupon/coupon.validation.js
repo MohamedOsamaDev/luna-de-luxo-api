@@ -5,6 +5,7 @@ const couponSchemaVal = Joi.object({
   code: Joi.string().min(5).max(30).required().trim(),
   expires: Joi.date().required(),
   discount: Joi.number().integer().options({ convert: false }).required(),
+  commission: Joi.number().integer().options({ convert: false }).required(),
   count: Joi.number().integer().options({ convert: false }).required(),
   publish,
   _id: objectIdVal,
@@ -17,6 +18,7 @@ const updateCouponSchemaVal = Joi.object({
   code: Joi.string().min(5).max(30).trim().optional(),
   expires: Joi.date().optional(),
   discount: Joi.number().integer().options({ convert: false }).optional(),
+  commission: Joi.number().integer().options({ convert: false }).optional(),
 });
 const paramsIdVal = Joi.object({
   id: objectIdVal,

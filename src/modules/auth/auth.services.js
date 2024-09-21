@@ -120,18 +120,17 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
-    console.log("user", user);
-
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;
 
-    if (user.passwordChangedAt) {
+    console.log("🚀 ~ getUserAndVerify ~ (user?.passwordChangedAt:", user?.passwordChangedAt)
+    if (user?.passwordChangedAt) {
       const passwordChangedAtTime = Math.floor(
         user?.passwordChangedAt?.getTime() / 1000
       );
+      console.log("🚀 ~ getUserAndVerify ~ passwordChangedAtTime > decodeReq?.iat:", passwordChangedAtTime > decodeReq?.iat)
       if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
-
     return user;
   } catch (error) {
     console.log("🚀 ~ getUserAndVerify ~ error:", error);

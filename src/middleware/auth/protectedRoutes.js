@@ -8,6 +8,7 @@ export const protectedRoutes = AsyncHandler(async (req, res, next) => {
   let decodeReq = req.decodeReq;
   if (!decodeReq) return next(new AppError(httpStatus.unAuthorized));
   const user = await getUserAndVerify(decodeReq);
+  console.log("🚀 ~ protectedRoutes ~ user:", user)
   if (!user) return next(new AppError(httpStatus.Forbidden));
   req.user = user;
   return next();

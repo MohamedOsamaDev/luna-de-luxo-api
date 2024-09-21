@@ -46,7 +46,8 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   const bulkOperations = {};
   // error response fro case any product not exist
   const onError = (reason) => {
-    console.log("error product case", reason);
+    console.log(cart?.items);
+    
     return next(
       new AppError({
         message: "Some products are not available",
@@ -80,7 +81,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
 
   
   // Calculate shipping price
-  const shippingPrice = 50;
+  const shippingPrice = 0;
 
   // Initialize the overviewPrices object
   const overviewPrices = {

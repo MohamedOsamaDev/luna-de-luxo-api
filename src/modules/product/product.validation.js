@@ -1,7 +1,6 @@
 import Joi from "joi";
 import { relationFileVal } from "../file/file.validation.js";
 import {
-  colorSchemaVal,
   updateColorSchemaVal,
 } from "../colors/colors.validation.js";
 import { UpdateCategorySchemaVal } from "../category/category.validation.js";

@@ -16,10 +16,10 @@ import {
 } from "./product.validation.js";
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
 import { authorized } from "../../middleware/globels/authorized.js";
-import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { AttributedTo } from "../../middleware/globels/AttributedTo.js";
 import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 import { cacheResponse } from "../../middleware/cache/cache.js";
+import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 
 const productRouter = express.Router();
 productRouter
@@ -33,7 +33,9 @@ productRouter
   )
   .get(
     cacheResponse({ stdTTL: "4h", group: true }),
-    tokenDetector,
+    tokenDetector({
+      admin: true,
+    }),
     getallproduct
   );
 
@@ -60,7 +62,9 @@ productRouter
       stdTTL: "6h",
     }),
     validation(paramsSlugVal),
-    tokenDetector,
+    tokenDetector({
+      admin: true,
+    }),
     getOneproduct
   );
 

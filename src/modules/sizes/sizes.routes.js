@@ -31,11 +31,15 @@ sizesRouter
     AttributedTo,
     addOneSize
   )
-  .get(tokenDetector, getAllSizes);
+  .get(    tokenDetector({
+    admin: true,
+  }), getAllSizes);
 
 sizesRouter
   .route("/:id")
-  .get(tokenDetector, getOneSize)
+  .get(    tokenDetector({
+    admin: true,
+  }), getOneSize)
   .put(
     validation(updatesizeSchemaVal),
     protectedRoutes,

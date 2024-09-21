@@ -13,7 +13,12 @@ import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 const fileRouter = express.Router();
 fileRouter
   .route("/")
-  .get(tokenDetector, GetAll)
+  .get(
+    tokenDetector({
+      admin: true,
+    }),
+    GetAll
+  )
   .post(
     fileUploadSingle("file"),
     validation(uploadSchema),

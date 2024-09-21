@@ -52,6 +52,7 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
       ...mainFilterOrder,
     })
     .populate(populate);
+  console.log(!order, order.user.toString(), user._id.toString(), !isAdmin);
 
   if (!order || (order.user.toString() !== user._id.toString() && !isAdmin)) {
     return next(new AppError(httpStatus.NotFound));
@@ -63,19 +64,20 @@ const config = {
   model: orderModel,
   name: "order",
   publish: false,
-  customFiltersFN: (req) => {
-    let user = req.user;
-    let query = req.query;
-    if (!user.role === "admin") {
-      query = { user: user?._id };
-    }
-    return query;
-  },
   pushToPipeLine: [
     {
       $match: mainFilterOrder,
     },
   ],
+  customPiplineFN: (pipeline, req, res, next) => {
+    if (req?.user?.role !== "admin") {
+      pipeline.push({
+        $match: {
+          user: { $eq: req?.user?._id },
+        },
+      });
+    }
+  },
 };
 const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);
@@ -191,5 +193,5 @@ export {
   webhookOrders_Stripe,
   verfiyOrder,
   cancelCheckOutSession,
-  deleteOrder
+  deleteOrder,
 };

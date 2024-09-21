@@ -39,7 +39,9 @@ categoryRouter
   )
   .get(
     cacheResponse({ stdTTL: "4h", group: true }),
-    tokenDetector,
+    tokenDetector({
+      admin: true,
+    }),
     getAllCategoryies
   );
 categoryRouter
@@ -47,7 +49,9 @@ categoryRouter
   .get(
     cacheResponse({ stdTTL: "4h" }),
     validation(paramsIdVal),
-    tokenDetector,
+    tokenDetector({
+      admin: true,
+    }),
     getOneCategory
   )
   .put(

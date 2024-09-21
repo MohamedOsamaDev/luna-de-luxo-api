@@ -10,13 +10,32 @@ import {
 import { addCartVal, paramsIdVal } from "./cart.validation.js";
 import { validation } from "../../middleware/globels/validation.js";
 import { checkCart } from "../../middleware/cart/checkCart.js";
-import {tokenDetector} from "../../middleware/auth/tokenDetector.js";
+import { tokenDetector } from "../../middleware/auth/tokenDetector.js";
 const cartRouter = express.Router();
 cartRouter
   .route("/")
-  .post(tokenDetector, validation(addCartVal), checkCart, addToCart)
-  .get(tokenDetector, checkCart, getLoggedCart)
-  .patch(tokenDetector, checkCart, clearCart);
+  .post(
+    tokenDetector({
+      user: true,
+    }),
+    validation(addCartVal),
+    checkCart,
+    addToCart
+  )
+  .get(
+    tokenDetector({
+      user: true,
+    }),
+    checkCart,
+    getLoggedCart
+  )
+  .patch(
+    tokenDetector({
+      user: true,
+    }),
+    checkCart,
+    clearCart
+  );
 
 cartRouter
   .route("/:id")

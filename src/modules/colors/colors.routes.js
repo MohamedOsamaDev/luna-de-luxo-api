@@ -29,11 +29,21 @@ colorsRouter
     AttributedTo,
     addOneColor
   )
-  .get(tokenDetector, GetAllColors);
+  .get(
+    tokenDetector({
+      admin: true,
+    }),
+    GetAllColors
+  );
 
 colorsRouter
   .route("/:id")
-  .get(tokenDetector, getOneColor)
+  .get(
+    tokenDetector({
+      admin: true,
+    }),
+    getOneColor
+  )
   .put(
     validation(updateColorSchemaVal),
     protectedRoutes,

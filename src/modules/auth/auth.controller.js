@@ -41,8 +41,7 @@ const signUp = AsyncHandler(async (req, res, next) => {
 
 const signIn = AsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
-  let user = await UserModel.findOne({ email })
+  const user = await UserModel.findOne({ email })
     .populate("cart")
     .populate("influencer");
   if (user && bcrypt.compareSync(password, user.password)) {
@@ -265,18 +264,13 @@ const verfiySession = AsyncHandler(async (req, res, next) => {
   });
 });
 const logOut = AsyncHandler(async (req, res, next) => {
-  // res.cookie(
-  //   "token",
-  //   "",
-  //   SetCookie({
-  //     maxAge: 0,
-  //   })
-  // );
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: true, // Use the same secure options as when you set it
-    sameSite: 'Strict',
-  });
+  res.cookie(
+    "token",
+    "",
+    SetCookie({
+      maxAge: 0,
+    })
+  );
   return res.status(200).json({ message: "success" });
 });
 export {

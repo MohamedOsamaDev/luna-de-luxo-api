@@ -11,13 +11,14 @@ export const globalError = (error, req, res, next) => {
   let message = error?.message || "something went wrong";
   let details = error?.details || {};
   if (message === httpStatus.Forbidden.message) {
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: true, // Use the same secure options as when you set it
-      sameSite: 'strict',
-    });
+    res.cookie(
+      "token",
+      "",
+      SetCookie({
+        maxAge: 0,
+      })
+    );
   }
-
   if (process.env.MODE === "dev") {
     return res.status(code).json({ message, details, stack: error.stack });
   } else {

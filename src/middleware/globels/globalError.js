@@ -11,14 +11,11 @@ export const globalError = (error, req, res, next) => {
   let message = error?.message || "something went wrong";
   let details = error?.details || {};
   if (message === httpStatus.Forbidden.message) {
-    console.log("cookies cleared");
-    res.cookie(
-      "token",
-      "",
-      SetCookie({
-        maxAge: 0,
-      })
-    );
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true, // Use the same secure options as when you set it
+      sameSite: 'strict',
+    });
   }
 
   if (process.env.MODE === "dev") {

@@ -265,13 +265,18 @@ const verfiySession = AsyncHandler(async (req, res, next) => {
   });
 });
 const logOut = AsyncHandler(async (req, res, next) => {
-  res.cookie(
-    "token",
-    "",
-    SetCookie({
-      maxAge: 0,
-    })
-  );
+  // res.cookie(
+  //   "token",
+  //   "",
+  //   SetCookie({
+  //     maxAge: 0,
+  //   })
+  // );
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true, // Use the same secure options as when you set it
+    sameSite: 'strict',
+  });
   return res.status(200).json({ message: "success" });
 });
 export {

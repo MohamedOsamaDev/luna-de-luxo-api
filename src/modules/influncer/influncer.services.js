@@ -28,7 +28,7 @@ export const increamentInfluncerBalance = async (order) => {
 export const populateInfluencer = [
   {
     path: "coupon",
-    select: "_id code ",
+    select: "_id code commission",
   },
   {
     path: "relatedTo",

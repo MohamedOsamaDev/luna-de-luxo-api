@@ -115,7 +115,7 @@ export const getUserAndVerify = async (decodeReq) => {
         { path: "cart" },
         {
           path: "influencer",
-          populate: { path: "coupon", select: " expires code discount" },
+          populate: { path: "coupon", select: " expires code discount commission" },
         },
       ])
       .lean()

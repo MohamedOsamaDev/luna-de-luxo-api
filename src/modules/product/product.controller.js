@@ -113,7 +113,7 @@ const getFilters = AsyncHandler(async (req, res, next) => {
     handlePromise(colorModel.find(query).limit(limit).lean()),
     handlePromise(categoryModel.find(query).limit(limit).lean()),
     handlePromise(sizeModel.find(query).limit(limit).lean()),
-    handlePromise(SubCategoryModel.find(query).limit(limit).lean()),
+    handlePromise(SubCategoryModel.find(query).limit(limit).populate('poster').lean()),
   ]);
   return res.status(200).json({
     message: "success",

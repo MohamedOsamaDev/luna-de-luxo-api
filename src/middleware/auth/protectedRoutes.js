@@ -6,6 +6,7 @@ import { getUserAndVerify } from "../../modules/auth/auth.services.js";
 export const protectedRoutes = AsyncHandler(async (req, res, next) => {
   // 1- Check if token exists
   let decodeReq = req.decodeReq;
+  console.log(req?.cookies);
   if (!decodeReq) return next(new AppError(httpStatus.unAuthorized));
   const user = await getUserAndVerify(decodeReq);
   console.log("🚀 ~ protectedRoutes ~ user:", user?._id)

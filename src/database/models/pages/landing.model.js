@@ -41,8 +41,22 @@ const landingSchema = new mongoose.Schema({
       },
     },
   ],
-  topCategories: [{ type: ObjectId, ref: "category" }],
-  featuredProducts: [{ type: ObjectId, ref: "product" }],
+  topCategoriesSection: {
+    title: { 
+      type: String, 
+      required: true 
+    },
+    topCategories: [{ type: ObjectId, ref: "category" }],
+  },
+  featuredProductsSection: {
+    title: { 
+      type: String, 
+      required: true 
+    },
+    featuredProducts: [{ type: ObjectId, ref: "product" }],
+  },
+  // topCategories: [{ type: ObjectId, ref: "category" }],
+  // featuredProducts: [{ type: ObjectId, ref: "product" }],
   newIn: {
     poster: { type: ObjectId, ref: "file" },
     title: {
@@ -77,13 +91,13 @@ const landingSchema = new mongoose.Schema({
 landingSchema.pre(/^find/, function (next) {
   this.populate([
     {
-      path: "topCategories",
+      path: "topCategoriesSection.topCategories",
       model: "category",
       select: "_id name poster slug", // Example fields to select from the 'color' model
       options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
     },
     {
-      path: "featuredProducts",
+      path: "featuredProductsSection.featuredProducts",
       model: "product",
       select: "_id name slug poster",
       options: { strictPopulate: false },

@@ -22,8 +22,16 @@ export const landingCreateVal = Joi.object({
         ...commensVal,
       })
     ),
-  topCategories: Joi.array().min(1).items(UpdateCategorySchemaVal),
-  featuredProducts: Joi.array().min(1).items(UpdateproductSchemaVal),
+  // Top Categories Section Validation
+  topCategoriesSection: Joi.object({
+    title: Joi.string().trim().required(),
+    topCategories: Joi.array().min(1).items(UpdateCategorySchemaVal), // Uses category validation
+  }),
+  // Featured Products Section Validation
+  featuredProductsSection: Joi.object({
+    title: Joi.string().trim().required(),
+    featuredProducts: Joi.array().min(1).items(UpdateproductSchemaVal), // Uses product validation
+  }),
   newIn: Joi.object({
     title: Joi.string().trim().required(),
     linkTitle: Joi.string().trim().required(),
@@ -51,8 +59,16 @@ export const landingUpdateVal = Joi.object({
         ...commensVal,
       })
     ),
-  topCategories: Joi.array().min(1).items(UpdateCategorySchemaVal),
-  featuredProducts: Joi.array().min(1).items(Joi.any()),
+  // Top Categories Section Validation
+  topCategoriesSection: Joi.object({
+    title: Joi.string().trim(),
+    topCategories: Joi.array().min(1).items(UpdateCategorySchemaVal),
+  }),
+  // Featured Products Section Validation
+  featuredProductsSection: Joi.object({
+    title: Joi.string().trim(),
+    featuredProducts: Joi.array().min(1).items(UpdateproductSchemaVal),
+  }),
   newIn: Joi.object({
     title: Joi.string().trim(),
     linkTitle: Joi.string().trim(),
@@ -140,8 +156,8 @@ export const careServiceCreateVal = Joi.object({
   categories: Joi.array().items(
     Joi.object({
       category: Joi.alternatives()
-      .try(objectIdVal, UpdateCategorySchemaVal)
-      .required(),
+        .try(objectIdVal, UpdateCategorySchemaVal)
+        .required(),
       poster: relationFileVal,
       content: Joi.array().items(
         Joi.object({
@@ -173,9 +189,9 @@ export const careServiceUpdateVal = Joi.object({
   }),
   categories: Joi.array().items(
     Joi.object({
-      category:  Joi.alternatives()
-      .try(objectIdVal, UpdateCategorySchemaVal)
-      .required(),
+      category: Joi.alternatives()
+        .try(objectIdVal, UpdateCategorySchemaVal)
+        .required(),
       poster: relationFileVal,
       content: Joi.array().items(
         Joi.object({
@@ -373,7 +389,7 @@ export const privacyPolicyUpdateVal = Joi.object({
             })
           )
           .optional(),
-           ...commensVal,
+        ...commensVal,
       })
     )
     .optional(),

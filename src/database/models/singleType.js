@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
 );
 schema.pre(/^find/, function (next) {
   this.populate({
-    path: "topCategories",
+    path: "topCategoriesSection.topCategories",
     model: "category",
     select: "_id name poster slug", // Example fields to select from the 'color' model
     options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
@@ -78,7 +78,7 @@ schema.pre(/^find/, function (next) {
       options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
     })
     .populate({
-      path: "featuredProducts",
+      path: "featuredProductsSection.featuredProducts",
       model: "product",
       select: "_id name poster price discount slug",
       options: { strictPopulate: false },

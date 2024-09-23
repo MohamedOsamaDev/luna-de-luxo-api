@@ -18,6 +18,12 @@ export const globalError = (error, req, res, next) => {
         maxAge: 0,
       })
     );
+    res.clearCookie(
+      "token",
+      SetCookie({
+        maxAge: 0,
+      })
+    );
   }
   if (process.env.MODE === "dev") {
     return res.status(code).json({ message, details, stack: error.stack });

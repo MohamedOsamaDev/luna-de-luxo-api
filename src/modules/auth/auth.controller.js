@@ -36,7 +36,6 @@ const signUp = AsyncHandler(async (req, res, next) => {
     },
     cart,
   });
-  
 });
 
 const signIn = AsyncHandler(async (req, res, next) => {
@@ -267,6 +266,12 @@ const logOut = AsyncHandler(async (req, res, next) => {
   res.cookie(
     "token",
     "",
+    SetCookie({
+      maxAge: 0,
+    })
+  );
+  res.clearCookie(
+    "token",
     SetCookie({
       maxAge: 0,
     })

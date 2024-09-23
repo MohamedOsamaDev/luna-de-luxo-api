@@ -46,6 +46,12 @@ const schema = new mongoose.Schema(
       },
     ],
     sold: Number,
+    rateRange:{
+      type: Number,
+      default: 1,
+      max: 100,
+      min: 0,
+    },
     isFeatured: { type: Boolean, default: false },
     publish: { type: Boolean, default: false },
     createdBy: { type: ObjectId, ref: "user" },

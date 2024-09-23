@@ -62,6 +62,7 @@ const ProductSchemaVal = Joi.object({
     then: clothesVal,
     otherwise: decorVal,
   }),
+  rateRange:Joi.number().min(0).max(100).optional()
 });
 const UpdateproductSchemaVal = Joi.object({
   id: objectIdVal,
@@ -79,6 +80,7 @@ const UpdateproductSchemaVal = Joi.object({
   subcategory: Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal),
   type: Joi.string().valid("clothes", "decor"),
   colors: Joi.alternatives().try(clothesVal, decorVal),
+  rateRange:Joi.number().min(0).max(100).optional()
 });
 const paramsIdVal = Joi.object({
   id: objectIdVal,

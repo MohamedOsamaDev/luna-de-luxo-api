@@ -8,7 +8,9 @@ export const globalError = (error, req, res, next) => {
     : "";
 
   let code = error?.code || 500;
-  let message = error?.message || "something went wrong";
+  let message = unhandledError
+    ? "something went wrong"
+    : error?.message || "something went wrong";
   let details = error?.details || {};
   if (message === httpStatus.Forbidden.message) {
     res.cookie(

@@ -78,8 +78,6 @@ const getAllUsers = FindAll({
     ]);
     
     req.query.fields = `${fields ? `${fields}` : "-password"}`;
-    console.log("🚀 ~  req.query.fields:",  req.query.fields)
-    console.log(req.query);
     return req.query;
   },
   customPiplineFN: (pipeline, req, res, next) => {

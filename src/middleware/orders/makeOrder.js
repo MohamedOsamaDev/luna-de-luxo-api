@@ -46,8 +46,6 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   const bulkOperations = {};
   // error response fro case any product not exist
   const onError = (reason) => {
-    console.log(cart?.items);
-    
     return next(
       new AppError({
         message: "Some products are not available",

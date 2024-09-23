@@ -1,14 +1,16 @@
 import chalk from "chalk";
 import morgan from "morgan";
 export const logger = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
-  const formattedTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+  // const date = new Date();
+  // const year = date.getFullYear();
+  // const month = String(date.getMonth() + 1).padStart(2, "0");
+  // const day = String(date.getDate()).padStart(2, "0");
+  // const hours = String(date.getHours()).padStart(2, "0");
+  // const minutes = String(date.getMinutes()).padStart(2, "0");
+  // const seconds = String(date.getSeconds()).padStart(2, "0");
+  // const formattedTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+  const formattedTime = new Date().toLocaleString().replace(', ', '-')    // Replace comma and space with a dash
+  .replace(' ', '-'); ;
   const colors = (mehtod) => {
     const methodColors = {
       GET: chalk.greenBright,
@@ -36,7 +38,7 @@ export const logger = () => {
       ? chalk.bold(`cleared cache`)
       : "";
     return [
-      chalk.white(`[${formattedTime}]`),
+      chalk.white(`[ ${formattedTime} ]`),
       `${chalk.black(req.protocol)}:`,
       colors(tokens.method(req, res)),
       tokens.url(req, res),

@@ -8,7 +8,7 @@ export const globalError = (error, req, res, next) => {
     : "";
 
   let code = error?.code || 500;
-  let message = unhandledError
+  let message = error?.unhandledError
     ? "something went wrong"
     : error?.message || "something went wrong";
   let details = error?.details || {};

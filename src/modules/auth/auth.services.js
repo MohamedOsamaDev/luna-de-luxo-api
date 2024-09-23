@@ -47,7 +47,7 @@ export const handleConnectCart = async (user, req, res) => {
     try {
       const decoded = jwt.verify(req.cookies.cart, process.env.SECRETKEY);
       if (decoded?.cart) {
-        const localCart = await cartModel.findByIdAndDelete(decodeReq?.cart, {
+        const localCart = await cartModel.findByIdAndDelete(decoded?.cart, {
           new: true,
         });
         if (localCart) {

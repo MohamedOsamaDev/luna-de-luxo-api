@@ -85,8 +85,8 @@ landingSchema.pre(/^find/, function (next) {
     {
       path: "featuredProducts",
       model: "product",
-      select: "_id name slug",
-      options: { strictPopulate: false, disablePrepopulate: true },
+      select: "_id name slug poster",
+      options: { strictPopulate: false },
       match: { isFeatured: true }, // Only include products that are featured
     },
     {

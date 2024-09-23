@@ -52,8 +52,6 @@ const getSpecificOrder = AsyncHandler(async (req, res, next) => {
       ...mainFilterOrder,
     })
     .populate(populate);
-  console.log(!order, order.user.toString(), user._id.toString(), !isAdmin);
-
   if (!order || (order.user.toString() !== user._id.toString() && !isAdmin)) {
     return next(new AppError(httpStatus.NotFound));
   }

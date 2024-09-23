@@ -126,13 +126,10 @@ export const getUserAndVerify = async (decodeReq) => {
       const passwordChangedAtTime = Math.floor(
         user?.passwordChangedAt?.getTime() / 1000
       ); 
-      console.log(decodeReq?.iat);
-      
       if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
     return user;
   } catch (error) {
-    console.log("🚀 ~ getUserAndVerify ~ error:", error);
     // Token verification failed or some other error occurred
     return false;
   }

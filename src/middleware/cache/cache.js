@@ -22,7 +22,8 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
         if (
           req?.method?.toUpperCase() === "GET" &&
           res?.statusCode < 309 &&
-          res?.statusCode > 99
+          res?.statusCode > 99 &&
+          process.env.MODE!=='dev'
         ) {
           // Cache the JSON response body
           if (group) {

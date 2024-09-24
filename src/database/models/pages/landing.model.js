@@ -55,8 +55,6 @@ const landingSchema = new mongoose.Schema({
     },
     featuredProducts: [{ type: ObjectId, ref: "product" }],
   },
-  // topCategories: [{ type: ObjectId, ref: "category" }],
-  // featuredProducts: [{ type: ObjectId, ref: "product" }],
   newIn: {
     poster: { type: ObjectId, ref: "file" },
     title: {

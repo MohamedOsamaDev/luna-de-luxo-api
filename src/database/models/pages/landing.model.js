@@ -42,16 +42,16 @@ const landingSchema = new mongoose.Schema({
     },
   ],
   topCategoriesSection: {
-    title: { 
-      type: String, 
-      required: true 
+    title: {
+      type: String,
+      required: true,
     },
     topCategories: [{ type: ObjectId, ref: "category" }],
   },
   featuredProductsSection: {
-    title: { 
-      type: String, 
-      required: true 
+    title: {
+      type: String,
+      required: true,
     },
     featuredProducts: [{ type: ObjectId, ref: "product" }],
   },
@@ -98,8 +98,14 @@ landingSchema.pre(/^find/, function (next) {
       path: "featuredProductsSection.featuredProducts",
       model: "product",
       select: "_id name slug poster price discount",
-      options: { strictPopulate: false },
+      options: { strictPopulate: false, disablePrepopulate: true }, // Disable strictPopulate for this
       match: { isFeatured: true }, // Only include products that are featured
+      populate: {
+        path: "poster",
+        model: "file",
+        options: { strictPopulate: false },
+        select: "_id url mimetype",
+      },
     },
     {
       path: "sliderLanding.poster",

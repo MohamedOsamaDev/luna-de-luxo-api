@@ -49,7 +49,7 @@ const schema = new mongoose.Schema(
     rateRange:{
       type: Number,
       default: 1,
-      max: 100,
+      max: 1000,
       min: 0,
     },
     isFeatured: { type: Boolean, default: false },

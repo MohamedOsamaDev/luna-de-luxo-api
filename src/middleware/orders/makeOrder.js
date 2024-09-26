@@ -77,26 +77,11 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     subtotal += itemPrice;
   });
 
-  
-  // Calculate shipping price
-  const shippingPrice = 0;
-
-  // Initialize the overviewPrices object
-  const overviewPrices = {
-    subtotal: subtotal,
-    discount: coupon ? subtotal * (coupon.discount / 100) : 0,
-    total: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0),
-    shipping: shippingPrice,
-    finalTotal: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0) + shippingPrice,
-  };
-
-
   // create order object for nect controller
   let order = {
     user: user?._id,
     items,
     totalOrderPrice,
-    overviewPrices,
     ...req?.body,
   };
   // handle if order has coupon
@@ -106,8 +91,21 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     order.totalOrderPrice -= totalOrderPrice * (coupon?.discount / 100);
   }
   // handle shipping fee
-  order.shippingPrice = 50;
-  order.totalOrderPrice += 50;
+  order.shippingPrice = 0;
+  order.totalOrderPrice += order?.shippingPrice;
+
+   // Initialize the overviewPrices object
+  const overviewPrices = {
+    subtotal: subtotal,
+    discount: coupon ? subtotal * (coupon.discount / 100) : 0,
+    total: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0),
+    shipping: order.shippingPrice,
+    finalTotal: subtotal - (coupon ? subtotal * (coupon.discount / 100) : 0) + order?.shippingPrice,
+  };
+
+  order.overviewPrices = overviewPrices;
+  
+  
   // pass order object to next controller
   req.makeOrder = {
     order,

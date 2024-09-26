@@ -94,7 +94,7 @@ export class ApiFetcher {
         [key]: { $regex: this.searchQuery.index[key], $options: "i" },
       }));
       if (indexQueries.length) {
-        this.pipeline.push({ $match: { $and: indexQueries } });
+      this.pipeline.push({ $match: { $or: indexQueries } });
       }
     }
     return this;

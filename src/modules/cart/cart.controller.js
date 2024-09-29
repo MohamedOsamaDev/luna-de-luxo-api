@@ -75,7 +75,7 @@ const getLoggedCart = AsyncHandler(async (req, res, next) => {
   return res.json(cart);
 });
 const clearCart = AsyncHandler(async (req, res, next) => {
-  await cartModel.findByIdAndUpdate(req?.cart, { items: [] });
+  const cart = await cartModel.findByIdAndUpdate(req?.cart, { items: [] });
   if (!cart) return next(new AppError(httpStatus.internalServerError));
   return res.json({ items: [] });
 });

@@ -61,14 +61,12 @@ const removeItemCart = AsyncHandler(async (req, res, next) => {
     );
   }
   if (!query) return next(new AppError(httpStatus.internalServerError));
-  console.log(req?.params?.id);
-  
   let cart = await cartModel.findOneAndUpdate(
     query,
     { $pull: { items: { _id: req?.params?.id } } },
     { new: true }
   );
-  
+
   if (!cart) return next(new AppError(httpStatus.internalServerError));
   return res.status(200).json(cart);
 });
@@ -77,11 +75,9 @@ const getLoggedCart = AsyncHandler(async (req, res, next) => {
   return res.json(cart);
 });
 const clearCart = AsyncHandler(async (req, res, next) => {
-  let cart = req?.cart;
-  cart.items = [];
-  await cart.save();
+  await cartModel.findByIdAndUpdate(req?.cart, { items: [] });
   if (!cart) return next(new AppError(httpStatus.internalServerError));
-  return res.json(cart);
+  return res.json({ items: [] });
 });
 const applyCoupon = AsyncHandler(async (req, res, next) => {
   let coupon = await couponModel.findOne({

@@ -10,7 +10,7 @@ export const checkCart = AsyncHandler(async (req, res, next) => {
   } else if (req.cookies.cart) {
     try {
       const decoded = jwt.verify(req.cookies.cart, process.env.SECRETKEY);
-      cart = await cartModel.findOne({ _id: decoded?.cart });
+      cart = await cartModel.findOne({ _id: decoded?.cart }).lean();
     } catch (error) {}
   }
 

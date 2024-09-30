@@ -1,11 +1,9 @@
 import express from "express";
 import {
   addToCart,
-  applyCoupon,
   clearCart,
   getLoggedCart,
   removeItemCart,
-  boundary,
 } from "./cart.controller.js";
 import { addCartVal, paramsIdVal } from "./cart.validation.js";
 import { validation } from "../../middleware/globels/validation.js";

@@ -5,6 +5,7 @@ const createOrderVal = Joi.object({
   notes: Joi.string().max(500).optional(),
   shippingAddress: Joi.object({
     street: Joi.string().trim().required(),
+    state: Joi.string().trim().required(),
     city: Joi.string().trim().required(),
     phone: Joi.string().trim().required(),
     email: Joi.string().trim().required(),
@@ -23,6 +24,7 @@ const updateOrderVal = Joi.object({
   notes: Joi.string().max(500).optional(),
   shippingAddress: Joi.object({
     street: Joi.string().trim().optional(),
+    state: Joi.string().trim().optional(),
     city: Joi.string().trim().optional(),
     phone: Joi.string().trim().optional(),
     email: Joi.string().trim().optional(),

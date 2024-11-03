@@ -25,6 +25,7 @@ const config = {
   slug: "title",
   customQuery,
   pushToPipeLine: Posterlookup,
+  
 };
 const deleteproduct = deleteOne(config);
 const getallproduct = FindAll(config);

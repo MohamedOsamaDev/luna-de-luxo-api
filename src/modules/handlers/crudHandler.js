@@ -139,7 +139,7 @@ export const FindAll = ({
     return res.status(200).json(responsedata);
   });
 };
-export const FindOne = ({ model, name = "", populate = [] }) => {
+export const FindOne = ({ model, name = "", populate = [] , publish=false }) => {
   return AsyncHandler(async (req, res, next) => {
     let user = req?.user;
     let populateQuery = [...populate];
@@ -156,10 +156,8 @@ export const FindOne = ({ model, name = "", populate = [] }) => {
           select: "fullName",
         },
       ];
-      query = {
-        ...query,
-        // isDeleted: false,
-      };
+    } else {
+      if (publish) query.publish = true;
     }
     let data = await model.findOne(query).populate(populateQuery).lean();
     if (!data) return next(new AppError(responseHandler("NotFound", name)));

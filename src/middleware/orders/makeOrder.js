@@ -91,7 +91,6 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
     order.totalOrderPrice -= totalOrderPrice * (coupon?.discount / 100);
   }
   // handle shipping fee
-  order.shippingPrice = 0;
   order.totalOrderPrice += order?.shippingPrice;
 
    // Initialize the overviewPrices object

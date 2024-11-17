@@ -47,7 +47,7 @@ const ProductSchemaVal = Joi.object({
   quantity: Joi.number().min(0).optional(),
   isFeatured: Joi.boolean(),
   publish: Joi.boolean(),
-  rateRange: Joi.number().min(0).max(100).default(1).optional(),
+  rateRange: Joi.number().min(0).max(100000).default(1).optional(),
   additionalInfo: Joi.array().items(additionalInfo),
   poster: Joi.alternatives().try(objectIdVal, relationFileVal),
   category: Joi.alternatives()
@@ -62,7 +62,6 @@ const ProductSchemaVal = Joi.object({
     then: clothesVal,
     otherwise: decorVal,
   }),
-  rateRange:Joi.number().min(0).max(100).optional()
 });
 const UpdateproductSchemaVal = Joi.object({
   id: objectIdVal,
@@ -80,7 +79,7 @@ const UpdateproductSchemaVal = Joi.object({
   subcategory: Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal),
   type: Joi.string().valid("clothes", "decor"),
   colors: Joi.alternatives().try(clothesVal, decorVal),
-  rateRange:Joi.number().min(0).max(100).optional()
+  rateRange:Joi.number().min(0).max(100000).optional()
 });
 const paramsIdVal = Joi.object({
   id: objectIdVal,

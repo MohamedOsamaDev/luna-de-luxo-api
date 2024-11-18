@@ -59,7 +59,6 @@ const schema = new mongoose.Schema(
     subcategory: { type: ObjectId, ref: "subcategory" },
     category: { type: ObjectId, ref: "category" },
     isDeleted: { type: Boolean, default: false },
-    rateRange: { type: Number, default: 1, max: 100, min: 0 },
     poster: {
       type: ObjectId,
       ref: "file",

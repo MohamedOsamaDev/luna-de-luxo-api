@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 
 export class ApiFetcher {
   constructor(pipeline, searchQuery) {
@@ -55,7 +54,7 @@ export class ApiFetcher {
   // Sort method
   sort() {
     if (this.searchQuery.sort) {
-      const sortBy = this.searchQuery?.sort
+      const sortBy = `${this.searchQuery?.sort},_id:asc`
         ?.split(",")
         ?.reduce((acc, field) => {
           const [key, order] = field.split(":");

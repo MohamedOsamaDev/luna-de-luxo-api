@@ -1,8 +1,8 @@
 import express from "express";
-import { Insert, GetAll, GetOne, Delete } from "./file.controller.js";
+import { Insert, GetAll, GetOne, Delete, postTikets } from "./file.controller.js";
 
 import { validation } from "../../middleware/globels/validation.js";
-import { deleteSchema, uploadSchema } from "./file.validation.js";
+import { deleteSchema, fileUploadTicketSchema, uploadSchema } from "./file.validation.js";
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
 import { authorized } from "../../middleware/globels/authorized.js";
 import { enumRoles } from "../../assets/enums/Roles_permissions.js";
@@ -21,12 +21,13 @@ fileRouter
   )
   .post(
     fileUploadSingle("file"),
-    validation(uploadSchema),
+    validation(fileUploadTicketSchema),
     protectedRoutes,
     authorized(enumRoles.admin),
     AttributedTo,
     Insert
   );
+fileRouter.post("/tickets", postTikets)  
 fileRouter
   .route("/:id")
   .get(GetOne)

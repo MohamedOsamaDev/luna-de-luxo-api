@@ -23,11 +23,12 @@ const schema = new mongoose.Schema(
     originalname: {
       type: String,
     },
-    createdBy: { type: ObjectId, ref: "user" },
+    thumbnail:{
+      type: String,
+    },
+    createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
     updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
-    isDeleted:{ type: Boolean,default: false },
   },
-
   {
     timestamps: true,
   }

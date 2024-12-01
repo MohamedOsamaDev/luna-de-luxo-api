@@ -3,7 +3,7 @@ import { UpdateCategorySchemaVal } from "../category/category.validation.js";
 import { objectIdVal, poster, publish } from "../commens/validation.js";
 
 const subCategorySchemaVal = Joi.object({
-  name: Joi.string().min(1).max(30).required().trim(),
+  name: Joi.string().min(1).max(300).required().trim(),
   category: Joi.array().items(
     Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal).allow(null)
   ),
@@ -14,7 +14,7 @@ const subCategorySchemaVal = Joi.object({
 });
 const UpdatesubCategorySchemaVal = Joi.object({
   id: objectIdVal,
-  name: Joi.string().min(1).max(30).trim(),
+  name: Joi.string().min(1).max(300).trim(),
   category: Joi.array().items(
     Joi.alternatives().try(objectIdVal, UpdateCategorySchemaVal).allow(null)
   ),

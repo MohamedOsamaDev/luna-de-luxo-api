@@ -6,18 +6,9 @@ import { FindAll, FindOne } from "../handlers/crudHandler.js";
 
 const Errormassage = "file not found";
 const Insert = AsyncHandler(async (req, res, next) => {
-  const { file } = req.files;
-  const result = await Uploader(file.path);
-  let newFile = {
-    ...result,
-    filename: file?.filename,
-    size: file?.size,
-    mimetype: file?.mimetype,
-    originalname: file?.originalname,
-  };
-  const data = await FileModel.create(newFile);
+  const savedFileDocuments = await FileModel.create(req?.body);
   return res.status(201).json({
-    data,
+    savedFileDocuments,
     message: "file uploaded successfully",
   });
 });

@@ -1,17 +1,10 @@
 import Joi from "joi";
 const fileVal = Joi.object({
   _id: Joi.string().hex().length(24),
-  fieldname: Joi.string().required(),
-  originalname: Joi.string().required(),
-  encoding: Joi.string().required(),
-  destination: Joi.string(),
-  path: Joi.string(),
-  filename: Joi.string(),
-  public_id: Joi.string(),
-  url: Joi.string(),
-  mimetype: Joi.string()
-    .valid("image/jpeg", "image/png", "image/gif", "image/webp")
-    .required(),
+  filename: Joi.string().required(),
+  public_id: Joi.string().required(),
+  url: Joi.string().required(),
+  path: Joi.string().required(),
   size: Joi.number()
     .max(1024 * 1024 * 10)
     .required(), // 10 MB size limit
@@ -34,8 +27,19 @@ const relationFileVal = Joi.object({
   originalname: Joi.string(),
   filename: Joi.string(),
   url: Joi.string(),
-  mimetype: Joi.string()
-  .valid("image/jpeg", "image/png", "image/gif", "image/webp"),
+  mimetype: Joi.string(),
+  size: Joi.number(),
+  thumbnail: Joi.string(),
   size: Joi.number(),
 });
-export { uploadSchema, paramsIdVal, deleteSchema, fileVal,relationFileVal };
+const fileUploadTicketSchema = Joi.object({
+  public_id: Joi.string().min(1).max(500).required(),
+  url: Joi.string().min(1).max(500).required(),
+  filename: Joi.string().min(1).max(500).required(),
+  size: Joi.number().min(1).max(2000000000000).required(),
+  mimetype: Joi.string().min(1).max(500).required(),
+  thumbnail: Joi.string().min(1).max(500)
+});
+
+
+export { uploadSchema, paramsIdVal, deleteSchema, fileVal,relationFileVal, fileUploadTicketSchema };

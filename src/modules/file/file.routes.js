@@ -1,5 +1,5 @@
 import express from "express";
-import { Insert, GetAll, GetOne, Delete } from "./file.controller.js";
+import { Insert, GetAll, GetOne, Delete, postTikets } from "./file.controller.js";
 
 import { validation } from "../../middleware/globels/validation.js";
 import { deleteSchema, uploadSchema } from "./file.validation.js";
@@ -27,6 +27,7 @@ fileRouter
     AttributedTo,
     Insert
   );
+fileRouter.post("/tickets", postTikets)  
 fileRouter
   .route("/:id")
   .get(GetOne)

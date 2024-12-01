@@ -2,7 +2,7 @@ import { SingleTypeModel } from "../../database/models/singleType.js";
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import { adminPopulate } from "../commens/populate.js";
-import { allPagesModel } from "./page.services.js";
+import { allPagesConfig } from "./page.services.js";
 
 const insertPage = AsyncHandler(async (req, res, next) => {
   const key = req.params.key;
@@ -12,7 +12,7 @@ const insertPage = AsyncHandler(async (req, res, next) => {
       new AppError({ message: `page already exist with same title`, code: 401 })
     );
 
-  let Model = allPagesModel[key];
+  let Model = allPagesConfig[key]?.Model;
   if (!Model) {
     return next(new AppError({ message: `Page not found`, code: 404 }));
   }
@@ -29,9 +29,9 @@ const insertPage = AsyncHandler(async (req, res, next) => {
 const getPage = AsyncHandler(async (req, res, next) => {
   const populateOptions = req.user?.role === "admin" ? adminPopulate : [];
   let key = req.params.key;
-  let Model = allPagesModel[key];
+  let Model = allPagesConfig[key]?.Model;
   if (!Model) {
-    return next(new AppError({ message: `Page not found`, code: 404 }));
+    return next(new AppError({ message: `Model not found`, code: 404 }));
   }
   const query = { key };
   const document = await Model.findOne(query).populate(populateOptions).lean();
@@ -43,7 +43,7 @@ const getPage = AsyncHandler(async (req, res, next) => {
 const updatePage = AsyncHandler(async (req, res, next) => {
   // Find the single Model first to determine its type
   let key = req.params.key;
-  let Model = allPagesModel[key];
+  let Model = allPagesConfig[key]?.Model;
   if (!Model) {
     return next(new AppError({ message: `Page is not found`, code: 404 }));
   }

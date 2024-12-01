@@ -45,7 +45,7 @@ orderRouter
 // getway endpoints
 orderRouter
   .route("/getway")
-  .all(protectedRoutes) // This applies the `protectedRoutes` middleware to all HTTP methods for this route
+  .all(protectedRoutes) 
   .post(sessionVaildtator, makeOrder, createCheckOutSession);
 orderRouter.delete("/getway/:session", protectedRoutes, cancelCheckOutSession);
 orderRouter.get("/checkout/success", verfiyOrder);

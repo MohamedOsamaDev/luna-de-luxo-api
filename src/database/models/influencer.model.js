@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { influencers } from './../../assets/enums/influeners.js';
+import { influencers } from "./../../assets/enums/influeners.js";
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Types.ObjectId;
 
 const schema = new mongoose.Schema(
   {
@@ -11,9 +11,9 @@ const schema = new mongoose.Schema(
       enum: Object.values(influencers),
       default: influencers.pending,
     },
-    coupon: { type: mongoose.Types.ObjectId, ref: "coupon" },
-    relatedTo: { type: mongoose.Types.ObjectId, ref: "user" },
-    createdBy: { type: mongoose.Types.ObjectId, ref: "user" },
+    coupon: { type: ObjectId, ref: "coupon" },
+    relatedTo: { type: ObjectId, ref: "user" },
+    createdBy: { type: ObjectId, ref: "user" },
     totalSales: {
       type: Number,
       default: 0,
@@ -24,8 +24,8 @@ const schema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
-    isDeleted:{ type: Boolean,default: false },
-    updatedBy: { type: mongoose.Types.ObjectId, ref: "user" },
+    isDeleted: { type: Boolean, default: false },
+    updatedBy: { type: ObjectId, ref: "user" },
   },
   { timestamps: true }
 );

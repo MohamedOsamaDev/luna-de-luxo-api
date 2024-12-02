@@ -9,8 +9,32 @@ import {
   handleQuerySlugOrid,
 } from "../../utils/QueryHandler.js";
 import mongoose from "mongoose";
-import { SubCategoryModel } from "../../database/models/subcategory.model.js";
 
+import { getNestedProperty } from "../../utils/handleObject.js";
+import { adminPopulateHandler } from "./lookup.js";
+
+// Helper Functions
+const buildUniqueQuery = (reqBody, uniqueFields, slug, slugValue) => {
+  const query = { $or: [] };
+  uniqueFields.forEach((field) => {
+    if (reqBody[field]) {
+      query.$or.push({ [field]: reqBody[field] });
+    }
+  });
+  if (slugValue) {
+    query.$or.push({ slug: slugify(slugValue) });
+  }
+  return query.$or.length ? query : null;
+};
+
+const handleConflictError = (next, name) =>
+  next(
+    new AppError(
+      responseHandler("conflict", undefined, `${name} already exists`)
+    )
+  );
+
+// CRUD Operations
 export const InsertOne = ({
   model,
   slug = null,
@@ -18,152 +42,122 @@ export const InsertOne = ({
   uniqueFields = [],
 }) => {
   return AsyncHandler(async (req, res, next) => {
-    if (uniqueFields?.length) {
-      const queryForCheck = {
-        $or: [],
-      };
-      for (let i = 0; i < uniqueFields.length; i++) {
-        if (req.body?.[uniqueFields[i]]) {
-          queryForCheck.$or.push({
-            [uniqueFields[i]]: req.body?.[uniqueFields[i]],
-          });
-        }
-      }
-      if (slug && req.body?.[slug]) {
-        queryForCheck.$or.push({
-          [slug]: req.body?.[slug],
-        });
-      }
-      const checkdata = await model.findOne(queryForCheck);
-      if (checkdata) {
-        return next(
-          new AppError(
-            responseHandler("conflict", undefined, `${name} is already exists `)
-          )
-        );
-      }
-    } else if (req.body?.[slug]) {
-      const checkDocument = await model.findOne({
-        [slug]: req.body[slug],
-      });
-      if (checkDocument)
-        return next(
-          new AppError(
-            responseHandler("conflict", undefined, `${name} is already exists`)
-          )
-        );
-      req.body.slug = slugify(req?.body?.[slug]);
+    const { user = null } = req;
+    const slugValue = getNestedProperty(req?.body, slug);
+    const uniqueQuery = buildUniqueQuery(
+      req.body,
+      uniqueFields,
+      slug,
+      slugValue
+    );
+
+    if (uniqueQuery && (await model.findOne(uniqueQuery))) {
+      return handleConflictError(next, name);
     }
-    const document = new model(req.body);
-    await document.save();
-    let data = {
-      ...document?._doc,
-      createdBy: { fullName: req.user.fullName, _id: req.user._id },
-    };
+
+    if (slug && slugValue) {
+      req.body.slug = slugify(slugValue, { lower: true });
+    }
+    req.body.createdBy = user?._id;
+
+    let data = await model
+      .findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId() },
+        { $set: req.body },
+        { new: true, upsert: true }
+      )
+      .setOptions({ admin: user?.role === "admin" });
+
+    if (user) {
+      data = {
+        ...data?._doc,
+        createdBy: { fullName: user?.fullName, _id: user?._id },
+      };
+    }
+
     return res.status(200).json({
-      message: `${name} Added Sucessfully`,
+      message: `${name} added successfully`,
       data,
     });
   });
 };
+
 export const FindAll = ({
   model,
   defaultSort = "createdAt:desc",
-  customQuery = null, // Function to define custom query logic
+  customQuery = null,
   pushToPipeLine = [],
   customFiltersFN = null,
   customPiplineFN = null,
-  publish = true,
-  isDeletedConditon = true,
-  margeParam,
+  publishMode = true,
+  options = {},
 }) => {
-  return AsyncHandler(async (req, res, next) => {
-    // Handle filter with lookup and apply custom query logic
-    let pipeline = handleFilterwithLookUp(customQuery, req?.query.filters);
+  return AsyncHandler(async (req, res) => {
+    const { user = null } = req;
+    let pipeline = handleFilterwithLookUp(customQuery, req.query).concat(
+      pushToPipeLine
+    );
 
-    // Conditionally add $match for non-admin users
-    if (req.user?.role !== "admin" && publish === true) {
-      pipeline.push({
-        $match: { publish: true },
-      });
-    }
-    if (
-      margeParam &&
-      req.params?.[margeParam] &&
-      mongoose.Types.ObjectId.isValid(req.params?.[margeParam])
-    ) {
-      pipeline.push({
-        $match: {
-          [margeParam]: new mongoose.Types.ObjectId(req.params?.[margeParam]),
-        },
-      });
-    }
-    // Add custom query to pipeline
-    pipeline = pipeline.concat(pushToPipeLine);
-    let sort = req?.query?.sort || defaultSort;
-    // Add custom filters to pipeline
     if (customFiltersFN) {
       req.query = {
-        page: req?.query?.page,
-        limit: req?.query?.limit,
-        sort,
-        ...customFiltersFN(req, res, next),
+        ...req.query,
+        ...customFiltersFN(req.query, user),
       };
     }
     if (customPiplineFN) {
-      customPiplineFN(pipeline, req, res, next);
+      customPiplineFN(pipeline, req.query, user);
     }
-    // Add sort field to pipeline
-    req.query.sort = sort;
-    const apiFetcher = new ApiFetcher(pipeline, req?.query)
+    if (publishMode && user?.role !== "admin") {
+      pipeline.push({ $match: { publish: true } });
+    }
+
+    const apiFetcher = new ApiFetcher(pipeline, req.query, options)
       .filter()
-      .sort()
-      .select()
       .search()
+      .select()
+      .sort()
       .pagination();
-    // Fetch data
-    const data = await model.aggregate(apiFetcher.pipeline);
-    // Calculate total pages
-    const total = await apiFetcher.count(model);
-    // Calculate total pages
-    const pages = Math.ceil(total / apiFetcher.metadata.pageLimit);
-    let responsedata = {
-      data,
+
+    const [data, total] = await Promise.all([
+      model.aggregate(apiFetcher.pipeline),
+      apiFetcher.count(model),
+    ]);
+
+    return res.status(200).json({
       metadata: {
         ...apiFetcher.metadata,
-        pages,
+        pages: Math.ceil(total / apiFetcher.metadata.pageLimit),
         total,
       },
-    };
-
-    return res.status(200).json(responsedata);
+      data,
+    });
   });
 };
-export const FindOne = ({ model, name = "", populate = [] , publish=false }) => {
+
+export const FindOne = ({
+  model,
+  name = "",
+  populate = [],
+  publish = false,
+}) => {
   return AsyncHandler(async (req, res, next) => {
-    let user = req?.user;
-    let populateQuery = [...populate];
-    let query = handleQuerySlugOrid(req.params?.id);
-    if (user?.role == "admin") {
-      populateQuery = [
-        ...populateQuery,
-        {
-          path: "updatedBy",
-          select: "fullName",
-        },
-        {
-          path: "createdBy",
-          select: "fullName",
-        },
-      ];
-    } else {
-      if (publish) query.publish = true;
-    }
-    let data = await model.findOne(query).populate(populateQuery).lean();
+    const { user } = req;
+    const query = {
+      ...handleQuerySlugOrid(req.params?.id),
+      ...(publish && user?.role !== "admin" ? { publish: true } : {}),
+    };
+
+    let data = await model
+      .findOne(query)
+      .setOptions({ admin: user?.role === "admin" })
+      .lean()
+      .populate([...populate, adminPopulateHandler(user)]);
+
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
     return res.status(200).json(data);
   });
 };
+
 export const updateOne = ({
   model,
   name = "",
@@ -171,83 +165,55 @@ export const updateOne = ({
   uniqueFields = [],
 }) => {
   return AsyncHandler(async (req, res, next) => {
-    if (uniqueFields?.length) {
-      const queryForCheck = {
-        _id: { $ne: req.params?.id },
-        $or: [],
-      };
-      for (let i = 0; i < uniqueFields.length; i++) {
-        if (req.body?.[uniqueFields[i]]) {
-          queryForCheck?.$or.push({
-            [uniqueFields[i]]: req.body?.[uniqueFields[i]],
-          });
-        }
-      }
-      if (req.body?.[slug]) {
-        queryForCheck.$or.push({
-          [slug]: req.body?.[slug],
-        });
-      }
-      if (queryForCheck?.$or.length) {
-        const checkdata = await model.findOne(queryForCheck);
-        if (checkdata) {
-          return next(
-            new AppError(
-              responseHandler(
-                "conflict",
-                undefined,
-                `${name} is already exists `
-              )
-            )
-          );
-        }
-      }
-    } else if (req.body?.[slug]) {
-      const checkDocument = await model.findOne({
-        [slug]: req.body[slug],
-        _id: { $ne: req.params?.id },
-      });
-      if (checkDocument)
-        return next(
-          new AppError(
-            responseHandler("conflict", undefined, `${name} is already exists`)
-          )
-        );
-      req.body.slug = slugify(req?.body?.[slug]);
+    const { user } = req;
+    const query = slug && req.body[slug] ? { [slug]: req.body[slug] } : null;
+    const uniqueQuery = buildUniqueQuery(
+      req.body,
+      uniqueFields,
+      slug,
+      req.body[slug]
+    );
+
+    if (
+      uniqueQuery &&
+      (await model.findOne({ ...uniqueQuery, _id: { $ne: req.params.id } }))
+    ) {
+      return handleConflictError(next, name);
     }
 
+    if (query) req.body.slug = slugify(req.body[slug]);
+    req.body.updatedBy = user._id;
+
     let data = await model
-      .findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      })
-      .populate("createdBy", "fullName");
-    data = {
-      ...data?._doc,
-      updatedBy: { fullName: req.user.fullName, _id: req.user._id },
-    };
-    if (!data) return next(new AppError({ massage, code: 404 }));
+      .findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .setOptions({ admin: user?.role === "admin" })
+      .lean()
+      .populate(adminPopulateHandler(user));
+
+    if (!data) return next(new AppError(responseHandler("NotFound", name)));
     return res.status(200).json({
-      message: `${name} Updated Sucessfully`,
-      data,
+      message: `${name} updated successfully`,
+      data: {
+        ...data,
+        updatedBy: { fullName: user?.fullName, _id: user?._id },
+      },
     });
   });
 };
+
 export const deleteOne = ({ model, name = "", mode = "hard" }) => {
   return AsyncHandler(async (req, res, next) => {
-    let document;
-    if (mode === "soft") {
-      document = await model.findByIdAndUpdate(req.params.id, {
-        isDeleted: true,
-      });
-    } else {
-      document = await model.findByIdAndDelete(req.params.id);
-    }
-    if (!document) return next(new AppError(httpStatus.NotFound));
-    return res.status(200).json({
-      message: `${name} Deleted Sucessfully`,
-    });
+    const operation =
+      mode === "soft"
+        ? model.findByIdAndUpdate(req.params.id, { isDeleted: true })
+        : model.findByIdAndDelete(req.params.id);
+
+    const document = await operation;
+    if (!document) return next(new AppError(responseHandler("NotFound", name)));
+    return res.status(200).json({ message: `${name} deleted successfully` });
   });
 };
+
 export const makeMultibulkWrite = async (bulkOperation) => {
   Object?.keys(bulkOperation)?.forEach(async (type) => {
     try {

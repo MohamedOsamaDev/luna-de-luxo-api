@@ -1,25 +1,19 @@
-
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import { deleteFileCloudinary, Uploader } from "../../utils/cloudnairy.js";
 
-import { customProductModel } from '../../database/models/customProduct.model.js';
-import {
-  FindAll,
-  FindOne,
-  updateOne,
-} from "../handlers/crudHandler.js";
+import { customProductModel } from "../../database/models/customProduct.model.js";
+import { FindAll, FindOne, updateOne } from "../handlers/crudHandler.js";
 
-const Errormassage = "Custom Product not found";
 const addCustomProduct = AsyncHandler(async (req, res, next) => {
   const { file } = req.files;
   const result = await Uploader(file.path);
 
   let customProduct = {
-   poster: {
-    ...result
+    poster: {
+      ...result,
     },
-    description: req.body.description
+    description: req.body.description,
   };
 
   const document = new customProductModel(customProduct);
@@ -33,10 +27,13 @@ const addCustomProduct = AsyncHandler(async (req, res, next) => {
 let config = {
   model: customProductModel,
   name: "customProduct",
+  options: {
+    searchFeilds: ["description"],
+  },
 };
 const getallCustomProducts = FindAll(config);
-const getOneCustomProduct = FindOne(customProductModel, Errormassage);
-const updateCustomProduct = updateOne(customProductModel, Errormassage, "name");
+const getOneCustomProduct = FindOne(config);
+const updateCustomProduct = updateOne(config);
 const deleteCustomProduct = AsyncHandler(async (req, res, next) => {
   const deletedFile = await customProductModel.findByIdAndDelete(req.params.id);
 

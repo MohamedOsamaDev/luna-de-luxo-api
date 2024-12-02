@@ -13,6 +13,9 @@ const config = {
   model: couponModel,
   name: "coupon",
   uniqueFields: ["code"],
+  options: {
+    searchFeilds: ["code", "discount"],
+  },
 };
 const addOneCoupon = InsertOne(config);
 const updateOneCoupon = updateOne(config);
@@ -20,8 +23,6 @@ const getOneCoupon = FindOne(config);
 const getAllCoupons = FindAll(config);
 const deleteOneCoupon = deleteOne(config);
 const verifyCoupon = AsyncHandler(async (req, res, next) => {
-
-  
   const coupon = await FindCouponWithVerfiy({
     filters: {
       code: req?.query?.code,

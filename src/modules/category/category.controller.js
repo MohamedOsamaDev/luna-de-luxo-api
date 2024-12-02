@@ -12,6 +12,13 @@ const config = {
   name: "category",
   slug: "name",
   pushToPipeLine: Posterlookup,
+  options: {
+    searchFeilds: [
+      "slug",
+      "name",
+      "description",
+    ],
+  },
 };
 const addOneCategory = InsertOne(config);
 const getAllCategoryies = FindAll(config);

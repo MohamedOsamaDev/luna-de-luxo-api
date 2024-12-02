@@ -12,6 +12,9 @@ const config = {
   name: "color",
   slug: "name",
   uniqueFields: ["name", "code"],
+  options: {
+    searchFeilds: ["name", "code"],
+  },
 };
 const addOneColor = InsertOne(config);
 const UpdateOneColor = updateOne(config);
@@ -19,4 +22,10 @@ const getOneColor = FindOne(config);
 const GetAllColors = FindAll(config);
 const DeleteOneColor = deleteOne(config);
 
-export { addOneColor, GetAllColors, DeleteOneColor, UpdateOneColor, getOneColor };
+export {
+  addOneColor,
+  GetAllColors,
+  DeleteOneColor,
+  UpdateOneColor,
+  getOneColor,
+};

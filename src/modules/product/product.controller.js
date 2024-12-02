@@ -24,8 +24,34 @@ const config = {
   name: "product",
   slug: "title",
   customQuery,
-  pushToPipeLine: Posterlookup,
-  
+  pushToPipeLine: [
+    ...Posterlookup,
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "category",
+      },
+    },
+    {
+      $unwind: {
+        path: "$category",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ],
+  options: {
+    searchFeilds: [
+      "name",
+      "slug",
+      "description",
+      "price",
+      "discount",
+      "type",
+      "additionalInfo.title",
+    ],
+  },
 };
 const deleteproduct = deleteOne(config);
 const getallproduct = FindAll(config);
@@ -101,7 +127,7 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     message: "Updated Sucessfully",
     data,
   });
-})
+});
 const getFilters = AsyncHandler(async (req, res, next) => {
   let query = {
     publish: true,
@@ -110,11 +136,13 @@ const getFilters = AsyncHandler(async (req, res, next) => {
   const handlePromise = (promise) => {
     return promise.then((data) => data).catch((error) => []);
   };
-  const [colors, categories, sizes,subcategories] = await Promise.all([
+  const [colors, categories, sizes, subcategories] = await Promise.all([
     handlePromise(colorModel.find(query).limit(limit).lean()),
     handlePromise(categoryModel.find(query).limit(limit).lean()),
     handlePromise(sizeModel.find(query).limit(limit).lean()),
-    handlePromise(SubCategoryModel.find(query).limit(limit).populate('poster').lean()),
+    handlePromise(
+      SubCategoryModel.find(query).limit(limit).populate("poster").lean()
+    ),
   ]);
   return res.status(200).json({
     message: "success",

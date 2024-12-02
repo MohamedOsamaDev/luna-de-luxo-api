@@ -6,8 +6,6 @@ import responseHandler from "../../utils/responseHandler.js";
 import { FindAll, FindOne } from "../handlers/crudHandler.js";
 import { populateInfluencer } from "./influncer.services.js";
 
-const Errormassage = "influencer not found";
-
 const InsertOne = AsyncHandler(async (req, res, next) => {
   let check = await influencerModel.findOne({
     socialAccount: req.body.socialAccount,
@@ -105,6 +103,9 @@ const Update = AsyncHandler(async (req, res, next) => {
 let config = {
   model: influencerModel,
   name: "influencer",
+  options: {
+    searchFeilds: ["socialAccount", "state", "totalSales", "totalEarned"],
+  },
 };
 const GetAll = FindAll(config);
 const GetOne = FindOne({

@@ -10,6 +10,9 @@ const config = {
   model: sizeModel,
   name: "size",
   uniqueFields: ["name"],
+  options: {
+    searchFeilds: ["name", "description"],
+  },
 };
 const addOneSize = InsertOne(config);
 const updateOneSize = updateOne(config);

@@ -1,10 +1,12 @@
+import mongoose from "mongoose";
 
 export class ApiFetcher {
-  constructor(pipeline, searchQuery) {
+  constructor(pipeline, searchQuery, options = {}) {
     this.pipeline = Array.isArray(pipeline) ? pipeline : [];
     this.ApiFetcherPipeline = null;
     this.searchQuery = searchQuery;
     this.metadata = {};
+    this.searchFeilds = options?.searchFeilds || [];
   }
   // Pagination method
   pagination() {
@@ -35,7 +37,7 @@ export class ApiFetcher {
         // Split comma-separated values into arrays
         .replace(/"([^"]+)":\s*"([^"]*?)"/g, (match, key, value) => {
           // Check if the value contains commas and format it with $in if needed
-          const arrayValue = value.includes(",")
+          const arrayValue = value?.includes(",")
             ? `{ "$in": ${JSON.stringify(
                 value.split(",").map((item) => item.trim())
               )} }`
@@ -88,12 +90,12 @@ export class ApiFetcher {
 
   // Search method
   search() {
-    if (this.searchQuery.index) {
-      const indexQueries = Object.keys(this.searchQuery.index).map((key) => ({
-        [key]: { $regex: this.searchQuery.index[key], $options: "i" },
+    if (this.searchQuery.search) {
+      const indexQueries = this?.searchFeilds.map((key) => ({
+        [key]: { $regex: this.searchQuery.search, $options: "i" },
       }));
       if (indexQueries.length) {
-      this.pipeline.push({ $match: { $or: indexQueries } });
+        this.pipeline.push({ $match: { $or: indexQueries } });
       }
     }
     return this;
@@ -119,10 +121,10 @@ export class ApiFetcher {
   }
   // Method to get total count of documents after applying filters
   async count(model) {
-    const pipeline = this?.ApiFetcherPipeline 
-    if (!pipeline) return 0
+    const pipeline = this?.ApiFetcherPipeline;
+    if (!pipeline) return 0;
     const result = await model
-      .aggregate([ ...pipeline, { $count: "totalCount" }])
+      .aggregate([...pipeline, { $count: "totalCount" }])
       .exec();
     return result.length ? result[0].totalCount : 0;
   }

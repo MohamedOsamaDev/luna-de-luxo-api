@@ -76,6 +76,19 @@ const config = {
       });
     }
   },
+  options: {
+    searchFeilds: [
+      "totalOrderPrice",
+      "shippingAddress.phone",
+      "shippingAddress.fullName",
+      "shippingAddress.email",
+      "shippingAddress.state",
+      "shippingAddress.street",
+      "orderStatus",
+      "paymentType",
+      "discount",
+    ],
+  },
 };
 const getAllOrders = FindAll(config);
 const updateOrder = updateOne(config);

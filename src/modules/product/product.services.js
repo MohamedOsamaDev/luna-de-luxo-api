@@ -1,3 +1,5 @@
+import { FilePopulate } from "../../database/Commons.js";
+
 export const preFindproduct = function (next) {
   if (this.options.disablePrepopulate) return next();
   this.populate([
@@ -9,15 +11,11 @@ export const preFindproduct = function (next) {
     },
     {
       path: "colors.images",
-      model: "file",
-      options: { strictPopulate: false },
-      select: "_id url mimetype",
+      ...FilePopulate,
     },
     {
       path: "poster",
-      model: "file",
-      options: { strictPopulate: false },
-      select: "_id url mimetype",
+      ...FilePopulate,
     },
     {
       path: "colors.sizes.size",
@@ -221,33 +219,30 @@ export let colorsLookup = [
 ];
 
 const decoreCase = (product, selectedOptions = {}) => {
-try {
-  const { color } = selectedOptions;
+  try {
+    const { color } = selectedOptions;
 
-  const iColorVaild = product?.colors?.find(
-    (val) => val?.color?._id?.toString() === color?.toString()
-  );
-  return !!iColorVaild
-} catch (error) {
-  
-}
-return false
+    const iColorVaild = product?.colors?.find(
+      (val) => val?.color?._id?.toString() === color?.toString()
+    );
+    return !!iColorVaild;
+  } catch (error) {}
+  return false;
 };
 
 const clothesCase = (product, selectedOptions) => {
   try {
     const { color, size } = selectedOptions;
-  
+
     const iColorVaild = product?.colors?.find(
       (val) => val?.color?._id?.toString() === color?.toString()
     );
     const iSizeVaild = iColorVaild?.sizes?.find(
       (val) => val?.size?._id?.toString() === size?.toString()
     );
-    return !!iSizeVaild
-  } catch (error) { 
-  }
-  return false
+    return !!iSizeVaild;
+  } catch (error) {}
+  return false;
 };
 export const allproductTypes = {
   decor: decoreCase,

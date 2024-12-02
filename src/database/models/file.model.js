@@ -20,9 +20,6 @@ const schema = new mongoose.Schema(
     mimetype: {
       type: String,
     },
-    originalname: {
-      type: String,
-    },
     thumbnail:{
       type: String,
     },

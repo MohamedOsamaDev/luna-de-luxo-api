@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { FilePopulate } from "../../Commons.js";
 
 const careServiceSchema = new mongoose.Schema(
   {
@@ -60,9 +61,7 @@ careServiceSchema.pre(/^find/, function (next) {
   this.populate([
     {
       path: "categories.poster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
     {
       path: "categories.category",
@@ -72,9 +71,7 @@ careServiceSchema.pre(/^find/, function (next) {
     },
     {
       path: "categories.content.image",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
   ]);
   next();

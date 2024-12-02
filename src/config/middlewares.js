@@ -10,7 +10,7 @@ import { FileModel } from "./../database/models/file.model.js";
 import { colorModel } from "../database/models/color.model.js";
 // Load environment variables
 dotenv.config();
-// CORS options configuration 
+// CORS options configuration
 export const corsOptions = {
   origin: process.env.DOMAINS.split(","), // List of allowed origins
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
@@ -39,9 +39,12 @@ export const notfound = (req, res, next) => {
 
 // Welcome message handler
 export const welcome = async (req, res) => {
-  await colorModel.updateMany({} , {
-    publish: true,
-  })
+ await FileModel.updateMany({},{
+  $unset:{
+    originalname:1
+  },
+  mimetype:"image"
+ })
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",

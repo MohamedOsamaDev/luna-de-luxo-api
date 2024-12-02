@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { FilePopulate } from "../../Commons.js";
 
 // landing_Page Schema
 const landingSchema = new mongoose.Schema({
@@ -102,28 +103,20 @@ landingSchema.pre(/^find/, function (next) {
       match: { isFeatured: true }, // Only include products that are featured
       populate: {
         path: "poster",
-        model: "file",
-        options: { strictPopulate: false },
-        select: "_id url mimetype",
+        ...FilePopulate,
       },
     },
     {
       path: "sliderLanding.poster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
     {
       path: "newIn.poster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
     {
       path: "customProduct.poster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
   ]);
   next();

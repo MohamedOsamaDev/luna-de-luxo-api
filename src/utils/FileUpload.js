@@ -24,5 +24,6 @@ export const Upload = () => {
   return upload;
 };
 export const fileUploadSingle = (feildname) => Upload().single(feildname);
-export const fileUploadArray = (array,max=10000000000) => Upload().array(array,max);
+export const fileUploadArray = (array, max = 10000000000) =>
+  Upload().array(array, max);
 export const fileUploadfields = (fields) => Upload().fields(fields);

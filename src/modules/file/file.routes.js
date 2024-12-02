@@ -1,5 +1,5 @@
 import express from "express";
-import { Insert, GetAll, GetOne, Delete, postTikets } from "./file.controller.js";
+import { Insert, GetAll, GetOne, Delete, postTiket } from "./file.controller.js";
 
 import { validation } from "../../middleware/globels/validation.js";
 import { deleteSchema, fileUploadTicketSchema, uploadSchema } from "./file.validation.js";
@@ -19,15 +19,15 @@ fileRouter
     }),
     GetAll
   )
-  .post(
-    fileUploadSingle("file"),
-    validation(fileUploadTicketSchema),
-    protectedRoutes,
-    authorized(enumRoles.admin),
-    AttributedTo,
-    Insert
-  );
-fileRouter.post("/tickets", postTikets)  
+  // .post(
+  //   fileUploadSingle("file"),
+  //   validation(fileUploadTicketSchema),
+  //   protectedRoutes,
+  //   authorized(enumRoles.admin),
+  //   AttributedTo,
+  //   Insert
+  // );
+fileRouter.post("/tickets", postTiket)  
 fileRouter
   .route("/:id")
   .get(GetOne)

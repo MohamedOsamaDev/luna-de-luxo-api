@@ -3,33 +3,39 @@ import httpStatus from "../../assets/messages/httpStatus.js";
 import SetCookie from "../../utils/SetCookie.js";
 
 export const globalError = (error, req, res, next) => {
-  process.env.MODE === "dev"
-    ? console.log(chalk.red(`❌  - Error  - ${error?.message}`))
-    : "";
+  const isDevMode = process.env.MODE === "dev";
 
-  let code = error?.code || 500;
-  let message = error?.unhandledError
-    ? "something went wrong"
-    : error?.message || "something went wrong";
-  let details = error?.details || {};
+  // Log the error in development mode
+  if (isDevMode) {
+    console.log(chalk.red(`❌  - Error - ${error?.message}`));
+  }
+
+  // Default error properties
+  const code = error?.code || 500; // Default to 500 if no code is provided
+  const message = error?.unhandledError
+    ? "Something went wrong"
+    : error?.message || "Something went wrong";
+  const details = error?.details || {};
+
+  // Handle specific error scenarios
   if (message === httpStatus.Forbidden.message) {
-    res.cookie(
-      "token",
-      "",
-      SetCookie({
-        maxAge: 0,
-      })
-    );
-    res.clearCookie(
-      "token",
-      SetCookie({
-        maxAge: 0,
-      })
-    );
+    const cookieOptions = SetCookie({ maxAge: 0 }); // Expire the cookie immediately
+    res.cookie("token", "", cookieOptions);
+    res.clearCookie("token", cookieOptions);
   }
-  if (process.env.MODE === "dev") {
-    return res.status(code).json({ message, details, stack: error.stack });
-  } else {
-    return res.status(code).json({ message, details });
+
+  // Build the error response
+  const errorResponse = {
+    message,
+    details,
+    status: code,
+  };
+
+  // Include stack trace in development mode
+  if (isDevMode) {
+    errorResponse.stack = error.stack;
   }
+
+  // Send the error response
+  return res.status(code).json(errorResponse);
 };

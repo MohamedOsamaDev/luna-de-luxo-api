@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { FilePopulate } from "../../Commons.js";
 
 // about_us_Page Schema
 const aboutUsSchema = new mongoose.Schema({
@@ -57,21 +58,15 @@ aboutUsSchema.pre(/^find/, function (next) {
   this.populate([
     {
       path: "mission.missionPoster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
     {
       path: "poster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
     {
       path: "vision.visionPoster",
-      model: "file",
-      select: "_id url", // Example fields to select from the 'color' model
-      options: { strictPopulate: false }, // Disable strictPopulate for this path if needed
+      ...FilePopulate,
     },
   ]);
   next();

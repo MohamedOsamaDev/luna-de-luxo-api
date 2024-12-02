@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { productModel } from "./product.model.js";
+import { FilePopulate } from "../Commons.js";
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema(
@@ -36,8 +37,7 @@ schema.pre(/^find/, function (next) {
   
   this.populate({
     path: "poster",
-    model: "file",
-    select: "_id url mimetype",
+ ...FilePopulate
   });
   next();
 });

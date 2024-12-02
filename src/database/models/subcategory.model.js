@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { FilePopulate } from "../Commons.js";
 const ObjectId = mongoose.Types.ObjectId;
 const schema = new mongoose.Schema(
   {

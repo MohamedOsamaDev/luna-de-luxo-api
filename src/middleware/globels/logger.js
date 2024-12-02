@@ -27,7 +27,7 @@ export const logger = () => {
     return color(mehtod);
   };
   return morgan((tokens, req, res) => {
-    const formattedTime = new Date().toLocaleString().replace(', ', '') 
+    const formattedTime = new Date().toLocaleString().replace(", ", " | ");
     const status = tokens.status(req, res);
     const isError = status >= 400;
     const customMessage = isError

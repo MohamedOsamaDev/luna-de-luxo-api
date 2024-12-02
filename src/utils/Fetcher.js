@@ -22,36 +22,33 @@ export class ApiFetcher {
   filter() {
     if (this.searchQuery.filters) {
       let query = JSON.stringify(this.searchQuery.filters);
+  
       query = query
-        // Replace any occurrences of $ with an empty string
-        .replace(/\$/g, "")
-        // Add $ prefix to operators like gt, gte, lt, lte, regex, ne, eq
-        .replace(
-          /("gt":|"gte":|"lt":|"lte":|"regex":|"ne":|"eq":)/g,
-          (match) => `"$${match.slice(1)}`
-        )
+        // Prefix valid MongoDB operators with $
+        .replace(/("gt":|"gte":|"lt":|"lte":|"regex":|"ne":|"eq":)/g, (match) => `"$${match.slice(1)}`)
         // Convert boolean strings to actual booleans
-        .replace(/"true"|"false"/g, (match) =>
-          match === '"true"' ? true : false
-        )
+        .replace(/"true"|"false"/g, (match) => (match === '"true"' ? true : false))
+        // Convert numeric strings to numbers
+        .replace(/"(\d+)"/g, (match, num) => num)
         // Split comma-separated values into arrays
         .replace(/"([^"]+)":\s*"([^"]*?)"/g, (match, key, value) => {
-          // Check if the value contains commas and format it with $in if needed
-          const arrayValue = value?.includes(",")
-            ? `{ "$in": ${JSON.stringify(
-                value.split(",").map((item) => item.trim())
-              )} }`
-            : `"${value}"`;
-          return `"${key}": ${arrayValue} `;
+          if (value.includes(",")) {
+            const arrayValues = value.split(",").map((item) => item.trim());
+            return `"${key}": { "$in": ${JSON.stringify(arrayValues)} }`;
+          }
+          return `"${key}": "${value}"`;
         });
+  
       // Parse the modified JSON string back to an object
       query = JSON.parse(query);
+  
       if (Object.keys(query)?.length) {
         this.pipeline.push({ $match: query });
       }
     }
     return this;
   }
+  
 
   // Sort method
   sort() {

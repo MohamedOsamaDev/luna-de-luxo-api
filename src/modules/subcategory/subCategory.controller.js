@@ -30,7 +30,13 @@ const config = {
       });
       delete query?.filters?.category 
     }
-    //return pipline;
+  },
+  options: {
+    searchFeilds: [
+      "slug",
+      "name",
+      "description",
+    ],
   },
   pushToPipeLine: Posterlookup,
 };

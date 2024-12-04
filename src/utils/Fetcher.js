@@ -22,12 +22,17 @@ export class ApiFetcher {
   filter() {
     if (this.searchQuery.filters) {
       let query = JSON.stringify(this.searchQuery.filters);
-  
+
       query = query
         // Prefix valid MongoDB operators with $
-        .replace(/("gt":|"gte":|"lt":|"lte":|"regex":|"ne":|"eq":)/g, (match) => `"$${match.slice(1)}`)
+        .replace(
+          /("gt":|"gte":|"lt":|"lte":|"regex":|"ne":|"eq":)/g,
+          (match) => `"$${match.slice(1)}`
+        )
         // Convert boolean strings to actual booleans
-        .replace(/"true"|"false"/g, (match) => (match === '"true"' ? true : false))
+        .replace(/"true"|"false"/g, (match) =>
+          match === '"true"' ? true : false
+        )
         // Convert numeric strings to numbers
         .replace(/"(\d+)"/g, (match, num) => num)
         // Split comma-separated values into arrays
@@ -38,17 +43,16 @@ export class ApiFetcher {
           }
           return `"${key}": "${value}"`;
         });
-  
+
       // Parse the modified JSON string back to an object
       query = JSON.parse(query);
-  
+
       if (Object.keys(query)?.length) {
         this.pipeline.push({ $match: query });
       }
     }
     return this;
   }
-  
 
   // Sort method
   sort() {
@@ -61,6 +65,8 @@ export class ApiFetcher {
           return acc;
         }, {});
       this.pipeline.push({ $sort: sortBy });
+    } else {
+      this.pipeline.push({ $sort: { _id: -1 } }); // Default sort order
     }
     return this;
   }

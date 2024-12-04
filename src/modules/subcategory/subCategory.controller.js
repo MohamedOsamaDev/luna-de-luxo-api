@@ -21,8 +21,7 @@ const config = {
       select: " _id name ", // select only the name field from the category model
     },
   ],
-  customPiplineFN: (pipline, req) => {
-    let { query } = req;
+  customPiplineFN: (pipline, query) => {
     if (query?.filters?.category) {
       pipline.push({
         $match: {

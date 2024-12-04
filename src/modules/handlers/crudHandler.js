@@ -84,7 +84,6 @@ export const InsertOne = ({
 
 export const FindAll = ({
   model,
-  defaultSort = "createdAt:desc",
   customQuery = null,
   pushToPipeLine = [],
   customFiltersFN = null,

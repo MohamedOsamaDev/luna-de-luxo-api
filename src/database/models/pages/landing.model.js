@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
-import { FilePopulate } from "../../Commons.js";
+import { FilePopulate, pageMetadata, pageMetadataPopulate } from "../../Commons.js";
 
 // landing_Page Schema
 const landingSchema = new mongoose.Schema({
+  pageMetadata,
   title: {
     type: String,
     trim: true,
@@ -118,6 +119,7 @@ landingSchema.pre(/^find/, function (next) {
       path: "customProduct.poster",
       ...FilePopulate,
     },
+    pageMetadataPopulate
   ]);
   next();
 });

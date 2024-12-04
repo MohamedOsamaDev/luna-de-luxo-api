@@ -3,9 +3,11 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { pageMetadata, pageMetadataPopulate } from "../../Commons.js";
 
 // FAQ Schema
 const faqSchema = new mongoose.Schema({
+  pageMetadata,
   title: {
     type: String,
     required: true,
@@ -44,6 +46,13 @@ const faqSchema = new mongoose.Schema({
       ],
     },
   ],
+
+});
+faqSchema.pre(/^find/, function (next) {
+  this.populate([
+    pageMetadataPopulate
+  ]);
+  next();
 });
 
 // FAQ Model

@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
-import { FilePopulate } from "../../Commons.js";
+import { FilePopulate, pageMetadata, pageMetadataPopulate } from "../../Commons.js";
 
 // about_us_Page Schema
 const aboutUsSchema = new mongoose.Schema({
+  pageMetadata,
   title: {
     type: String,
     required: true,
@@ -68,6 +69,7 @@ aboutUsSchema.pre(/^find/, function (next) {
       path: "vision.visionPoster",
       ...FilePopulate,
     },
+    pageMetadataPopulate,
   ]);
   next();
 });

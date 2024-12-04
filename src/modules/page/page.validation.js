@@ -3,11 +3,20 @@ import Joi from "joi";
 import { relationFileVal } from "../file/file.validation.js";
 import { UpdateCategorySchemaVal } from "../category/category.validation.js";
 import { UpdateproductSchemaVal } from "../product/product.validation.js";
-import { commensVal, objectIdVal } from "../commens/validation.js";
+import { commensVal, LrString, objectIdVal, SmString } from "../commens/validation.js";
 
 let poster = Joi.alternatives().try(objectIdVal, relationFileVal);
+export const pageMetadataVal = Joi.object({
+  title: SmString.optional().allow(""),
+  description: LrString.optional().allow(""),
+  keywords: Joi.array().items(SmString.optional().allow("")).optional(),
+  images: Joi.array().items(poster.allow(null)).optional(),
+  ...commensVal
+}).optional();
+
 // Validation for landing
 export const landingCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().required(),
   description: Joi.string().trim().required(),
   sliderLanding: Joi.array()
@@ -45,6 +54,7 @@ export const landingCreateVal = Joi.object({
   }),
 });
 export const landingUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim(),
   description: Joi.string().trim(),
   sliderLanding: Joi.array()
@@ -87,6 +97,7 @@ export const landingUpdateVal = Joi.object({
 
 // Validation for FAQ
 export const faqCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().required(),
   description: Joi.string().trim().required(),
   categories: Joi.array()
@@ -117,6 +128,7 @@ export const faqCreateVal = Joi.object({
     .required(),
 });
 export const faqUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim(),
   description: Joi.string().trim(),
   categories: Joi.array().items(
@@ -143,6 +155,7 @@ export const faqUpdateVal = Joi.object({
 
 // Validation for careService
 export const careServiceCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).required().messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -179,6 +192,7 @@ export const careServiceCreateVal = Joi.object({
   ...commensVal,
 });
 export const careServiceUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -213,6 +227,7 @@ export const careServiceUpdateVal = Joi.object({
 
 // Validation for aboutUs
 export const aboutUsCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).required().messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -250,6 +265,7 @@ export const aboutUsCreateVal = Joi.object({
   ...commensVal,
 });
 export const aboutUsUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -290,6 +306,7 @@ export const aboutUsUpdateVal = Joi.object({
 
 // Validation for privacy Policy
 export const privacyPolicyCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).required().messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -354,6 +371,7 @@ export const privacyPolicyCreateVal = Joi.object({
   ...commensVal,
 });
 export const privacyPolicyUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -398,6 +416,7 @@ export const privacyPolicyUpdateVal = Joi.object({
 
 // Validation for legal
 export const legalCreateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).required().messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",
@@ -428,6 +447,7 @@ export const legalCreateVal = Joi.object({
   ...commensVal,
 });
 export const legalUpdateVal = Joi.object({
+  pageMetadata:pageMetadataVal,
   title: Joi.string().trim().min(1).max(150).messages({
     "string.min": "Title is required",
     "string.max": "Title cannot exceed 150 characters",

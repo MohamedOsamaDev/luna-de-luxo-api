@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { pageMetadata, pageMetadataPopulate } from "../../Commons.js";
 
 const legalSchema = new mongoose.Schema({
+  pageMetadata,
     title: {
       type: String,
       required: true,
@@ -39,6 +41,13 @@ const legalSchema = new mongoose.Schema({
       type: ObjectId,
       ref: "user",
     },
+  });
+
+  legalSchema.pre(/^find/, function (next) {
+    this.populate([
+      pageMetadataPopulate
+    ]);
+    next();
   });
   
   export const legalPageModel = SingleTypeModel.discriminator(

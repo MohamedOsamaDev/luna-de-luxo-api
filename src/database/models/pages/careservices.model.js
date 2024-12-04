@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
-import { FilePopulate } from "../../Commons.js";
+import { FilePopulate, pageMetadata,pageMetadataPopulate } from "../../Commons.js";
 
 const careServiceSchema = new mongoose.Schema(
   {
+    pageMetadata,
     title: {
       type: String,
       required: true,
@@ -73,6 +74,7 @@ careServiceSchema.pre(/^find/, function (next) {
       path: "categories.content.image",
       ...FilePopulate,
     },
+    pageMetadataPopulate,
   ]);
   next();
 });

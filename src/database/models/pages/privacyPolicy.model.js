@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import { SingleTypeModel } from "../singleType.js";
 import { ObjectId } from "../order.model.js";
+import { pageMetadata, pageMetadataPopulate } from "../../Commons.js";
 
 const privacyPolicySchema = new mongoose.Schema({
+  pageMetadata,
     title: {
       type: String,
       required: true,
@@ -55,6 +57,12 @@ const privacyPolicySchema = new mongoose.Schema({
       type: ObjectId,
       ref: "user",
     },
+  });
+  privacyPolicySchema.pre(/^find/, function (next) {
+    this.populate([
+      pageMetadataPopulate
+    ]);
+    next();
   });
   
   export const privacyPolicyPageModel = SingleTypeModel.discriminator(

@@ -6,6 +6,8 @@ import responseHandler from "../../utils/responseHandler.js";
 import { AsyncHandler } from "../globels/AsyncHandler.js";
 
 export const makeOrder = AsyncHandler(async (req, res, next) => {
+  console.log(req?.body);
+  
   const { user = {} } = req;
   const { cart = {} } = user; // cart is populated with user
   if (!Object.keys(allPaymentsTypes).includes(req?.body?.paymentType))
@@ -27,6 +29,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   // Handle verify coupon
   let coupon = undefined;
   if (req.body.coupon) {
+    console.log("opening coupon");
     const findCoupon = await FindCouponWithVerfiy({
       filters: {
         _id: req.body.coupon,
@@ -86,6 +89,7 @@ export const makeOrder = AsyncHandler(async (req, res, next) => {
   };
   // handle if order has coupon
   if (coupon) {
+    console.log("opening coupon 2");
     order.discount = coupon?.discount;
     order.coupon = coupon; // Pass the full coupon object
     order.totalOrderPrice -= totalOrderPrice * (coupon?.discount / 100);

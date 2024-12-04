@@ -21,16 +21,7 @@ export const imageLookup = (key = "poster") => {
   ];
 };
 
-export const adminPopulate = [
-  {
-    path: "createdBy",
-    select: "fullName",
-  },
-  {
-    path: "updatedBy",
-    select: "fullName",
-  },
-];
+
 
 export const adminPopulatePipeline = [
   {
@@ -71,6 +62,16 @@ export const adminPopulatePipeline = [
       createdBy: { $ifNull: ["$createdBy.fullName", null] },
       updatedBy: { $ifNull: ["$updatedBy.fullName", null] },
     },
+  },
+];
+export const adminPopulate = [
+  {
+    path: "createdBy",
+    select: "fullName",
+  },
+  {
+    path: "updatedBy",
+    select: "fullName",
   },
 ];
 

@@ -110,14 +110,12 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
     req.body.slug = slugify(req.body.name);
   }
 
-  req.body.createdBy = req.user._id;
+  req.body.updatedBy = req.user._id;
   let Model = allproductTypes?.[product?.type];
   if (!Model) return res.status(400).send("Invalid product type");
   let data = await Model.findByIdAndUpdate(req.params.id, req?.body, {
     new: true,
-  })
-    .populate("createdBy", "fullName")
-    .populate("updatedBy", "fullName");
+  }).populate("createdBy", "fullName")
   data = {
     ...data?._doc,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },

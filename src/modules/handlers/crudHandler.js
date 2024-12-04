@@ -94,24 +94,27 @@ export const FindAll = ({
 }) => {
   return AsyncHandler(async (req, res) => {
     const { user = null } = req;
-    let pipeline = handleFilterwithLookUp(customQuery, req.query).concat(
+    let pipeline = handleFilterwithLookUp(customQuery, req?.query).concat(
       pushToPipeLine
     );
 
     if (customFiltersFN) {
       req.query = {
         ...req.query,
-        ...customFiltersFN(req.query, user),
+        ...customFiltersFN(req, user),
       };
     }
     if (customPiplineFN) {
       customPiplineFN(pipeline, req.query, user);
     }
+
+
+
     if (publishMode && user?.role !== "admin") {
       pipeline.push({ $match: { publish: true } });
     }
 
-    const apiFetcher = new ApiFetcher(pipeline, req.query, options)
+    const apiFetcher = new ApiFetcher(pipeline, req?.query, options)
       .filter()
       .search()
       .select()
@@ -151,7 +154,7 @@ export const FindOne = ({
       .findOne(query)
       .setOptions({ admin: user?.role === "admin" })
       .lean()
-      .populate([...populate, adminPopulateHandler(user)]);
+      .populate([...populate, ...adminPopulateHandler(user)]);
 
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
     return res.status(200).json(data);

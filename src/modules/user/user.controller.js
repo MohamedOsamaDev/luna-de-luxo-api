@@ -67,25 +67,24 @@ const getAllUsers = FindAll({
   customFiltersFN: (req, res, next) => {
     if (!req.query?.filters?.role) {
       req.query.filters = {
-        ...req.query?.filters,
+        ...(req?.query?.filters ? req?.query?.filters : {}),
         role: { $ne: enumRoles.admin },
       };
     }
-    
+
     let fields = removeSpecificText(req.query?.fields, [
       "password",
       "-password",
     ]);
-    
+
     req.query.fields = `${fields ? `${fields}` : "-password"}`;
     return req.query;
   },
-  customPiplineFN: (pipeline, req, res, next) => {
+  customPiplineFN: (pipeline, query, user) => {
     let $match = {
-      _id: { $ne: new mongoose.Types.ObjectId(req?.user?._id) },
+      _id: { $ne: new mongoose.Types.ObjectId(user?._id) },
     };
     pipeline.push({ $match });
-    return pipeline;
   },
 });
 const findOneUser = AsyncHandler(async (req, res, next) => {

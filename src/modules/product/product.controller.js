@@ -115,7 +115,7 @@ const updateproduct = AsyncHandler(async (req, res, next) => {
   if (!Model) return res.status(400).send("Invalid product type");
   let data = await Model.findByIdAndUpdate(req.params.id, req?.body, {
     new: true,
-  }).populate("createdBy", "fullName")
+  }).populate("createdBy", "fullName");
   data = {
     ...data?._doc,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },

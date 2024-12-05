@@ -2,7 +2,6 @@ import slugify from "slugify";
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import { ApiFetcher } from "../../utils/Fetcher.js";
-import httpStatus from "../../assets/messages/httpStatus.js";
 import responseHandler from "./../../utils/responseHandler.js";
 import {
   handleFilterwithLookUp,
@@ -90,6 +89,7 @@ export const FindAll = ({
   customPiplineFN = null,
   publishMode = true,
   options = {},
+  margeParam=null
 }) => {
   return AsyncHandler(async (req, res) => {
     const { user = null } = req;
@@ -107,12 +107,23 @@ export const FindAll = ({
       customPiplineFN(pipeline, req.query, user);
     }
 
+    if (
+      margeParam &&
+      req.params?.[margeParam] &&
+      mongoose.Types.ObjectId.isValid(req.params?.[margeParam])
+    ) {
+      pipeline.push({
+        $match: {
+          [margeParam]: new mongoose.Types.ObjectId(req.params?.[margeParam]),
+        },
+      });
+    }
 
-
+    
+    
     if (publishMode && user?.role !== "admin") {
       pipeline.push({ $match: { publish: true } });
     }
-
     const apiFetcher = new ApiFetcher(pipeline, req?.query, options)
       .filter()
       .search()

@@ -29,7 +29,7 @@ pageRouter
     updatePage
   )
   .get(
-    cacheResponse({ stdTTL: "6h" }),
+    // cacheResponse({ stdTTL: "6h" }),
     tokenDetector({
       admin: true,
     }),

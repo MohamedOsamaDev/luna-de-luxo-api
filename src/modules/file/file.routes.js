@@ -19,14 +19,13 @@ fileRouter
     }),
     GetAll
   )
-  // .post(
-  //   fileUploadSingle("file"),
-  //   validation(fileUploadTicketSchema),
-  //   protectedRoutes,
-  //   authorized(enumRoles.admin),
-  //   AttributedTo,
-  //   Insert
-  // );
+  .post(
+    validation(fileUploadTicketSchema),
+    protectedRoutes,
+    authorized(enumRoles.admin),
+    AttributedTo,
+    Insert
+  );
 fileRouter.post("/tickets", postTiket)  
 fileRouter
   .route("/:id")

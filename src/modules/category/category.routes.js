@@ -25,7 +25,6 @@ const categoryRouter = express.Router();
 
 categoryRouter.use(
   "/:category/subcategories",
-  cacheResponse({ stdTTL: "4h", group: true }),
   subCategoryRouter
 );
 categoryRouter

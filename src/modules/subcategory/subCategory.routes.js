@@ -31,6 +31,7 @@ subCategoryRouter
     addOneSubCategory
   )
   .get(
+    cacheResponse({ stdTTL: "2h", group: true }),
     tokenDetector({
       admin: true,
     }),
@@ -38,9 +39,13 @@ subCategoryRouter
   );
 subCategoryRouter
   .route("/:id")
-  .get(cacheResponse({ stdTTL: "4h" }),     tokenDetector({
-    admin: true,
-  }), getOneSubCategory)
+  .get(
+    cacheResponse({ stdTTL: "1y" }),
+    tokenDetector({
+      admin: true,
+    }),
+    getOneSubCategory
+  )
   .put(
     validation(UpdatesubCategorySchemaVal),
     protectedRoutes,

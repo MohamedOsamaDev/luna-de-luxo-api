@@ -97,10 +97,10 @@ export const FindAll = ({
 }) => {
   return AsyncHandler(async (req, res) => {
     const { user = null } = req;
-    let pipeline = handleFilterwithLookUp(customQuery, req?.query).concat(
-      pushToPipeLine
-    );
-
+    let pipeline = [
+      ...pushToPipeLine,
+      ...handleFilterwithLookUp(customQuery, req?.query, pushToPipeLine),
+    ];
     if (customFiltersFN) {
       req.query = {
         ...req.query,
@@ -145,6 +145,7 @@ export const FindAll = ({
         total,
       },
       data,
+      pipeline: apiFetcher.pipeline,
     });
   });
 };

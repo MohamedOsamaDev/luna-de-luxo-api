@@ -12,8 +12,22 @@ export const convrtQueryToIn = (val) => {
   }
   return val;
 };
-export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
+function extractFromValues(pipeline) {
+  const result = [];
+  for (const step of pipeline) {
+    if (step.$lookup?.from) {
+      result.push(step.$lookup.from);
+    }
+  }
+  return result;
+}
+export const handleFilterwithLookUp = (
+  filters = [],
+  searchQuery = {},
+  currentPipline = []
+) => {
   let pipeline = [];
+  const current = extractFromValues(currentPipline);
   try {
     filters?.map((val) => {
       const {
@@ -25,16 +39,18 @@ export const handleFilterwithLookUp = (filters = [], searchQuery = {}) => {
         unwind = false,
       } = val;
       if (searchQuery[field]) {
-        pipeline.push({
-          $lookup: {
-            from: fromCollection,
-            localField: localField,
-            foreignField: foreignField,
-            as: field,
-          },
-        });
-        if (unwind) {
-          pipeline.push({ $unwind: `$${field}` });
+        if (!current?.includes(fromCollection)) {
+          pipeline.push({
+            $lookup: {
+              from: fromCollection,
+              localField: localField,
+              foreignField: foreignField,
+              as: field,
+            },
+          });
+          if (unwind) {
+            pipeline.push({ $unwind: `$${field}` });
+          }
         }
         pipeline.push({
           $match: {

@@ -30,19 +30,6 @@ const handleMerageCartItems = (items1 = [], items2 = []) => {
 
   return array;
 };
-const handleproductIsAvailable = async (items) => {
-  if (!items || items.length === 0) return [];
-
-  const productIds = items.map((item) => item.product?._id);
-  const products = await productModel.find({ _id: { $in: productIds } });
-
-  return items.map((item) => {
-    const product = products.find((product) =>
-      product._id.equals(item.product._id)
-    );
-    return product ? { ...item, product } : item;
-  });
-};
 export const handleConnectCart = async (user, req, res) => {
   let cart = user?.cart;
   if (req.cookies.cart) {

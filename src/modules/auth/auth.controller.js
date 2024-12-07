@@ -12,9 +12,9 @@ import {
 import SetCookie from "../../utils/SetCookie.js";
 import httpStatus from "../../assets/messages/httpStatus.js";
 import confirmEmail from "../../services/mails/confirmation/confirmation.email.js";
-import { delay } from "../../utils/delay.js";
 import { UserModel } from "../../database/models/user.model.js";
 import cache from "../../config/cache.js";
+import { timeToSeconds } from "../../utils/formateTime.js";
 
 const signUp = AsyncHandler(async (req, res, next) => {
   const user = new UserModel(req.body);
@@ -43,47 +43,60 @@ const signUp = AsyncHandler(async (req, res, next) => {
 
 const signIn = AsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
+
+  // Find the user and populate necessary fields
   const user = await UserModel.findOne({ email })
     .populate("cart")
     .populate("influencer");
-  if (user && bcrypt.compareSync(password, user.password)) {
-    if (user?.isblocked)
-      return next(
-        new AppError({
-          message: `user is blocked`,
-          code: httpStatus.badRequest.code,
-        })
-      );
-    res.cookie(
-      "token",
-      jwt.sign({ _id: user?._id, role: user?.role }, process.env.SECRETKEY, {
-        expiresIn: 365 * 24 * 60 * 60 * 1000,
-      }),
-      SetCookie()
-    );
 
-    const cart = await handleConnectCart(user, req, res);
-    return res.status(200).json({
-      message: `welcome ${user.fullName}`,
-      profile: {
-        _id: user?._id,
-        fullName: user?.fullName,
-        email: user?.email,
-        role: user?.role,
-        phone: user?.phone,
-        influencer: user?.influencer,
-      },
-      cart,
-    });
-  } else {
+  if (!user || !bcrypt.compareSync(password, user.password)) {
     return next(
       new AppError({
-        message: `Incorrect email or password`,
+        message: "Incorrect email or password",
         code: httpStatus.badRequest.code,
       })
     );
   }
+
+  // Check if the user is blocked
+  if (user.isblocked) {
+    return next(
+      new AppError({
+        message: "User is blocked",
+        code: httpStatus.badRequest.code,
+      })
+    );
+  }
+
+  // Generate and set the authentication token
+  const token = jwt.sign(
+    { _id: user._id, role: user.role },
+    process.env.SECRETKEY,
+    { expiresIn: "365d" } // Use a readable duration format
+  );
+  if (user.role === 'admin') {
+    cache.set(user?._id.toString(), user, timeToSeconds("30d"));
+  }
+  res.cookie("token", token, SetCookie());
+
+  // Handle cart connection
+  const cart = await handleConnectCart(user, req, res);
+
+  // Return success response
+  return res.status(200).json({
+    message: `Welcome ${user.fullName}`,
+    profile: {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      influencer: user.influencer,
+    },
+    cart,
+  });
 });
+
 /* emails is disabled  */
 const verfiyEmail = AsyncHandler(async (req, res, next) => {
   jwt.verify(req.params.token, process.env.SECRETKEY, async (err, decoded) => {

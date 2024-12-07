@@ -283,7 +283,6 @@ export {
   signIn,
   logOut,
   updateuser,
-  deleteUser,
   softdelete,
   verfiyEmail,
   unsubscribe,

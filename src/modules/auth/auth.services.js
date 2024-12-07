@@ -111,9 +111,11 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
 export const getUserAndVerify = async (decodeReq) => {
   try {
     if (!decodeReq) return false;
-    const iscahced = cache.get(decodeReq._id);
+    const iscahced = cache.get(decodeReq._id.toString());
     if (iscahced) return iscahced;
     // Check if user exists
+    console.log("not cached");
+
     const user = await UserModel.findById(decodeReq._id)
       .populate([
         { path: "cart" },
@@ -136,17 +138,22 @@ export const getUserAndVerify = async (decodeReq) => {
       );
       if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
-    cache.set(user._id, timeToSeconds("30d"));
+    cache.set(user?._id.toString(), user, timeToSeconds("30d"));
     return user;
   } catch (error) {
+    console.log("🚀 ~ getUserAndVerify ~ error:", error);
     // Token verification failed or some other error occurred
     return false;
   }
 };
 
-
 export const clearUserCacheIfAdmin = (user) => {
-  if (user && user.role === "admin") {
-    cache.del(user._id);
+  if (user && user?.role === "admin") {
+    try {
+      cache.del(user?._id?.toString());
+    } catch (error) {
+      console.log("🚀 ~ clearUserCacheIfAdmin ~ error:", error);
+    }
   }
- }
+
+};

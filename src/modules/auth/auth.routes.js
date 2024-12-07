@@ -14,7 +14,6 @@ import {
   forgetPassword,
   ResetPassword,
   updateuser,
-  deleteUser,
   changepassword,
   verfiySession,
   logOut,
@@ -22,8 +21,6 @@ import {
 import { validation } from "../../middleware/globels/validation.js";
 import { protectedRoutes } from "../../middleware/auth/protectedRoutes.js";
 import { comparePassword } from "../../middleware/auth/comparePassword.js";
-import { authorized } from "../../middleware/globels/authorized.js";
-import { enumRoles } from "../../assets/enums/Roles_permissions.js";
 import { handleVerfiySession } from "../../middleware/auth/handleVerfiySession.js";
 
 const AuthRouter = express.Router();
@@ -39,7 +36,6 @@ AuthRouter.patch(`/reset-password`, ResetPassword);
 AuthRouter.route("/me")
   .put(validation(updateVal), protectedRoutes, updateuser)
   .get(handleVerfiySession, protectedRoutes, verfiySession)
-  .delete(protectedRoutes, deleteUser) // delete user
   .patch(
     validation(updatePasswordVal),
     protectedRoutes,

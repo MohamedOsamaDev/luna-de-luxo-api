@@ -1,3 +1,5 @@
+import { getUserAndVerify } from "../../modules/auth/auth.services.js";
+import { AppError } from "../../utils/AppError.js";
 import {
   cachePath,
   cachPathes,
@@ -40,9 +42,14 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
   };
 };
 // Middleware to check if the request has a valid JWT and if the user is an admin
-export const checkCache = (req, res, next) => {
-  const isAdmin = req.decodeReq?.role === "admin";
+export const checkCache = async (req, res, next) => {
   if (req.method.toUpperCase() === "GET") {
+    const decodeReq = req.decodeReq;
+    const isAdmin = decodeReq?.role === "admin";
+    if (isAdmin) {
+      const user = await getUserAndVerify(decodeReq);
+      if (!user) return next(new AppError(httpStatus.Forbidden));
+    }
     const cachedResponse = getCachedPath(req?.originalUrl, isAdmin);
     // If the JWT is present, the user is an admin, and a cached response exists
     if (cachedResponse) {

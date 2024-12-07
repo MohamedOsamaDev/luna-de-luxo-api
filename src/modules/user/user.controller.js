@@ -6,6 +6,7 @@ import { AppError } from "../../utils/AppError.js";
 import { removeSpecificText } from "../../utils/handletypes.js";
 import responseHandler from "../../utils/responseHandler.js";
 import { deleteOne, FindAll } from "../handlers/crudHandler.js";
+import { clearUserCacheIfAdmin } from "../auth/auth.services.js";
 
 const createuser = AsyncHandler(async (req, res, next) => {
   let cheackUser = await UserModel.findOne({
@@ -56,6 +57,7 @@ const updateuser = AsyncHandler(async (req, res, next) => {
     ...data,
     updatedBy: { fullName: req.user.fullName, _id: req.user._id },
   };
+  clearUserCacheIfAdmin(user);
   return res.status(200).json({ message: "Updated Sucessfully", data });
 });
 const deleteUser = deleteOne({

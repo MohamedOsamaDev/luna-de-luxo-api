@@ -3,15 +3,18 @@ import bcrypt from "bcrypt";
 import { AsyncHandler } from "../../middleware/globels/AsyncHandler.js";
 import { AppError } from "../../utils/AppError.js";
 import { forgetPasswordEmail } from "../../services/mails/forgetPassword/forgetPassword.Email.js";
-
 import { generateSecurePin } from "../../utils/genratePinCode.js";
-
-import { handleCartSignIn, handleConnectCart } from "./auth.services.js";
+import {
+  clearUserCacheIfAdmin,
+  handleCartSignIn,
+  handleConnectCart,
+} from "./auth.services.js";
 import SetCookie from "../../utils/SetCookie.js";
 import httpStatus from "../../assets/messages/httpStatus.js";
 import confirmEmail from "../../services/mails/confirmation/confirmation.email.js";
 import { delay } from "../../utils/delay.js";
 import { UserModel } from "../../database/models/user.model.js";
+import cache from "../../config/cache.js";
 
 const signUp = AsyncHandler(async (req, res, next) => {
   const user = new UserModel(req.body);
@@ -145,7 +148,7 @@ const forgetPassword = AsyncHandler(async (req, res, next) => {
   if (!emailSent) return res.status(400).json({ message: "Cannot send email" });
 
   const maskedEmail = email.replace(/(.{2}).+(@.+)/, "$1****$2");
-
+  clearUserCacheIfAdmin(user);
   return res.status(200).json({ message: `Email sent to ${maskedEmail}` });
 });
 
@@ -193,7 +196,7 @@ const ResetPassword = AsyncHandler(async (req, res, next) => {
 
   // Set the new token in a cookie
   res.cookie("token", newToken, SetCookie());
-
+  clearUserCacheIfAdmin(user);
   return res.status(200).json({ message: "Password changed" });
 });
 
@@ -213,7 +216,7 @@ const changepassword = AsyncHandler(async (req, res, next) => {
   );
 
   res.cookie("token", token, SetCookie());
-
+  clearUserCacheIfAdmin(user);
   return res.status(200).json({ message: "sucess" });
 });
 const updateuser = AsyncHandler(async (req, res, next) => {
@@ -221,6 +224,7 @@ const updateuser = AsyncHandler(async (req, res, next) => {
   const data = await UserModel.findByIdAndUpdate(_id, req.body, {
     new: true,
   }).select("-password");
+  clearUserCacheIfAdmin(data);
   return res.status(200).json({
     message: "sucess",
     data: {
@@ -234,17 +238,13 @@ const updateuser = AsyncHandler(async (req, res, next) => {
     },
   });
 });
-const deleteUser = AsyncHandler(async (req, res, next) => {
-  const { _id } = req.user;
-  await UserModel.findByIdAndDelete(_id);
-  return res.status(200).json({ message: "sucess" });
-});
 const softdelete = AsyncHandler(async (req, res, next) => {
   const { _id } = req.user;
   await UserModel.findByIdAndUpdate(_id, {
     isblocked: true,
     isActive: false,
   });
+  clearUserCacheIfAdmin(req.user);
   return res.status(200).json({ message: "success" });
 });
 const verfiySession = AsyncHandler(async (req, res, next) => {

@@ -32,10 +32,10 @@ productRouter
     addproduct
   )
   .get(
-    cacheResponse({ stdTTL: "4h", group: true }),
     tokenDetector({
       admin: true,
     }),
+    cacheResponse({ stdTTL: "4h", group: true }),
     getallproduct
   );
 
@@ -58,12 +58,12 @@ productRouter
     deleteproduct
   )
   .get(
-    cacheResponse({
-      stdTTL: "6h",
-    }),
     validation(paramsSlugVal),
     tokenDetector({
       admin: true,
+    }),
+    cacheResponse({
+      stdTTL: "6h",
     }),
     getOneproduct
   );

@@ -26,9 +26,19 @@ UserRouter.route("/")
     checkEmailuser,
     createuser
   )
-  .get(protectedRoutes, authorized(enumRoles?.admin), getAllUsers);
+  .get(
+    protectedRoutes,
+    authorized(enumRoles?.admin),
+    cacheResponse({ stdTTL: "4h", group: true }),
+    getAllUsers
+  );
 UserRouter.route("/:id")
-  .get(protectedRoutes, authorized(enumRoles.admin), findOneUser)
+  .get(
+    protectedRoutes,
+    authorized(enumRoles.admin),
+    cacheResponse({ stdTTL: "4h", group: true }),
+    findOneUser
+  )
   .put(
     validation(userUpdateVal),
     protectedRoutes,

@@ -4,6 +4,8 @@ import { productModel } from "../../database/models/product.model.js";
 import SetCookie from "../../utils/SetCookie.js";
 import { UserModel } from "../../database/models/user.model.js";
 import { delay } from "../../utils/delay.js";
+import cache from "../../config/cache.js";
+import { timeToSeconds } from "../../utils/formateTime.js";
 
 const handleMerageCartItems = (items1 = [], items2 = []) => {
   let array = [...items1, ...items2];
@@ -109,28 +111,42 @@ export const detectJwtAndDecodeJwtFromRequest = (req) => {
 export const getUserAndVerify = async (decodeReq) => {
   try {
     if (!decodeReq) return false;
+    const iscahced = cache.get(decodeReq._id);
+    if (iscahced) return iscahced;
     // Check if user exists
     const user = await UserModel.findById(decodeReq._id)
       .populate([
         { path: "cart" },
         {
           path: "influencer",
-          populate: { path: "coupon", select: " expires code discount commission" },
+          populate: {
+            path: "coupon",
+            select: " expires code discount commission",
+          },
         },
       ])
       .lean()
       .exec();
+
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;
     if (user?.passwordChangedAt) {
       const passwordChangedAtTime = Math.floor(
         user?.passwordChangedAt?.getTime() / 1000
-      ); 
+      );
       if (passwordChangedAtTime > decodeReq?.iat) return false;
     }
+    cache.set(user._id, timeToSeconds("30d"));
     return user;
   } catch (error) {
     // Token verification failed or some other error occurred
     return false;
   }
 };
+
+
+export const clearUserCacheIfAdmin = (user) => {
+  if (user && user.role === "admin") {
+    cache.del(user._id);
+  }
+ }

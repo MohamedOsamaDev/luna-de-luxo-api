@@ -99,7 +99,11 @@ export const FindAll = ({
     const { user = null } = req;
     let pipeline = [
       ...pushToPipeLine,
-      ...handleFilterwithLookUp(customQuery, req?.query, pushToPipeLine),
+      ...handleFilterwithLookUp(
+        customQuery,
+        req?.query?.filters,
+        pushToPipeLine
+      ),
     ];
     if (customFiltersFN) {
       req.query = {

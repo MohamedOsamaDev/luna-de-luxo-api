@@ -114,8 +114,6 @@ export const getUserAndVerify = async (decodeReq) => {
     const iscahced = cache.get(decodeReq._id.toString());
     if (iscahced) return iscahced;
     // Check if user exists
-    console.log("not cached");
-
     const user = await UserModel.findById(decodeReq._id)
       .populate([
         { path: "cart" },
@@ -129,7 +127,6 @@ export const getUserAndVerify = async (decodeReq) => {
       ])
       .lean()
       .exec();
-
     // Check if user exists, is not blocked, and has a valid token
     if (!user || user?.isblocked) return false;
     if (user?.passwordChangedAt) {
@@ -155,5 +152,4 @@ export const clearUserCacheIfAdmin = (user) => {
       console.log("🚀 ~ clearUserCacheIfAdmin ~ error:", error);
     }
   }
-
 };

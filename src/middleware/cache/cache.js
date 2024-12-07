@@ -14,7 +14,6 @@ export const cacheResponse = ({ stdTTL, group = false } = {}) => {
   let ttlInSeconds = stdTTL ? timeToSeconds(stdTTL) : undefined;
   return (req, res, next) => {
     // Decode the JWT from the request (if any) and extract user information
-
     const isAdmin = req.decodeReq?.role === "admin";
     let key = req?.originalUrl;
     // Save the original res.json method

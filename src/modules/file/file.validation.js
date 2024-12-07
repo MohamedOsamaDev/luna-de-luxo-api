@@ -6,7 +6,6 @@ const fileVal = Joi.object({
   url: Joi.string().required(),
   path: Joi.string().required(),
   size: Joi.number()
-    .max(1024 * 1024 * 10)
     .required(), // 10 MB size limit
 });
 const uploadSchema = Joi.object({

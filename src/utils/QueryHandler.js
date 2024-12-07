@@ -48,9 +48,9 @@ export const handleFilterwithLookUp = (
               as: field,
             },
           });
-          if (unwind) {
-            pipeline.push({ $unwind: `$${field}` });
-          }
+          // if (unwind) {
+          //   pipeline.push({ $unwind: `$${field}` });
+          // }
         }
         pipeline.push({
           $match: {

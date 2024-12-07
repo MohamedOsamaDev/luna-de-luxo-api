@@ -13,12 +13,9 @@ const config = {
   slug: "name",
   pushToPipeLine: Posterlookup,
   options: {
-    searchFeilds: [
-      "slug",
-      "name",
-      "description",
-    ],
+    searchFeilds: ["slug", "name", "description"],
   },
+  relationCacheTags: ["subCategories", "products"],
 };
 const addOneCategory = InsertOne(config);
 const getAllCategoryies = FindAll(config);

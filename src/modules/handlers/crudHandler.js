@@ -39,6 +39,7 @@ export const InsertOne = ({
   slug = null,
   name = "",
   uniqueFields = [],
+  relationCacheTags = [],
 }) => {
   return AsyncHandler(async (req, res, next) => {
     const { user = null } = req;
@@ -74,10 +75,13 @@ export const InsertOne = ({
       };
     }
 
-    return res.status(200).json({
-      message: `${name} added successfully`,
-      data,
-    });
+    return res.status(200).json(
+      {
+        message: `${name} added successfully`,
+        data,
+      },
+      relationCacheTags
+    );
   });
 };
 
@@ -89,7 +93,7 @@ export const FindAll = ({
   customPiplineFN = null,
   publishMode = true,
   options = {},
-  margeParam=null
+  margeParam = null,
 }) => {
   return AsyncHandler(async (req, res) => {
     const { user = null } = req;
@@ -119,8 +123,6 @@ export const FindAll = ({
       });
     }
 
-    
-    
     if (publishMode && user?.role !== "admin") {
       pipeline.push({ $match: { publish: true } });
     }
@@ -176,6 +178,7 @@ export const updateOne = ({
   name = "",
   slug = "",
   uniqueFields = [],
+  relationCacheTags = [],
 }) => {
   return AsyncHandler(async (req, res, next) => {
     const { user } = req;
@@ -204,17 +207,25 @@ export const updateOne = ({
       .populate(adminPopulateHandler(user));
 
     if (!data) return next(new AppError(responseHandler("NotFound", name)));
-    return res.status(200).json({
-      message: `${name} updated successfully`,
-      data: {
-        ...data,
-        updatedBy: { fullName: user?.fullName, _id: user?._id },
+    return res.status(200).json(
+      {
+        message: `${name} updated successfully`,
+        data: {
+          ...data,
+          updatedBy: { fullName: user?.fullName, _id: user?._id },
+        },
       },
-    });
+      relationCacheTags
+    );
   });
 };
 
-export const deleteOne = ({ model, name = "", mode = "hard" }) => {
+export const deleteOne = ({
+  model,
+  name = "",
+  mode = "hard",
+  relationCacheTags = [],
+}) => {
   return AsyncHandler(async (req, res, next) => {
     const operation =
       mode === "soft"
@@ -223,7 +234,9 @@ export const deleteOne = ({ model, name = "", mode = "hard" }) => {
 
     const document = await operation;
     if (!document) return next(new AppError(responseHandler("NotFound", name)));
-    return res.status(200).json({ message: `${name} deleted successfully` });
+    return res
+      .status(200)
+      .json({ message: `${name} deleted successfully` }, relationCacheTags);
   });
 };
 

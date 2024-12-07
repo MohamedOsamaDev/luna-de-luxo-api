@@ -8,6 +8,7 @@ import { checkCache, clearCacheMiddleware } from "../middleware/cache/cache.js";
 import { decodeToken } from "../middleware/auth/decodeToken.js";
 import { FileModel } from "../database/models/file.model.js";
 import { landingPageModel } from "../database/models/pages/landing.model.js";
+import cache from "./cache.js";
 // Load environment variables
 dotenv.config();
 // CORS options configuration
@@ -42,6 +43,7 @@ export const welcome = async (req, res) => {
   return res.status(200).json({
     status: "success",
     message: "Welcome to LUNADELUXO API",
+    keys:cache.keys()
   });
 };
 

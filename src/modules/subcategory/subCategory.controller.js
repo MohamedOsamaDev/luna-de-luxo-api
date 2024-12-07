@@ -28,17 +28,14 @@ const config = {
           category: new mongoose.Types.ObjectId(query?.filters?.category),
         },
       });
-      delete query?.filters?.category 
+      delete query?.filters?.category;
     }
   },
   options: {
-    searchFeilds: [
-      "slug",
-      "name",
-      "description",
-    ],
+    searchFeilds: ["slug", "name", "description"],
   },
   pushToPipeLine: Posterlookup,
+  relationCacheTags: ["products"],
 };
 const addOneSubCategory = InsertOne(config);
 const updateOneSubCategory = updateOne(config);
